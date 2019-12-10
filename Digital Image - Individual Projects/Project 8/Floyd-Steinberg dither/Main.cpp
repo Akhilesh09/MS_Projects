@@ -26,6 +26,8 @@ int maximum(int a, int b)
 
 void setPixels()
 {
+	
+	//initilaize array with input image
 	stbi_set_flip_vertically_on_load(true);
 	image1 = stbi_load("org.png", &width, &height, &channels1, STBI_rgb);
 	for (int y = 0; y < height; y++) {
@@ -37,6 +39,7 @@ void setPixels()
 		}
 	}
 	
+	//initilaize array with normalized pixels values
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int org_nrmlzd_ind = (y * width + x) * 3;
@@ -49,6 +52,21 @@ void setPixels()
 		}
 	}
 	
+	//floyd-steinberg dither
+	/*
+	
+	for each y from top to bottom
+    for each x from left to right
+      oldpixel  := pixel[x][y]
+      newpixel  := find_closest_palette_color(oldpixel)
+      pixel[x][y]  := newpixel
+      quant_error  := oldpixel - newpixel
+      pixel[x + 1][y    ] := pixel[x + 1][y    ] + quant_error * 7 / 16
+      pixel[x - 1][y + 1] := pixel[x - 1][y + 1] + quant_error * 3 / 16
+      pixel[x    ][y + 1] := pixel[x    ][y + 1] + quant_error * 5 / 16
+      pixel[x + 1][y + 1] := pixel[x + 1][y + 1] + quant_error * 1 / 16
+	
+	*/
 	for (int y = 1; y < height-1; y++) {
 		for (int x = 0; x < width; x++) {
 			int org_nrmlzd_ind = (y * width + x) * 3;
@@ -97,9 +115,7 @@ void setPixels()
 		}
 	}
 
-	
-
-
+	//convert normalized pixels values to 0-255
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int org_ind = (y * width + x) * 3;

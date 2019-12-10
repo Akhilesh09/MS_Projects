@@ -29,6 +29,8 @@ int maximum(int a, int b)
 
 void setPixels()
 {
+	
+	//initilaize array with foreground image
 	stbi_set_flip_vertically_on_load(true);
 	image1 = stbi_load("fore.png", &width, &height, &channels1, 4);
 	for (int y = 0; y < height; y++) {
@@ -40,6 +42,8 @@ void setPixels()
 			fore_img[fore_ind] = image1[fore_ind];
 		}
 	}
+	
+	//initilaize array with background image
 	image2 = stbi_load("back.png", &width, &height, &channels2, 4);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -51,6 +55,7 @@ void setPixels()
 		}
 	}
 	
+	//maximum operation
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int out_ind = (y * width + x) * 4;

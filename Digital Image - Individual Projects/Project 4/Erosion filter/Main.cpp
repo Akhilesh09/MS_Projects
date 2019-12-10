@@ -12,9 +12,6 @@
 
 using namespace std;
 
-// =============================================================================
-// These variables will store the input ppm image's width, height, and color
-// =============================================================================
 unsigned char *org_img;
 unsigned char *image1;
 
@@ -23,12 +20,6 @@ double *kernel;
 double filter_arr[9] = {1,1,1,1,1,1,1,1,1 };
 int width = 300, height = 168, channels1;
 
-// =============================================================================
-// setPixels()
-//
-// This function stores the RGB values of each pixel to "org_img."
-// Then, "glutDisplayFunc" below will use org_img to display the pixel colors.
-// =============================================================================
 int minimum(int a, int b) {
 	return a<b?a:b;
 }
@@ -94,14 +85,6 @@ void setPixels()
 	}
 }
 
-
-
-// =============================================================================
-// OpenGL Display and Mouse Processing Functions.
-//
-// You can read up on OpenGL and modify these functions, as well as the commands
-// in main(), to perform more sophisticated display or GUI behavior.
-// =============================================================================
 static void windowResize(int w, int h)
 {
 	glViewport(0, 0, w, h);

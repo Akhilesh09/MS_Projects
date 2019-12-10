@@ -2,7 +2,6 @@
 #include <iostream>
 #include <GL/glut.h>
 
-
 #include <fstream>
 #include <cassert>
 #include <sstream>
@@ -60,8 +59,9 @@ void createkernel(int x,int y)
 
 void setPixels()
 {
+	//initilaize array with input image
 	stbi_set_flip_vertically_on_load(true);
-	image1 = stbi_load("forest2.jpg", &width, &height, &channels1, STBI_rgb);
+	image1 = stbi_load("forest.jpg", &width, &height, &channels1, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int org_ind = (y * width + x) * 3;
@@ -70,7 +70,9 @@ void setPixels()
 			org_img[org_ind] = image1[org_ind];
 		}
 	}
-	image2 = stbi_load("ctrl8.jpg", &width, &height, &channels2, STBI_rgb);
+	
+	//initilaize array with control image
+	image2 = stbi_load("ctrl.jpg", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int ctrl_ind = (y * width + x) * 3;
@@ -79,7 +81,8 @@ void setPixels()
 			ctrl_img[ctrl_ind] = image2[ctrl_ind];
 		}
 	}
-
+	
+	// applying kernels to input image
 	for (int y = 0; y < height; y++) {
 	for (int x = 0; x < width; x++) {
 			double r = 0, g = 0, b = 0;
@@ -111,6 +114,8 @@ void setPixels()
 					b = maximum(b, org_img[org_ind] * kernel[kernel_ind]);
 				}
 			}
+			
+			// storing result of convolution in output array
 			out_img[index++] = r;
 			out_img[index++] = g;
 			out_img[index] = b;
@@ -118,14 +123,6 @@ void setPixels()
 	}
 }
 
-
-
-// =============================================================================
-// OpenGL Display and Mouse Processing Functions.
-//
-// You can read up on OpenGL and modify these functions, as well as the commands
-// in main(), to perform more sophisticated display or GUI behavior. 
-// =============================================================================
 static void windowResize(int w, int h)
 {
 	glViewport(0, 0, w, h);

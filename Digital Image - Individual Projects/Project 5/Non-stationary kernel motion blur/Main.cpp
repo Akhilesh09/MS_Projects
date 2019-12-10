@@ -12,10 +12,6 @@
 
 using namespace std;
 
-// =============================================================================
-// These variables will store the input ppm image's width, height, and color
-// =============================================================================
-//int width, height;
 unsigned char *org_img;
 unsigned char *image1;
 
@@ -26,7 +22,7 @@ double *kernel;
 unsigned char *output_img;
 int width = 300, height = 300, channels1, channels2;
 
-//
+//setting values of blur along a direction based on hue value
 double eq(int x, int y, double h)
 {
 	return 2 * abs((cos(h)*x + sin(h)*y - (cos(h)*2.5) - (sin(h)* 2.5))) - 2;
@@ -127,8 +123,10 @@ void createkernel(double h)
 
 void setPixels()
 {
+	
+	//initilaize array with input image
 	stbi_set_flip_vertically_on_load(true);
-	image1 = stbi_load("forest2.jpg", &width, &height, &channels1, STBI_rgb);
+	image1 = stbi_load("forest.jpg", &width, &height, &channels1, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int org_ind = (y * width + x) * 3;
@@ -137,6 +135,8 @@ void setPixels()
 			org_img[org_ind] = image1[org_ind];
 		}
 	}
+	
+	//initilaize array with control image
 	image2 = stbi_load("skies.jpg", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -147,6 +147,7 @@ void setPixels()
 		}
 	}
 	
+	// applying kernels to input image 
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			double r = 0, g = 0, b = 0;
@@ -176,7 +177,7 @@ void setPixels()
 				}
 			}
 
-
+			// storing result of convolution in output array
 			output_img[index++] = r;
 			output_img[index++] = g;
 			output_img[index] = b;
@@ -184,14 +185,6 @@ void setPixels()
 	}
 }
 
-
-
-// =============================================================================
-// OpenGL Display and Mouse Processing Functions.
-//
-// You can read up on OpenGL and modify these functions, as well as the commands
-// in main(), to perform more sophisticated display or GUI behavior.
-// =============================================================================
 static void windowResize(int w, int h)
 {
 	glViewport(0, 0, w, h);

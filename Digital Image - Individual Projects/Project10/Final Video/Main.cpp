@@ -37,9 +37,9 @@ void setPixels()
 	for (int i = 1; i <= 99; i++) {
 		char x = (char)i;
 		string filename = "background/00" + to_string(i) + ".jpg";
-		cout << filename << endl;
 		image1 = stbi_load(filename.c_str(),&width, &height, &channels1, 3);
 		
+		//initilaize array with background image
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				int i = (y * width + x) * 3;
@@ -48,6 +48,8 @@ void setPixels()
 				fore_img[i] = image1[i];
 			}
 		}
+		
+		//initilaize array with foreground image
 		image2 = stbi_load("foreground.png", &width, &height, &channels2, 3);
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
@@ -58,8 +60,7 @@ void setPixels()
 			}
 		}
 		
-		
-
+		//initilaize array with normalized pixel values of foreground image
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				int i = (y * width + x) * 3;
@@ -72,6 +73,7 @@ void setPixels()
 			}
 		}
 
+		//Floyd-Steinberg on foreground image
 		for (int y = 1; y < height - 1; y++) {
 			for (int x = 0; x < width; x++) {
 				int back_nrmlzd_ind = (y * width + x) * 3;
@@ -120,6 +122,7 @@ void setPixels()
 			}
 		}
 
+	//initilaize array with foreground image pixel values in 0-255
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				int back_ind = (y * width + x) * 3;
@@ -132,6 +135,7 @@ void setPixels()
 			}
 		}
 
+	//multiply operation on foreground and background images
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				int out_ind = (y * width + x) * 3;

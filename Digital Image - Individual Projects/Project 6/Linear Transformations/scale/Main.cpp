@@ -20,6 +20,8 @@ int width = 600, height = 600, channels1, channels2;
 
 void setPixels()
 {
+	
+	//initilaize array with input image
 	stbi_set_flip_vertically_on_load(true);
 	image1 = stbi_load("cheetah.jpg", &width, &height, &channels1, STBI_rgb);
 	for (int y = 0; y < height; y++) {
@@ -31,7 +33,7 @@ void setPixels()
 		}
 	}
 
-
+	//initilaize background color
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int out_ind = (y * width + x) * 3;
@@ -40,12 +42,13 @@ void setPixels()
 			out_img[out_ind] = 255;
 		}
 	}
-
-	for (int j = 0; j < height; j++) {
-		for (int i = 0; i < width; i++) {
-			int out_ind = (j * width + i) * 3;
-			int u = ((i+0.5)*2);
-			int v = ((j+0.5)*2);
+	
+	//scale transform u=x/a, v=y/b
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			int out_ind = (y * width + x) * 3;
+			int u = ((x+0.5)*2);
+			int v = ((y+0.5)*2);
 
 			if ((u > 0) && (v > 0) && (u < width - 1) && (v < height - 1))
 			{

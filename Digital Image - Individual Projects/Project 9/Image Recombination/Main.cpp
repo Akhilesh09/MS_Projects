@@ -28,6 +28,8 @@ int minimum(int a, int b,int c)
 
 void setPixels()
 {
+	
+	//initilaize array with input image1
 	stbi_set_flip_vertically_on_load(true);
 	image1 = stbi_load("forest1.jpg", &width, &height, &channels1, 3);
 	for (int y = 0; y < height; y++) {
@@ -38,7 +40,9 @@ void setPixels()
 			inp_img1[inp1_ind] = image1[inp1_ind];
 		}
 	}
-	image2 = stbi_load("forest3.jpg", &width, &height, &channels2, 3);
+	
+	//initilaize array with input image2
+	image2 = stbi_load("forest2.jpg", &width, &height, &channels2, 3);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int inp2_ind = (y * width + x) * 3;
@@ -48,6 +52,7 @@ void setPixels()
 		}
 	}
 
+	//initilaize array with subtract operation of both input images
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int out_ind = (y * width + x) * 3;
@@ -59,6 +64,8 @@ void setPixels()
 			out_ind++;
 		}
 	}
+	
+	//find minimum energy seam and combine images on either sides of seam
 
 	int min_seam[1][300];
 

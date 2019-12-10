@@ -25,7 +25,7 @@ void setPixels()
 
 	int dither_ctrl[4][4] = { {16,144,48,176},{208,80,240,112},{64,192,32,160},{256,128,224,96 } };
 
-
+	//initilaize array with input image
 	stbi_set_flip_vertically_on_load(true);
 	inp_img = stbi_load("org.png", &width, &height, &channels, STBI_rgb);
 	for (int y = 0; y < height; y++) {
@@ -37,6 +37,7 @@ void setPixels()
 		}
 	}
 	
+	//initilaize array with real number pixels values
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int org_real_ind = (y * width + x) * 3;
@@ -49,6 +50,11 @@ void setPixels()
 		}
 	}
 
+	//ordered dither
+	/*
+	If a pixel color in the original image is larger than the color value of the corresponding pixel in the control images, the pixel color of the dithered image becomes 255.
+	Otherwise, the pixel color of the dithered image becomes zero.
+	*/
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int org_real_ind = (y * width + x) * 3;

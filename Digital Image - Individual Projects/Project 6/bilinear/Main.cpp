@@ -20,6 +20,8 @@ int width = 600, height = 600, channels1, channels2;
 
 void setPixels()
 {
+	
+	//initilaize array with input image
 	stbi_set_flip_vertically_on_load(true);
 	image1 = stbi_load("cheetah.jpg", &width, &height, &channels1, STBI_rgb);
 	for (int y = 0; y < height; y++) {
@@ -30,7 +32,8 @@ void setPixels()
 			org_img[org_ind] = image1[org_ind];
 		}
 	}
-
+	
+	//initilaize background color
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int out_ind = (y * width + x) * 3;
@@ -42,6 +45,8 @@ void setPixels()
 
 	//normalizing coordinates between 0 and 1
 
+	
+	
 	float x0 = 30/ 600.0;
 	float y0 = 100/ 600.0;
 	float x1 = 200 / 600.0;
@@ -51,6 +56,8 @@ void setPixels()
 	float x3 = 500 / 600.0;
 	float y3 = 300 / 600.0;
 
+	//bilinear transform
+	
 	float a0 = x0;
 	float a1 = x3 - x0;
 	float a2 = x1 - x0;

@@ -12,10 +12,6 @@
 
 using namespace std;
 
-// =============================================================================
-// These variables will store the input ppm image's width, height, and color
-// =============================================================================
-//int width, height;
 unsigned char *fore_img;
 unsigned char *image1;
 
@@ -33,6 +29,8 @@ int maximum(int a, int b)
 
 void setPixels()
 {
+	
+	//initilaize array with foreground image
 	stbi_set_flip_vertically_on_load(true);
 	image1 = stbi_load("fore.png", &width, &height, &channels1, 4);
 	cout << channels1 << endl;
@@ -45,6 +43,8 @@ void setPixels()
 			fore_img[fore_ind] = image1[fore_ind];
 		}
 	}
+	
+	//initilaize array with background image
 	image2 = stbi_load("back.png", &width, &height, &channels2, 4);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -56,6 +56,7 @@ void setPixels()
 		}
 	}
 	
+	//subtract operation
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int out_ind = (y * width + x) * 4;

@@ -20,6 +20,8 @@ int width = 600, height = 600, channels1, channels2;
 
 void setPixels()
 {
+	
+	//initilaize array with input image
 	stbi_set_flip_vertically_on_load(true);
 	inp_img = stbi_load("cheetah.jpg", &width, &height, &channels1, STBI_rgb);
 	for (int y = 0; y < height; y++) {
@@ -31,6 +33,7 @@ void setPixels()
 		}
 	}
 
+	//initilaize background color
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int out_ind = (y * width + x) * 3;
@@ -40,6 +43,7 @@ void setPixels()
 		}
 	}
 
+	//perspective transform u=-a*x+1, v=-b*y+1
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int out_ind = (y * width + x) * 3;
@@ -59,13 +63,6 @@ void setPixels()
 	}
 }
 
-
-// =============================================================================
-// OpenGL Display and Mouse Processing Functions.
-//
-// You can read up on OpenGL and modify these functions, as well as the commands
-// in main(), to perform more sophisticated display or GUI behavior.
-// =============================================================================
 static void windowResize(int w, int h)
 {
 	glViewport(0, 0, w, h);

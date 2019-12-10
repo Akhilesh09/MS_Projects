@@ -31,6 +31,8 @@ int maximum(int a, int b)
 
 void setPixels()
 {
+	
+	//initilaize array with greenscreen image
 	stbi_set_flip_vertically_on_load(true);
 	image1 = stbi_load("greenscreen.jpg", &width, &height, &channels1, 4);
 	cout << channels1 << endl;
@@ -42,6 +44,8 @@ void setPixels()
 			greenscreen_img[greenscreen_ind] = image1[greenscreen_ind++];
 		}
 	}
+	
+	//initilaize array with alphamap image
 	image2 = stbi_load("alphamap.png", &width, &height, &channels2, 4);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -52,6 +56,7 @@ void setPixels()
 		}
 	}
 
+	//initilaize array with background image
 	image3 = stbi_load("back.jpg", &width, &height, &channels3, 4);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -62,6 +67,7 @@ void setPixels()
 		}
 	}
 
+	//compositing operation
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int index = (y * width + x) * 4;

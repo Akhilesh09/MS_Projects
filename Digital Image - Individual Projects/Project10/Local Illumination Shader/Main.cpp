@@ -32,6 +32,7 @@ int width = 300, height = 300, channels1, channels2, channels3;
 void setPixels()
 {
 
+	//initilaize array with dark image
 	stbi_set_flip_verticallight_y_on_load(false);
 	image1 = stbi_load("dark.jpg", &width, &height, &channels1, STBI_rgb);
 	for (int y = 0; y < height; y++) {
@@ -43,6 +44,7 @@ void setPixels()
 		}
 	}
 
+	//initilaize array with light image
 	image2 = stbi_load("light.jpg", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -53,6 +55,7 @@ void setPixels()
 		}
 	}
 
+	//initilaize array with normal map
 	image3 = stbi_load("normal.jpg", &width, &height, &channels3, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -63,6 +66,7 @@ void setPixels()
 		}
 	}
 
+	//initilaize array with normal map values in -1 to 1
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int normal_mod_ind = (y * width + x) * 3;
@@ -75,6 +79,8 @@ void setPixels()
 		}
 	}
 
+	//adjust brightness of pixels based on dot product with coordinates of light vector
+	
 	double light_x[100], light_y[100];
 
 
