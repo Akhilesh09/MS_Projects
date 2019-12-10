@@ -26,6 +26,8 @@ int maximum(int a, int b) {
 
 void setPixels()
 {
+	
+	//initilaize array with input image
 	stbi_set_flip_vertically_on_load(true);
 	inp_img = stbi_load("forest.jpg", &width, &height, &channels, STBI_rgb);
 	for (int y = 0; y < height; y++) {
@@ -37,6 +39,7 @@ void setPixels()
 		}
 	}
 
+	//initilaize kernel with convolutional filter values
 	int filter_ind = 0;
 	for (int y = 0; y < 3; y++) {
 		for (int x = 0; x < 3; x++) {
@@ -48,6 +51,7 @@ void setPixels()
 		}
 	}
 
+	// applying kernel to input image
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			double r = 0, g = 0, b = 0;
@@ -73,6 +77,7 @@ void setPixels()
 				}
 			}
 
+			// storing result of convolution in output array
 			int output_ind = (y * width + x) * 3;
 			output_img[output_ind++] = r;
 			output_img[output_ind++] = g;

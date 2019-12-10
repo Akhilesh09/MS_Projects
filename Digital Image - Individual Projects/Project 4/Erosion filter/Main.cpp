@@ -36,6 +36,8 @@ int minimum(int a, int b) {
 
 void setPixels()
 {
+	
+	//initilaize array with input image
 	stbi_set_flip_vertically_on_load(true);
 	image1 = stbi_load("forest.jpg", &width, &height, &channels1, STBI_rgb);
 	for (int y = 0; y < height; y++) {
@@ -47,6 +49,7 @@ void setPixels()
 		}
 	}
 
+	//initilaize kernel with convolutional filter values
 	int filter_ind = 0;
 	for (int y = 0; y < 3; y++) {
 		for (int x = 0; x < 3; x++) {
@@ -57,7 +60,8 @@ void setPixels()
 			filter_ind = filter_ind + 1;
 		}
 	}
-
+	
+	// applying kernel to input image 
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			double r = 255, g = 255, b = 255;
@@ -81,6 +85,7 @@ void setPixels()
 				}
 			}
 
+			// storing result of convolution in output array
 			int index = (y * width + x) * 3;
 			out_img[index++] = r;
 			out_img[index++] = g;

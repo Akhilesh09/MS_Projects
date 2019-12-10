@@ -90,15 +90,6 @@ void setPixels()
 
 }
 
-
-
-// =============================================================================
-// OpenGL Display and Mouse Processing Functions.
-//
-// You can read up on OpenGL and modify these functions, as well as the commands
-// in main(), to perform more sophisticated display or GUI behavior. This code
-// will service the bare minimum display needs for most assignments.
-// =============================================================================
 static void windowResize(int w, int h)
 {
 	glViewport(0, 0, w, h);

@@ -26,22 +26,10 @@ double filter_x_arr[9] = {-1,-1,-1,0,0,0,1,1,1};
 double filter_y_arr[9] = { 1,0,-1,1,0,-1,1,0,-1 };
 int width = 300, height = 168, channels1, channels2;
 
-void new_val(int x, int y,int n)
-{
-	double q=0, p=0, o=0;
-	int m = 1;
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
-			int index = (y * width + x) * 3;
-			org_img[index++] = q;
-			org_img[index++] = p;
-			org_img[index] = o;
-		}
-	}
-}
-
 void setPixels()
 {
+	
+	//initilaize array with input image
 	stbi_set_flip_vertically_on_load(true);
 	inp_img = stbi_load("forest.jpg", &width, &height, &channels1, STBI_rgb);
 	for (int y = 0; y < height; y++) {
@@ -53,6 +41,7 @@ void setPixels()
 		}
 	}
 
+	//initilaize kernel with convolutional filter values along x-direction
 	int filter_x_ind = 0;
 	for (int y = 0; y < 3; y++) {
 		for (int x = 0; x < 3; x++) {
@@ -64,6 +53,7 @@ void setPixels()
 		}
 	}
 
+	//initilaize kernel with convolutional filter values along y-direction
 	int filter_y_ind = 0;
 	for (int y = 0; y < 3; y++) {
 		for (int x = 0; x < 3; x++) {
@@ -75,6 +65,7 @@ void setPixels()
 		}
 	}
 
+	// applying kernel to input image along x-direction
 	double q, p, o;
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -101,6 +92,7 @@ void setPixels()
 		}
 	}
 	
+	// applying kernel to input image along y-direction
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			q = 0, p = 0, o = 0;
@@ -123,6 +115,8 @@ void setPixels()
 					o += org_img[org_ind] * emboss_y[emb_y_ind];
 				}
 			}
+			
+			// storing result of convolution in output array
 			int out_ind = (y * width + x) * 3;
 			output_img[out_ind++] = (q+765)/6;
 			output_img[out_ind++] = (p + 765) / 6;
