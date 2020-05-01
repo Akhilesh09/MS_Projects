@@ -414,6 +414,7 @@ Vector castRay(Vector &Pe, Vector &npe, Vector &default_col,const int &depth=0)
 	dark.y=0;
 	dark.z=0;
 
+	//randomness for transmitted ray direction
 	Vector r;
 	r.x=0;
 	r.y=0.2;
@@ -616,7 +617,6 @@ void setPixels()
 	stbi_flip_vertically_on_write(true);
 	std::string filename="sphere-translucent.jpg";
 	stbi_write_jpg(filename.c_str(),200,200,3,result,100);
-	// }
 
 }
 

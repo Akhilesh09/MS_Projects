@@ -687,7 +687,6 @@ void setPixels()
 	stbi_flip_vertically_on_write(true);
 	std::string filename="sphere-motionblur.jpg";
 	stbi_write_jpg(filename.c_str(),200,200,3,result,100);
-	// }
 
 }
 

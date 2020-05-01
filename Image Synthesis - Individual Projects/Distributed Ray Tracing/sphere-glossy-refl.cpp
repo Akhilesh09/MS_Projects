@@ -425,12 +425,13 @@ Vector reflect(const Vector &I, const Vector &N)
 
 Vector castRay(Vector &Pe, Vector &npe, Vector &default_col,const int &depth=0)
 {
-
+	//randomness for reflected ray direction
 	Vector r;
 	r.x=0;
 	r.y=0.2;
 	r.z=0;
 	r=r*(1/magnitude(r.x,r.y,r.z));
+	
 	Vector L;
 	L.x=(60);
 	L.y=(-100);
@@ -643,7 +644,6 @@ void setPixels()
 	stbi_flip_vertically_on_write(true);
 	std::string filename="sphere-glossy-refl.jpg";
 	stbi_write_jpg(filename.c_str(),200,200,3,result,100);
-	// }
 
 }
 

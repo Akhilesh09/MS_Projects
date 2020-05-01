@@ -667,7 +667,6 @@ void setPixels()
 							Vector P_Cam;
 							Vector P_eye_sample=Pe_ll + n0*eye_sx*((m+0.4)/M) + n1*eye_sy*((n+0.7)/N);
 							P_Cam= Pe+(n2*d);
-							// P_Cam= Pe+(n2*d);
 
 							//bottom-left corner of camera
 							Vector P00;
@@ -676,7 +675,7 @@ void setPixels()
 							//point on camera plane
 							Pp=P00+(n0*(sx*x/width))+(n1*(sy*y/height));
 
-							//primary ray direction
+							//ray direction from sampling eye
 							npe=Pp-P_eye_sample;
 							npe=npe*(1/magnitude(npe.x,npe.y,npe.z));
 
@@ -700,7 +699,6 @@ void setPixels()
 	stbi_flip_vertically_on_write(true);
 	std::string filename="sphere-oof.jpg";
 	stbi_write_jpg(filename.c_str(),200,200,3,result,100);
-	// }
 
 }
 
