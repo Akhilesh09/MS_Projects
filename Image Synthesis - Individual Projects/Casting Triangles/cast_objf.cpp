@@ -1,21 +1,3 @@
-// =============================================================================
-// VIZA654/CSCE646 at Texas A&M UniversiT_y
-// Homework 0
-// Created by Anton Agana based from Ariel Chisholm's template
-// 05.23.2011
-//
-// This file is supplied with an associated makefile. Put both files in the same
-// directory, navigate to that directory from the Linux shell, and T_yPr 'make'.
-// This will create a program called 'pr01' that you can run by entering
-// 'homework0' as a command in the shell.
-//
-// If you are new to programming in Linux, there is an
-// excellent introduction to makefile structure and the gcc compiler here:
-//
-// http://www.cs.T_xstate.edu/labs/tutorials/tut_docs/Linux_Prog_Environment.pdf
-//
-// =============================================================================
-
 #include <cstdlib>
 #include <iostream>
 #include <GL/glut.h>
@@ -122,52 +104,54 @@ float crop(float min, float max, float x) {
 }
 
 
-
+//setup
 void setPixels()
 {
+	//camera setup
+	//camera up vector
+	Vector Vup;
+	Vup.x=1;
+	Vup.y=0;
+	Vup.z=0;
+	
+	//camera view direction
+	Vector V_view;
+	V_view.x=0;
+	V_view.y=-1;
+	V_view.z=1;
 
-Vector Pc;
-Pc.x=-100;
-Pc.y=100;
-Pc.z=-10;
+	//camera local normals
+	Vector V0= cross_product(V_view,Vup);
+	Vector n0;
+	n0=V0*(1/magnitude(V0.x,V0.y,V0.z));
+	Vector n2;
+	n2=V_view*(1/magnitude(V_view.x,V_view.y,V_view.z));
 
-Vector Vup;
-Vup.x=1;
-Vup.y=0;
-Vup.z=0;
+	Vector n1= cross_product(n0,n2);
+	
+	//eyepoint
+	Vector Pe;
+	Pe.x=-2;
+	Pe.y=5;
+	Pe.z=-5;
 
-Vector V_view;
-V_view.x=0;
-V_view.y=-1;
-V_view.z=1;
+	//camera dimensions and distance from eyepoint
+	float d=100,sx=200;
+	float sy=sx*height/width;
 
-Vector V0= cross_product(V_view,Vup);
-Vector n0;
-n0=V0*(1/magnitude(V0.x,V0.y,V0.z));
-Vector n2;
-n2=V_view*(1/magnitude(V_view.x,V_view.y,V_view.z));
+	//center of camera
+	Vector P_Cam;
+	P_Cam=Pe+(n2*d);
 
-Vector n1= cross_product(n0,n2);
-
-Vector Pe;
-Pe.x=-2;
-Pe.y=5;
-Pe.z=-5;
-
-float d=100,sx=200;
-float sy=sx*height/width;
-
-Vector P_Cam;
-P_Cam=Pe+(n2*d);
-
-Vector P00;
-P00=P_Cam-(n0*(sx/2))- (n1*(sy/2));
+	//bottom-left corner of camera
+	Vector P00;
+	P00=P_Cam-(n0*(sx/2))- (n1*(sy/2));
 
 
 	objl::Loader Loader;
 
 	// Load .obj File
-	bool loadout = Loader.LoadFile("656_prism3.obj");
+	bool loadout = Loader.LoadFile("656_objf.obj");
 
 	// Check to see if it loaded
 
@@ -181,6 +165,7 @@ P00=P_Cam-(n0*(sx/2))- (n1*(sy/2));
 			objl::Mesh curMesh = Loader.LoadedMeshes[i];
 			for (int j = 0; j < curMesh.Vertices.size()-3; j+=3)
 			{
+				//triangle vertices
 				Vector T_P0,T_P1,T_P2;
 
 				T_P0.x=curMesh.Vertices[j].Position.X;
@@ -195,89 +180,94 @@ P00=P_Cam-(n0*(sx/2))- (n1*(sy/2));
 				T_P2.y=curMesh.Vertices[j+2].Position.Y;
 				T_P2.z=curMesh.Vertices[j+2].Position.Z;
 
-
+				//edge normals
 				Vector T_V0,T_V1,T_V2;
 
 				T_V0=T_P0-T_P2;
 				T_V1=T_P1-T_P0;
 				T_V2=T_P2-T_P1;
 
+				//area and face normal
 				Vector A,T_n;
 				A=cross_product(T_V0,T_V1);
 				A=A*0.5;
 				T_n=A*(1/magnitude(A.x,A.y,A.z));
 
 
-				for (int y = 0; y < height; y++) {
-					for (int x = 0; x < width; x++) {
+				for (int y = 0; y < height; y++) 
+				{
+					for (int x = 0; x < width; x++) 
+					{
 						int i = (y * width + x) * 3;
 							
-				Vector Pp,npe,P_hit;
+						Vector Pp,npe,P_hit;
+						
+						//point on camera plane
+						Pp=P00+(n0*(sx*x/width))+(n1*(sy*y/height));
+						
+						//primary ray direction
+						npe=Pp-Pe;
+						npe=npe*(1/magnitude(npe.x,npe.y,npe.z));
 
-				Pp=P00+(n0*(sx*x/width))+(n1*(sy*y/height));
-
-				npe=Pp-Pe;
-				npe=npe*(1/magnitude(npe.x,npe.y,npe.z));
-
-				Vector T_A0,T_A1,T_A2;
-				Vector T_n0,T_n1,T_n2;
-
-
-
-
-				float num=(T_n*(T_P1-Pe));
-
-				float den=(T_n*npe);
-
-				if(num<0 && den<0)
-				{
-				float t_hit=num/den;
-
-				P_hit=Pe+(npe*t_hit);
-
-				T_A0=cross_product(P_hit-T_P2,T_P1-P_hit);
-				T_A0=T_A0*0.5;
-				T_A1=cross_product(P_hit-T_P0,T_P2-P_hit);
-				T_A1=T_A1*0.5;
-				T_A2=cross_product(P_hit-T_P1,T_P0-P_hit);
-				T_A2=T_A2*0.5;
-
-				T_n0=T_A0*(1/magnitude(T_A0.x,T_A0.y,T_A0.z));
-
-				T_n1=T_A1*(1/magnitude(T_A1.x,T_A1.y,T_A1.z));
-
-				T_n2=T_A2*(1/magnitude(T_A2.x,T_A2.y,T_A2.z));
+						Vector T_A0,T_A1,T_A2;
+						Vector T_n0,T_n1,T_n2;
 
 
-				float s,t,u;
-				s=(T_n*T_A1)/magnitude(A.x,A.y,A.z);
-				t=(T_n*T_A2)/magnitude(A.x,A.y,A.z);
-				u=(T_n*T_A0)/magnitude(A.x,A.y,A.z);
 
-				if(s>0 && s<1 && t>0 && t<1 && u>0 && u<1)
-				{
+						//check if hitpoint lies on triangle
+						float num=(T_n*(T_P1-Pe));
 
-				Vector L;
-				L.x=(20);
-				L.y=(0);
-				L.z=(-1);
-				L=L*(1/magnitude(L.x,L.y,L.z));
-				double T = 0.5*(L.x*T_n.x+ L.y*T_n.y+L.z*T_n.z) + 0.5;
+						float den=(T_n*npe);
 
-				double S = 2 * (T_n.z * (T_n.x + T_n.y));
-				double B = 1 - (Pe*T_n);
+						if(num<0 && den<0)
+						{
+							float t_hit=num/den;
 
-				T = crop(0, 1, T);
-				S = crop(0, 1, S);
-				B = crop(0, 1, B);
+							P_hit=Pe+(npe*t_hit);
+
+							T_A0=cross_product(P_hit-T_P2,T_P1-P_hit);
+							T_A0=T_A0*0.5;
+							T_A1=cross_product(P_hit-T_P0,T_P2-P_hit);
+							T_A1=T_A1*0.5;
+							T_A2=cross_product(P_hit-T_P1,T_P0-P_hit);
+							T_A2=T_A2*0.5;
+
+							T_n0=T_A0*(1/magnitude(T_A0.x,T_A0.y,T_A0.z));
+
+							T_n1=T_A1*(1/magnitude(T_A1.x,T_A1.y,T_A1.z));
+
+							T_n2=T_A2*(1/magnitude(T_A2.x,T_A2.y,T_A2.z));
+
+							//barycentric coordinates
+							float s,t,u;
+							s=(T_n*T_A1)/magnitude(A.x,A.y,A.z);
+							t=(T_n*T_A2)/magnitude(A.x,A.y,A.z);
+							u=(T_n*T_A0)/magnitude(A.x,A.y,A.z);
+
+							if(s>0 && s<1 && t>0 && t<1 && u>0 && u<1)
+							{
+
+								Vector L;
+								L.x=(20);
+								L.y=(0);
+								L.z=(-1);
+								L=L*(1/magnitude(L.x,L.y,L.z));
+								double T = 0.5*(L.x*T_n.x+ L.y*T_n.y+L.z*T_n.z) + 0.5;
+
+								double S = 2 * (T_n.z * (T_n.x + T_n.y));
+								double B = 1 - (Pe*T_n);
+
+								T = crop(0, 1, T);
+								S = crop(0, 1, S);
+								B = crop(0, 1, B);
 
 
-				plane_arr_f[i] = 255*(1-T)+255*(T);
-				plane_arr_f[i+1] = 0*(1-T)+0*(T);
-				plane_arr_f[i+2] = 0*(1-T)+255*(T);
-				}
-				}
-				}
+								plane_arr_f[i] = 255*(1-T)+0*(T);
+								plane_arr_f[i+1] = 0*(1-T)+0*(T);
+								plane_arr_f[i+2] = 0*(1-T)+255*(T);
+							}
+						}
+					}
 				}
 			}
 		}

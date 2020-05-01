@@ -1,21 +1,3 @@
-// =============================================================================
-// VIZA654/CSCE646 at Texas A&M UniversiT_y
-// Homework 0
-// Created by Anton Agana based from Ariel Chisholm's template
-// 05.23.2011
-//
-// This file is supplied with an associated makefile. Put both files in the same
-// directory, navigate to that directory from the Linux shell, and T_yPr 'make'.
-// This will create a program called 'pr01' that you can run by entering
-// 'homework0' as a command in the shell.
-//
-// If you are new to programming in Linux, there is an
-// excellent introduction to makefile structure and the gcc compiler here:
-//
-// http://www.cs.T_xstate.edu/labs/tutorials/tut_docs/Linux_Prog_Environment.pdf
-//
-// =============================================================================
-
 #include <cstdlib>
 #include <iostream>
 #include <GL/glut.h>
@@ -120,536 +102,433 @@ float crop(float min, float max, float x) {
 	return -2 * pow(x, 3) + 3 * pow(x, 2);
 }
 
-float sphere_eq(float a,float b,float c)
-{
-
-Vector P;
-P.x=a;
-P.y=b;
-P.z=c;
-
-Vector Pc;
-Pc.x=-100;
-Pc.y=100;
-Pc.z=-10;
-
-return (P-Pc)*(P-Pc) - pow(r,2);
-}
-
-
+//setup
 void setPixels()
 {
 
-Vector Pc;
-Pc.x=-100;
-Pc.y=100;
-Pc.z=-10;
+	//camera setup
+	//camera up vector
+	Vector Vup;
+	Vup.x=1;
+	Vup.y=1;
+	Vup.z=1;
+	
+	//camera view direction
+	Vector V_view;
+	V_view.x=0;
+	V_view.y=-1;
+	V_view.z=0;
+
+	//camera local normals
+	Vector V0= cross_product(V_view,Vup);
+	Vector n0;
+	n0=V0*(1/magnitude(V0.x,V0.y,V0.z));
+	Vector n2;
+	n2=V_view*(1/magnitude(V_view.x,V_view.y,V_view.z));
+
+	Vector n1= cross_product(n0,n2);
+
+	//eyepoint
+	Vector Pe;
+	Pe.x=0;
+	Pe.y=55.574;
+	Pe.z=2.943;
+
+	//camera dimensions and distance from eyepoint
+	float d=100,sx=200;
+	float sy=sx*height/width;
+
+	//center of camera
+	Vector P_Cam;
+	P_Cam=Pe+(n2*d);
+
+	//bottom-left corner of camera
+	Vector P00;
+	P00=P_Cam-(n0*(sx/2))- (n1*(sy/2));
+
+	//triangle vertices
+	Vector T_P0,T_P1,T_P2;
+
+	T_P0.x=57.735;
+	T_P0.y=-40.825;
+	T_P0.z=2.943;
+
+	T_P1.x=-28.868;
+	T_P1.y=-40.825;
+	T_P1.z=-47.057;
+
+	T_P2.x=0;
+	T_P2.y=40.825;
+	T_P2.z=2.943;
+
+	//edge normals
+	Vector T_V0,T_V1,T_V2;
+	T_V0=T_P0-T_P2;
+	T_V1=T_P1-T_P0;
+	T_V2=T_P2-T_P1;
+
+	//area and face normal
+	Vector A,T_n;
+	A=cross_product(T_V0,T_V1);
+	A=A*0.5;
+	T_n=A*(1/magnitude(A.x,A.y,A.z));
+
+
+	for (int y = 0; y < height; y++) 
+	{
+		for (int x = 0; x < width; x++) 
+		{
+			int i = (y * width + x) * 3;
+				
+			Vector Pp,npe,P_hit;
+	
+			//point on camera plane
+			Pp=P00+(n0*(sx*x/width))+(n1*(sy*y/height));
+
+			//primary ray direction
+			npe=Pp-Pe;
+			npe=npe*(1/magnitude(npe.x,npe.y,npe.z));
+
+			Vector T_A0,T_A1,T_A2;
+			Vector T_n0,T_n1,T_n2;
+
+
+			//check if hitpoint lies on triangle
+			float num=(T_n*(T_P1-Pe));
+
+			float den=(T_n*npe);
+
+			if(num<0 && den<0)
+			{
+				float t_hit=num/den;
+
+				P_hit=Pe+(npe*t_hit);
+
+				T_A0=cross_product(P_hit-T_P2,T_P1-P_hit);
+				T_A0=T_A0*0.5;
+				T_A1=cross_product(P_hit-T_P0,T_P2-P_hit);
+				T_A1=T_A1*0.5;
+				T_A2=cross_product(P_hit-T_P1,T_P0-P_hit);
+				T_A2=T_A2*0.5;
 
-Vector Vup;
-Vup.x=1;
-Vup.y=1;
-Vup.z=1;
+				T_n0=T_A0*(1/magnitude(T_A0.x,T_A0.y,T_A0.z));
 
-Vector V_view;
-V_view.x=0;
-V_view.y=-1;
-V_view.z=0;
+				T_n1=T_A1*(1/magnitude(T_A1.x,T_A1.y,T_A1.z));
 
-Vector V0= cross_product(V_view,Vup);
-Vector n0;
-n0=V0*(1/magnitude(V0.x,V0.y,V0.z));
-Vector n2;
-n2=V_view*(1/magnitude(V_view.x,V_view.y,V_view.z));
+				T_n2=T_A2*(1/magnitude(T_A2.x,T_A2.y,T_A2.z));
 
-Vector n1= cross_product(n0,n2);
+				//barycentric coordinates
+				float s,t,u;
+				s=(T_n*T_A1)/magnitude(A.x,A.y,A.z);
+				t=(T_n*T_A2)/magnitude(A.x,A.y,A.z);
+				u=(T_n*T_A0)/magnitude(A.x,A.y,A.z);
 
-Vector Pe;
-Pe.x=0;
-Pe.y=55.574;
-Pe.z=2.943;
+				if(s>0 && s<1 && t>0 && t<1 && u>0 && u<1)
+				{
 
-float d=100,sx=200;
-float sy=sx*height/width;
+					Vector L;
+					L.x=(20);
+					L.y=(0);
+					L.z=(-1);
+					L=L*(1/magnitude(L.x,L.y,L.z));
+					double T = 0.5*(L.x*T_n.x+ L.y*T_n.y+L.z*T_n.z) + 0.5;
+					T = crop(0, 1, T);
 
-Vector P_Cam;
-P_Cam=Pe+(n2*d);
 
-Vector P00;
-P00=P_Cam-(n0*(sx/2))- (n1*(sy/2));
+					plane_arr_f[i] = 255*(1-T)+255*(T);
+					plane_arr_f[i+1] = 255*(1-T)+0*(T);
+					plane_arr_f[i+2] = 255*(1-T)+0*(T);
+				}
+			}
+		}
+	}
 
 
-Vector T_P0,T_P1,T_P2;
-// T_P2.x=0;
-// T_P2.y=40.8;
-// T_P2.z=0;
 
-// T_P0.x=-28.9;
-// T_P0.y=-40.8;
-// T_P0.z=-50;
 
-// T_P1.x=-28.9;
-// T_P1.y=-40.8;
-// T_P1.z=50;
+	T_P0.x=57.735;
+	T_P0.y=-40.825;
+	T_P0.z=2.943;
 
+	T_P1.x=0;
+	T_P1.y=40.825;
+	T_P1.z=2.943;
 
+	T_P2.x=-28.868;
+	T_P2.y=-40.825;
+	T_P2.z=52.943;
 
-T_P0.x=57.735;
-T_P0.y=-40.825;
-T_P0.z=2.943;
+	//edge normals
+	Vector T_V0,T_V1,T_V2;
+	T_V0=T_P0-T_P2;
+	T_V1=T_P1-T_P0;
+	T_V2=T_P2-T_P1;
 
-T_P1.x=-28.868;
-T_P1.y=-40.825;
-T_P1.z=-47.057;
+	//area and face normal
+	Vector A,T_n;
+	A=cross_product(T_V0,T_V1);
+	A=A*0.5;
+	T_n=A*(1/magnitude(A.x,A.y,A.z));
 
-T_P2.x=0;
-T_P2.y=40.825;
-T_P2.z=2.943;
 
+	for (int y = 0; y < height; y++) 
+	{
+		for (int x = 0; x < width; x++) 
+		{
+			int i = (y * width + x) * 3;
+				
+			Vector Pp,npe,P_hit;
+	
+			//point on camera plane
+			Pp=P00+(n0*(sx*x/width))+(n1*(sy*y/height));
 
-Vector T_V0,T_V1,T_V2;
-T_V0=T_P0-T_P2;
-T_V1=T_P1-T_P0;
-T_V2=T_P2-T_P1;
+			//primary ray direction
+			npe=Pp-Pe;
+			npe=npe*(1/magnitude(npe.x,npe.y,npe.z));
 
-Vector A,T_n;
-A=cross_product(T_V0,T_V1);
-A=A*0.5;
-T_n=A*(1/magnitude(A.x,A.y,A.z));
-cout<<T_n<<endl;
+			Vector T_A0,T_A1,T_A2;
+			Vector T_n0,T_n1,T_n2;
 
 
-for (int y = 0; y < height; y++) {
-	for (int x = 0; x < width; x++) {
-		int i = (y * width + x) * 3;
-			
-Vector Pp,npe,P_hit;
+			//check if hitpoint lies on triangle
+			float num=(T_n*(T_P1-Pe));
 
-Pp=P00+(n0*(sx*x/width))+(n1*(sy*y/height));
+			float den=(T_n*npe);
 
-npe=Pp-Pe;
-npe=npe*(1/magnitude(npe.x,npe.y,npe.z));
+			if(num<0 && den<0)
+			{
+				float t_hit=num/den;
 
-Vector T_A0,T_A1,T_A2;
-Vector T_n0,T_n1,T_n2;
+				P_hit=Pe+(npe*t_hit);
 
+				T_A0=cross_product(P_hit-T_P2,T_P1-P_hit);
+				T_A0=T_A0*0.5;
+				T_A1=cross_product(P_hit-T_P0,T_P2-P_hit);
+				T_A1=T_A1*0.5;
+				T_A2=cross_product(P_hit-T_P1,T_P0-P_hit);
+				T_A2=T_A2*0.5;
 
+				T_n0=T_A0*(1/magnitude(T_A0.x,T_A0.y,T_A0.z));
 
+				T_n1=T_A1*(1/magnitude(T_A1.x,T_A1.y,T_A1.z));
 
-float num=(T_n*(T_P1-Pe));
+				T_n2=T_A2*(1/magnitude(T_A2.x,T_A2.y,T_A2.z));
 
-float den=(T_n*npe);
+				//barycentric coordinates
+				float s,t,u;
+				s=(T_n*T_A1)/magnitude(A.x,A.y,A.z);
+				t=(T_n*T_A2)/magnitude(A.x,A.y,A.z);
+				u=(T_n*T_A0)/magnitude(A.x,A.y,A.z);
 
-if(num<0 && den<0)
-{
-float t_hit=num/den;
+				if(s>0 && s<1 && t>0 && t<1 && u>0 && u<1)
+				{
 
-P_hit=Pe+(npe*t_hit);
-// cout<<P_hit<<endl;
+					Vector L;
+					L.x=(20);
+					L.y=(0);
+					L.z=(-1);
+					L=L*(1/magnitude(L.x,L.y,L.z));
+					double T = 0.5*(L.x*T_n.x+ L.y*T_n.y+L.z*T_n.z) + 0.5;
+					T = crop(0, 1, T);
 
-T_A0=cross_product(P_hit-T_P2,T_P1-P_hit);
-T_A0=T_A0*0.5;
-T_A1=cross_product(P_hit-T_P0,T_P2-P_hit);
-T_A1=T_A1*0.5;
-T_A2=cross_product(P_hit-T_P1,T_P0-P_hit);
-T_A2=T_A2*0.5;
 
-T_n0=T_A0*(1/magnitude(T_A0.x,T_A0.y,T_A0.z));
+					plane_arr_f[i] = 255*(1-T)+255*(T);
+					plane_arr_f[i+1] = 255*(1-T)+0*(T);
+					plane_arr_f[i+2] = 255*(1-T)+0*(T);
+				}
+			}
+		}
+	}
 
-T_n1=T_A1*(1/magnitude(T_A1.x,T_A1.y,T_A1.z));
 
-T_n2=T_A2*(1/magnitude(T_A2.x,T_A2.y,T_A2.z));
+	T_P0.x=0;
+	T_P0.y=40.825;
+	T_P0.z=2.943;
 
+	T_P1.x=-28.868;
+	T_P1.y=-40.825;
+	T_P1.z=-47.057;
 
-float s,t,u;
-// s=magnitude(T_A1.x,T_A1.y,T_A1.z)/magnitude(A.x,A.y,A.z);
-// t=magnitude(T_A2.x,T_A2.y,T_A2.z)/magnitude(A.x,A.y,A.z);
-// u=magnitude(T_A0.x,T_A0.y,T_A0.z)/magnitude(A.x,A.y,A.z);
-s=(T_n*T_A1)/magnitude(A.x,A.y,A.z);
-t=(T_n*T_A2)/magnitude(A.x,A.y,A.z);
-u=(T_n*T_A0)/magnitude(A.x,A.y,A.z);
+	T_P2.x=-28.868;
+	T_P2.y=-40.825;
+	T_P2.z=52.943;
 
-// cout<<"s:"<<s<<endl;
-// cout<<"t:"<<t<<endl;
-// cout<<"1-s-t:"<<u<<endl;
+	//edge normals
+	Vector T_V0,T_V1,T_V2;
+	T_V0=T_P0-T_P2;
+	T_V1=T_P1-T_P0;
+	T_V2=T_P2-T_P1;
 
-if(s>0 && s<1 && t>0 && t<1 && u>0 && u<1)
-{
+	//area and face normal
+	Vector A,T_n;
+	A=cross_product(T_V0,T_V1);
+	A=A*0.5;
+	T_n=A*(1/magnitude(A.x,A.y,A.z));
 
-//cout<<"hi"<<endl;
-Vector L;
-L.x=(20);
-L.y=(0);
-L.z=(-1);
-L=L*(1/magnitude(L.x,L.y,L.z));
-double T = 0.5*(L.x*T_n.x+ L.y*T_n.y+L.z*T_n.z) + 0.5;
 
-double S = 2 * (T_n.z * (T_n.x + T_n.y));
-double B = 1 - (Pe*T_n);
+	for (int y = 0; y < height; y++) 
+	{
+		for (int x = 0; x < width; x++) 
+		{
+			int i = (y * width + x) * 3;
+				
+			Vector Pp,npe,P_hit;
+	
+			//point on camera plane
+			Pp=P00+(n0*(sx*x/width))+(n1*(sy*y/height));
 
-T = crop(0, 1, T);
-S = crop(0, 1, S);
-B = crop(0, 1, B);
+			//primary ray direction
+			npe=Pp-Pe;
+			npe=npe*(1/magnitude(npe.x,npe.y,npe.z));
 
+			Vector T_A0,T_A1,T_A2;
+			Vector T_n0,T_n1,T_n2;
 
-plane_arr_f[i] = 255*(1-T)+255*(T);
-// plane_arr_f[i] = plane_arr_f[i]*(1-S)+255*(S);
-// plane_arr_f[i] = plane_arr_f[i]*(1-B)+255*(B);
-plane_arr_f[i+1] = 255*(1-T)+0*(T);
-// plane_arr_f[i+1] = plane_arr_f[i+1]*(1-S)+255*(S);
-// plane_arr_f[i+1] = plane_arr_f[i+1]*(1-B)+0*(B);
-plane_arr_f[i+2] = 255*(1-T)+0*(T);
-// plane_arr_f[i+2] = plane_arr_f[i+2]*(1-S)+255*(S);
-// plane_arr_f[i+2] = plane_arr_f[i+2]*(1-B)+0*(B);
-}
-}
-}
-}
 
+			//check if hitpoint lies on triangle
+			float num=(T_n*(T_P1-Pe));
 
+			float den=(T_n*npe);
 
+			if(num<0 && den<0)
+			{
+				float t_hit=num/den;
 
-T_P0.x=57.735;
-T_P0.y=-40.825;
-T_P0.z=2.943;
+				P_hit=Pe+(npe*t_hit);
 
-T_P1.x=0;
-T_P1.y=40.825;
-T_P1.z=2.943;
+				T_A0=cross_product(P_hit-T_P2,T_P1-P_hit);
+				T_A0=T_A0*0.5;
+				T_A1=cross_product(P_hit-T_P0,T_P2-P_hit);
+				T_A1=T_A1*0.5;
+				T_A2=cross_product(P_hit-T_P1,T_P0-P_hit);
+				T_A2=T_A2*0.5;
 
-T_P2.x=-28.868;
-T_P2.y=-40.825;
-T_P2.z=52.943;
+				T_n0=T_A0*(1/magnitude(T_A0.x,T_A0.y,T_A0.z));
 
-// Vector T_V0,T_V1,T_V2;
-T_V0=T_P0-T_P2;
-T_V1=T_P1-T_P0;
-T_V2=T_P2-T_P1;
+				T_n1=T_A1*(1/magnitude(T_A1.x,T_A1.y,T_A1.z));
 
-// Vector A,T_n;
-A=cross_product(T_V0,T_V1);
-A=A*0.5;
-T_n=A*(1/magnitude(A.x,A.y,A.z));
-cout<<T_n<<endl;
+				T_n2=T_A2*(1/magnitude(T_A2.x,T_A2.y,T_A2.z));
 
+				//barycentric coordinates
+				float s,t,u;
+				s=(T_n*T_A1)/magnitude(A.x,A.y,A.z);
+				t=(T_n*T_A2)/magnitude(A.x,A.y,A.z);
+				u=(T_n*T_A0)/magnitude(A.x,A.y,A.z);
 
-for (int y = 0; y < height; y++) {
-	for (int x = 0; x < width; x++) {
-		int i = (y * width + x) * 3;
-			
-Vector Pp,npe,P_hit;
+				if(s>0 && s<1 && t>0 && t<1 && u>0 && u<1)
+				{
 
-Pp=P00+(n0*(sx*x/width))+(n1*(sy*y/height));
+					Vector L;
+					L.x=(20);
+					L.y=(0);
+					L.z=(-1);
+					L=L*(1/magnitude(L.x,L.y,L.z));
+					double T = 0.5*(L.x*T_n.x+ L.y*T_n.y+L.z*T_n.z) + 0.5;
+					T = crop(0, 1, T);
 
-npe=Pp-Pe;
-npe=npe*(1/magnitude(npe.x,npe.y,npe.z));
 
-Vector T_A0,T_A1,T_A2;
-Vector T_n0,T_n1,T_n2;
+					plane_arr_f[i] = 255*(1-T)+255*(T);
+					plane_arr_f[i+1] = 255*(1-T)+0*(T);
+					plane_arr_f[i+2] = 255*(1-T)+0*(T);
+				}
+			}
+		}
+	}
 
+	T_P0.x=-28.868;
+	T_P0.y=-40.825;
+	T_P0.z=-47.057;
 
+	T_P1.x=57.735;
+	T_P1.y=-40.825;
+	T_P1.z=2.943;
 
+	T_P2.x=-28.868;
+	T_P2.y=-40.825;
+	T_P2.z=52.943;
 
-float num=(T_n*(T_P1-Pe));
 
-float den=(T_n*npe);
+	//edge normals
+	Vector T_V0,T_V1,T_V2;
+	T_V0=T_P0-T_P2;
+	T_V1=T_P1-T_P0;
+	T_V2=T_P2-T_P1;
 
-if(num<0 && den<0)
-{
-float t_hit=num/den;
+	//area and face normal
+	Vector A,T_n;
+	A=cross_product(T_V0,T_V1);
+	A=A*0.5;
+	T_n=A*(1/magnitude(A.x,A.y,A.z));
 
-P_hit=Pe+(npe*t_hit);
-// cout<<P_hit<<endl;
 
-T_A0=cross_product(P_hit-T_P2,T_P1-P_hit);
-T_A0=T_A0*0.5;
-T_A1=cross_product(P_hit-T_P0,T_P2-P_hit);
-T_A1=T_A1*0.5;
-T_A2=cross_product(P_hit-T_P1,T_P0-P_hit);
-T_A2=T_A2*0.5;
+	for (int y = 0; y < height; y++) 
+	{
+		for (int x = 0; x < width; x++) 
+		{
+			int i = (y * width + x) * 3;
+				
+			Vector Pp,npe,P_hit;
+	
+			//point on camera plane
+			Pp=P00+(n0*(sx*x/width))+(n1*(sy*y/height));
 
-T_n0=T_A0*(1/magnitude(T_A0.x,T_A0.y,T_A0.z));
+			//primary ray direction
+			npe=Pp-Pe;
+			npe=npe*(1/magnitude(npe.x,npe.y,npe.z));
 
-T_n1=T_A1*(1/magnitude(T_A1.x,T_A1.y,T_A1.z));
+			Vector T_A0,T_A1,T_A2;
+			Vector T_n0,T_n1,T_n2;
 
-T_n2=T_A2*(1/magnitude(T_A2.x,T_A2.y,T_A2.z));
 
+			//check if hitpoint lies on triangle
+			float num=(T_n*(T_P1-Pe));
 
-float s,t,u;
-// s=magnitude(T_A1.x,T_A1.y,T_A1.z)/magnitude(A.x,A.y,A.z);
-// t=magnitude(T_A2.x,T_A2.y,T_A2.z)/magnitude(A.x,A.y,A.z);
-// u=magnitude(T_A0.x,T_A0.y,T_A0.z)/magnitude(A.x,A.y,A.z);
-s=(T_n*T_A1)/magnitude(A.x,A.y,A.z);
-t=(T_n*T_A2)/magnitude(A.x,A.y,A.z);
-u=(T_n*T_A0)/magnitude(A.x,A.y,A.z);
+			float den=(T_n*npe);
 
-// cout<<"s:"<<s<<endl;
-// cout<<"t:"<<t<<endl;
-// cout<<"1-s-t:"<<u<<endl;
+			if(num<0 && den<0)
+			{
+				float t_hit=num/den;
 
-if(s>0 && s<1 && t>0 && t<1 && u>0 && u<1)
-{
+				P_hit=Pe+(npe*t_hit);
 
-//cout<<"hi"<<endl;
-Vector L;
-L.x=(20);
-L.y=(0);
-L.z=(-1);
-L=L*(1/magnitude(L.x,L.y,L.z));
-double T = 0.5*(L.x*T_n.x+ L.y*T_n.y+L.z*T_n.z) + 0.5;
+				T_A0=cross_product(P_hit-T_P2,T_P1-P_hit);
+				T_A0=T_A0*0.5;
+				T_A1=cross_product(P_hit-T_P0,T_P2-P_hit);
+				T_A1=T_A1*0.5;
+				T_A2=cross_product(P_hit-T_P1,T_P0-P_hit);
+				T_A2=T_A2*0.5;
 
-double S = 2 * (T_n.z * (T_n.x + T_n.y));
-double B = 1 - (Pe*T_n);
+				T_n0=T_A0*(1/magnitude(T_A0.x,T_A0.y,T_A0.z));
 
-T = crop(0, 1, T);
-S = crop(0, 1, S);
-B = crop(0, 1, B);
+				T_n1=T_A1*(1/magnitude(T_A1.x,T_A1.y,T_A1.z));
 
+				T_n2=T_A2*(1/magnitude(T_A2.x,T_A2.y,T_A2.z));
 
-plane_arr_f[i] = 255*(1-T)+0*(T);
-// plane_arr_f[i] = plane_arr_f[i]*(1-S)+255*(S);
-// plane_arr_f[i] = plane_arr_f[i]*(1-B)+255*(B);
-plane_arr_f[i+1] = 0*(1-T)+255*(T);
-// plane_arr_f[i+1] = plane_arr_f[i+1]*(1-S)+255*(S);
-// plane_arr_f[i+1] = plane_arr_f[i+1]*(1-B)+0*(B);
-plane_arr_f[i+2] = 0*(1-T)+0*(T);
-// plane_arr_f[i+2] = plane_arr_f[i+2]*(1-S)+255*(S);
-// plane_arr_f[i+2] = plane_arr_f[i+2]*(1-B)+0*(B);
-}
-}
-}
-}
+				//barycentric coordinates
+				float s,t,u;
+				s=(T_n*T_A1)/magnitude(A.x,A.y,A.z);
+				t=(T_n*T_A2)/magnitude(A.x,A.y,A.z);
+				u=(T_n*T_A0)/magnitude(A.x,A.y,A.z);
 
+				if(s>0 && s<1 && t>0 && t<1 && u>0 && u<1)
+				{
 
-T_P0.x=0;
-T_P0.y=40.825;
-T_P0.z=2.943;
+					Vector L;
+					L.x=(20);
+					L.y=(0);
+					L.z=(-1);
+					L=L*(1/magnitude(L.x,L.y,L.z));
+					double T = 0.5*(L.x*T_n.x+ L.y*T_n.y+L.z*T_n.z) + 0.5;
+					T = crop(0, 1, T);
 
-T_P1.x=-28.868;
-T_P1.y=-40.825;
-T_P1.z=-47.057;
 
-T_P2.x=-28.868;
-T_P2.y=-40.825;
-T_P2.z=52.943;
-
-// Vector T_V0,T_V1,T_V2;
-T_V0=T_P0-T_P2;
-T_V1=T_P1-T_P0;
-T_V2=T_P2-T_P1;
-
-// Vector A,T_n;
-A=cross_product(T_V0,T_V1);
-A=A*0.5;
-T_n=A*(1/magnitude(A.x,A.y,A.z));
-cout<<T_n<<endl;
-
-
-for (int y = 0; y < height; y++) {
-	for (int x = 0; x < width; x++) {
-		int i = (y * width + x) * 3;
-			
-Vector Pp,npe,P_hit;
-
-Pp=P00+(n0*(sx*x/width))+(n1*(sy*y/height));
-
-npe=Pp-Pe;
-npe=npe*(1/magnitude(npe.x,npe.y,npe.z));
-
-Vector T_A0,T_A1,T_A2;
-Vector T_n0,T_n1,T_n2;
-
-
-
-
-float num=(T_n*(T_P1-Pe));
-
-float den=(T_n*npe);
-
-if(num<0 && den<0)
-{
-float t_hit=num/den;
-
-P_hit=Pe+(npe*t_hit);
-// cout<<P_hit<<endl;
-
-T_A0=cross_product(P_hit-T_P2,T_P1-P_hit);
-T_A0=T_A0*0.5;
-T_A1=cross_product(P_hit-T_P0,T_P2-P_hit);
-T_A1=T_A1*0.5;
-T_A2=cross_product(P_hit-T_P1,T_P0-P_hit);
-T_A2=T_A2*0.5;
-
-T_n0=T_A0*(1/magnitude(T_A0.x,T_A0.y,T_A0.z));
-
-T_n1=T_A1*(1/magnitude(T_A1.x,T_A1.y,T_A1.z));
-
-T_n2=T_A2*(1/magnitude(T_A2.x,T_A2.y,T_A2.z));
-
-
-float s,t,u;
-// s=magnitude(T_A1.x,T_A1.y,T_A1.z)/magnitude(A.x,A.y,A.z);
-// t=magnitude(T_A2.x,T_A2.y,T_A2.z)/magnitude(A.x,A.y,A.z);
-// u=magnitude(T_A0.x,T_A0.y,T_A0.z)/magnitude(A.x,A.y,A.z);
-s=(T_n*T_A1)/magnitude(A.x,A.y,A.z);
-t=(T_n*T_A2)/magnitude(A.x,A.y,A.z);
-u=(T_n*T_A0)/magnitude(A.x,A.y,A.z);
-
-// cout<<"s:"<<s<<endl;
-// cout<<"t:"<<t<<endl;
-// cout<<"1-s-t:"<<u<<endl;
-
-if(s>0 && s<1 && t>0 && t<1 && u>0 && u<1)
-{
-
-//cout<<"hi"<<endl;
-Vector L;
-L.x=(20);
-L.y=(0);
-L.z=(-1);
-L=L*(1/magnitude(L.x,L.y,L.z));
-double T = 0.5*(L.x*T_n.x+ L.y*T_n.y+L.z*T_n.z) + 0.5;
-
-double S = 2 * (T_n.z * (T_n.x + T_n.y));
-double B = 1 - (Pe*T_n);
-
-T = crop(0, 1, T);
-S = crop(0, 1, S);
-B = crop(0, 1, B);
-
-
-plane_arr_f[i] = 0*(1-T)+0*(T);
-// plane_arr_f[i] = plane_arr_f[i]*(1-S)+255*(S);
-// plane_arr_f[i] = plane_arr_f[i]*(1-B)+255*(B);
-plane_arr_f[i+1] = 0*(1-T)+255*(T);
-// plane_arr_f[i+1] = plane_arr_f[i+1]*(1-S)+255*(S);
-// plane_arr_f[i+1] = plane_arr_f[i+1]*(1-B)+0*(B);
-plane_arr_f[i+2] = 255*(1-T)+0*(T);
-// plane_arr_f[i+2] = plane_arr_f[i+2]*(1-S)+255*(S);
-// plane_arr_f[i+2] = plane_arr_f[i+2]*(1-B)+0*(B);
-}
-}
-}
-}
-
-T_P0.x=-28.868;
-T_P0.y=-40.825;
-T_P0.z=-47.057;
-
-T_P1.x=57.735;
-T_P1.y=-40.825;
-T_P1.z=2.943;
-
-T_P2.x=-28.868;
-T_P2.y=-40.825;
-T_P2.z=52.943;
-
-
-// T_P1.x=57.735;
-// T_P1.y=-40.825;
-// T_P1.z=2.943;
-
-// T_P2.x=-28.868;
-// T_P2.y=-40.825;
-// T_P2.z=52.943;
-
-// Vector T_V0,T_V1,T_V2;
-T_V0=T_P0-T_P2;
-T_V1=T_P1-T_P0;
-T_V2=T_P2-T_P1;
-
-// Vector A,T_n;
-A=cross_product(T_V0,T_V1);
-A=A*0.5;
-T_n=A*(1/magnitude(A.x,A.y,A.z));
-cout<<T_n<<endl;
-
-
-for (int y = 0; y < height; y++) {
-	for (int x = 0; x < width; x++) {
-		int i = (y * width + x) * 3;
-			
-Vector Pp,npe,P_hit;
-
-Pp=P00+(n0*(sx*x/width))+(n1*(sy*y/height));
-
-npe=Pp-Pe;
-npe=npe*(1/magnitude(npe.x,npe.y,npe.z));
-
-Vector T_A0,T_A1,T_A2;
-Vector T_n0,T_n1,T_n2;
-
-
-
-
-float num=(T_n*(T_P1-Pe));
-
-float den=(T_n*npe);
-
-if(num<0 && den<0)
-{
-float t_hit=num/den;
-
-P_hit=Pe+(npe*t_hit);
-// cout<<P_hit<<endl;
-
-T_A0=cross_product(P_hit-T_P2,T_P1-P_hit);
-T_A0=T_A0*0.5;
-T_A1=cross_product(P_hit-T_P0,T_P2-P_hit);
-T_A1=T_A1*0.5;
-T_A2=cross_product(P_hit-T_P1,T_P0-P_hit);
-T_A2=T_A2*0.5;
-
-T_n0=T_A0*(1/magnitude(T_A0.x,T_A0.y,T_A0.z));
-
-T_n1=T_A1*(1/magnitude(T_A1.x,T_A1.y,T_A1.z));
-
-T_n2=T_A2*(1/magnitude(T_A2.x,T_A2.y,T_A2.z));
-
-
-float s,t,u;
-// s=magnitude(T_A1.x,T_A1.y,T_A1.z)/magnitude(A.x,A.y,A.z);
-// t=magnitude(T_A2.x,T_A2.y,T_A2.z)/magnitude(A.x,A.y,A.z);
-// u=magnitude(T_A0.x,T_A0.y,T_A0.z)/magnitude(A.x,A.y,A.z);
-s=(T_n*T_A1)/magnitude(A.x,A.y,A.z);
-t=(T_n*T_A2)/magnitude(A.x,A.y,A.z);
-u=(T_n*T_A0)/magnitude(A.x,A.y,A.z);
-
-// cout<<"s:"<<s<<endl;
-// cout<<"t:"<<t<<endl;
-// cout<<"1-s-t:"<<u<<endl;
-
-if(s>0 && s<1 && t>0 && t<1 && u>0 && u<1)
-{
-
-//cout<<"hi"<<endl;
-Vector L;
-L.x=(20);
-L.y=(0);
-L.z=(-1);
-L=L*(1/magnitude(L.x,L.y,L.z));
-double T = 0.5*(L.x*T_n.x+ L.y*T_n.y+L.z*T_n.z) + 0.5;
-
-double S = 2 * (T_n.z * (T_n.x + T_n.y));
-double B = 1 - (Pe*T_n);
-
-T = crop(0, 1, T);
-S = crop(0, 1, S);
-B = crop(0, 1, B);
-
-
-plane_arr_f[i] = 255*(1-T)+0*(T);
-// plane_arr_f[i] = plane_arr_f[i]*(1-S)+255*(S);
-// plane_arr_f[i] = plane_arr_f[i]*(1-B)+255*(B);
-plane_arr_f[i+1] = 0*(1-T)+255*(T);
-// plane_arr_f[i+1] = plane_arr_f[i+1]*(1-S)+255*(S);
-// plane_arr_f[i+1] = plane_arr_f[i+1]*(1-B)+0*(B);
-plane_arr_f[i+2] = 0*(1-T)+0*(T);
-// plane_arr_f[i+2] = plane_arr_f[i+2]*(1-S)+255*(S);
-// plane_arr_f[i+2] = plane_arr_f[i+2]*(1-B)+0*(B);
-}
-}
-}
-}
+					plane_arr_f[i] = 255*(1-T)+255*(T);
+					plane_arr_f[i+1] = 255*(1-T)+0*(T);
+					plane_arr_f[i+2] = 255*(1-T)+0*(T);
+				}
+			}
+		}
+	}
 			
 }
 
