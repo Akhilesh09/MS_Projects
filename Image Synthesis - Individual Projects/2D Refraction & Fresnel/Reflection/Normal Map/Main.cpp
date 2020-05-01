@@ -150,20 +150,17 @@ void setPixels()
 			T = crop(0, 1, T);
 			S = crop(0, 1, S);
 
-				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
-				result[i] = (1 - (kr))*result[i] + kr * env_arr[ind++];// +255 * ks*S);
-				//result[i] = (1 - B)*result[i] + B * 0;
+			result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
+			result[i] = (1 - (kr))*result[i] + kr * env_arr[ind++];
 			i++;
 
-				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
-				result[i] = (1 - (kr))*result[i] + kr * env_arr[ind++];// +255 * ks*S);
-				//result[i] = (1 - B)*result[i] + B * 0;
-				i++;
+			result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
+			result[i] = (1 - (kr))*result[i] + kr * env_arr[ind++];
+			i++;
 
-				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
-				result[i] = (1 - (kr))*result[i] + kr * env_arr[ind++];// +255 * ks*S);
-				//result[i] = (1 - B)*result[i] + B * 0;
-				i++;
+			result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
+			result[i] = (1 - (kr))*result[i] + kr * env_arr[ind++];
+			i++;
 		}
 	}
 }

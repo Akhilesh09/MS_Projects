@@ -576,7 +576,8 @@ void setPixels()
 			int count;
 
 			float Tf=0,Sf=0,T,S;
-
+			
+			//sampling area light
 			for(float k=0;k<m;k++)
 			{
 				for (float l=0;l<n;l++)
@@ -590,10 +591,10 @@ void setPixels()
 			}
 			T=Tf/(m*n);
 
-					//output array
-					result[i] = final_col.x*(1-T)+dark.x*T;
-					result[i+1] = final_col.y*(1-T)+dark.y*T;
-					result[i+2] = final_col.z*(1-T)+dark.z*T;
+			//output array
+			result[i] = final_col.x*(1-T)+dark.x*T;
+			result[i+1] = final_col.y*(1-T)+dark.y*T;
+			result[i+2] = final_col.z*(1-T)+dark.z*T;
 
 			
 		}

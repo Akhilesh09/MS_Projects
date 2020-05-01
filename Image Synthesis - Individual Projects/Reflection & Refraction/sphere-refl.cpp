@@ -1,21 +1,3 @@
-// =============================================================================
-// VIZA654/CSCE646 at Texas A&M UniversiT_y
-// Homework 0
-// Created by Anton Agana based from Ariel Chisholm's template
-// 05.23.2011
-//
-// This file is supplied with an associated makefile. Put both files in the same
-// directory, navigate to that directory from the Linux shell, and T_yPr 'make'.
-// This will create a program called 'pr01' that you can run by entering
-// 'homework0' as a command in the shell.
-//
-// If you are new to programming in Linux, there is an
-// excellent introduction to makefile structure and the gcc compiler here:
-//
-// http://www.cs.T_xstate.edu/labs/tutorials/tut_docs/Linux_Prog_Environment.pdf
-//
-// =============================================================================
-
 #include <cstdlib>
 #include <iostream>
 #include <GL/glut.h>
@@ -25,12 +7,13 @@
 #include <cassert>
 #include <sstream>
 #include <string>
+
 #define STB_IMAGE_IMPLEMENTATION
 #include </home/user/Desktop/stb_image.h>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include </home/user/Desktop/stb_image_write.h>
 #include </home/user/Desktop/stb_include.h>
-#include <string>
+
 #include<cmath>
 #include<math.h>
 
@@ -40,7 +23,7 @@ using namespace std;
 // These variables will store the input ppm image's width, height, and color
 // =============================================================================
 
-unsigned char *plane_arr_f;
+unsigned char *result;
 
 int width = 200, height = 200, channels1, channels2, channels3;
 
@@ -121,6 +104,7 @@ float crop(float min, float max, float x) {
 	return -2 * pow(x, 3) + 3 * pow(x, 2);
 }
 
+//Class for Sphere
 class Sphere
 {
 public:
@@ -128,6 +112,8 @@ public:
 	float r;
 	Vector color;
 	bool reflective;
+	
+	//intialize required members
 	void set_values(float x,float y,float z, float radius, Vector &c,bool refl)
 	{
 		Pc.x=x;
@@ -140,25 +126,24 @@ public:
 		reflective=refl;
 
 	}
-	
+	//compute b for quadratic equation disc=b^2-4c
 	float find_b(Vector &Pe,Vector &npe)
 	{
 		return npe*(Pe-Pc);
 
 	}
 
-
+	//compute normal at hitpoint
 	Vector normal(Vector P)
 	{
 		Vector n=(P-Pc)*(1/r);
 		return n;
 
 	}
-
+	
+	//compute c for quadratic equation disc=b^2-4c
 	float sphere_eq(Vector &P)
 	{
-
-
 	return (P-Pc)*(P-Pc) - pow(r,2);
 	}
 
@@ -166,8 +151,12 @@ public:
 
 };
 
+
+
+//array of sphere objects
 Sphere sph[3];
 
+//check ray-sphere intersection
 int intersect(Vector &P, Vector &dir, Sphere &hit, float &t_hit)
 	{
 	
@@ -191,9 +180,7 @@ int intersect(Vector &P, Vector &dir, Sphere &hit, float &t_hit)
 	return t_hit!=-999;
 }
 
-
-
-
+//raycasting and color computation
 Vector castRay(Vector &Pe, Vector &npe, Vector &default_col,const int &depth=0)
 {
 
@@ -208,17 +195,17 @@ Vector castRay(Vector &Pe, Vector &npe, Vector &default_col,const int &depth=0)
 	dark.y=0;
 	dark.z=0;
 
-	
-	
-
 	Sphere sp;
 	Vector hit_col;
 	hit_col.x=0;
 	hit_col.y=0;
 	hit_col.z=0;
+	
 	float t_hit=-999;
 	if(depth>3)
 		return default_col;
+	
+	//if there is an intersection
 	if(intersect(Pe,npe,sp,t_hit))
 	{
 		Vector P_hit=Pe+(npe*t_hit);
@@ -233,7 +220,7 @@ Vector castRay(Vector &Pe, Vector &npe, Vector &default_col,const int &depth=0)
 		Sp.z=255;
 		if(sp.reflective)
 		{
-
+			//reflection
 			Vector n_r=(npe)- n_hit*(npe*n_hit)*2;
 			hit_col=hit_col*(1-T) + dark*T+ castRay(P_hit, n_r,default_col,depth+1)*0.8;
 			hit_col=hit_col*(1-S)+Sp*S;
@@ -248,85 +235,105 @@ Vector castRay(Vector &Pe, Vector &npe, Vector &default_col,const int &depth=0)
 	
 }
 
+
+//setup
 void setPixels()
 {
-Vector sph1_c,sph2_c,sph3_c;
-sph1_c.x=205;
-sph1_c.y=205;
-sph1_c.z=255;
+	//base colors
+	Vector sph1_c,sph2_c,sph3_c;
+	sph1_c.x=205;
+	sph1_c.y=205;
+	sph1_c.z=255;
 
-sph2_c.x=255;
-sph2_c.y=255;
-sph2_c.z=0;
+	sph2_c.x=255;
+	sph2_c.y=255;
+	sph2_c.z=0;
 
-sph3_c.x=255;
-sph3_c.y=0;
-sph3_c.z=0;
+	sph3_c.x=255;
+	sph3_c.y=0;
+	sph3_c.z=0;
 
-Vector default_col;
-default_col.x=200;
-default_col.y=200;
-default_col.z=255;
+	//default color for no intersection
+	Vector default_col;
+	default_col.x=200;
+	default_col.y=200;
+	default_col.z=255;
 
-sph[0].set_values(-150,40,60,30,sph1_c,true);
-sph[1].set_values(-110,80,60,20,sph2_c,false);
-sph[2].set_values(-100,40,80,20,sph3_c,false);
+	//Adding sphere objects
+	sph[0].set_values(-150,40,60,30,sph1_c,true);
+	sph[1].set_values(-110,80,60,20,sph2_c,false);
+	sph[2].set_values(-100,40,80,20,sph3_c,false);
 
-Vector Vup;
-Vup.x=0;
-Vup.y=1;
-Vup.z=0;
 
-Vector V_view;
-V_view.x=0;
-V_view.y=0;
-V_view.z=-1;
+	//camera setup
+	//camera up vector
+	Vector Vup;
+	Vup.x=0;
+	Vup.y=1;
+	Vup.z=0;
 
-Vector V0= cross_product(V_view,Vup);
-Vector n0;
-n0=V0*(1/magnitude(V0.x,V0.y,V0.z));
-Vector n2;
-n2=V_view*(1/magnitude(V_view.x,V_view.y,V_view.z));
+	//camera view direction
+	Vector V_view;
+	V_view.x=0;
+	V_view.y=0;
+	V_view.z=-1;
 
-Vector n1= cross_product(n0,n2);
+	//camera local normals
+	Vector V0= cross_product(V_view,Vup);
+	Vector n0;
+	n0=V0*(1/magnitude(V0.x,V0.y,V0.z));
+	Vector n2;
+	n2=V_view*(1/magnitude(V_view.x,V_view.y,V_view.z));
+	Vector n1= cross_product(n0,n2);
 
-Vector Pe;
-Pe.x=-100;
-Pe.y=40;
-Pe.z=220;
+	//eyepoint
+	Vector Pe;
+	Pe.x=-100;
+	Pe.y=40;
+	Pe.z=220;
 
-float d=140,sx=150;
-float sy=sx*height/width;
+	//camera dimesnsions and distance from eyepoint
+	float d=140,sx=150;
+	float sy=sx*height/width;
 
-Vector P_Cam;
-P_Cam=Pe+(n2*d);
+	//center of camera
+	Vector P_Cam;
+	P_Cam=Pe+(n2*d);
 
-Vector P00;
-P00=P_Cam-(n0*(sx/2))- (n1*(sy/2));
+	//bottom-left cornerof camera
+	Vector P00;
+	P00=P_Cam-(n0*(sx/2))- (n1*(sy/2));
 
-for (int y = 0; y < height; y++) {
-	for (int x = 0; x < width; x++) {
-		int i = (y * width + x) * 3;	
-Vector Pp,npe,P_hit,P_h;
+	//main raycasting loop
+	for (int y = 0; y < height; y++) 
+	{
+		for (int x = 0; x < width; x++) 
+		{
+			int i = (y * width + x) * 3;	
+			Vector Pp,npe,P_hit,P_h;
 
-Pp=P00+(n0*(sx*x/width))+(n1*(sy*y/height));
+			//point on camera plane
+			Pp=P00+(n0*(sx*x/width))+(n1*(sy*y/height));
 
-npe=Pp-Pe;
-npe=npe*(1/magnitude(npe.x,npe.y,npe.z));
+			npe=Pp-Pe;
+			npe=npe*(1/magnitude(npe.x,npe.y,npe.z));
 
-Vector final_col;
-int count;
-final_col=castRay(Pe,npe,default_col);
+			Vector final_col;
+			final_col=castRay(Pe,npe,default_col);
 
-plane_arr_f[i] = final_col.x;
-plane_arr_f[i+1] = final_col.y;
-plane_arr_f[i+2] = final_col.z;
+			//output array
+			result[i] = final_col.x;
+			result[i+1] = final_col.y;
+			result[i+2] = final_col.z;
 
-			
+				
 		}
 	}
-stbi_flip_vertically_on_write(true);
-stbi_write_jpg("sphere-refl.jpg",200,200,3,plane_arr_f,100);
+
+	//write result to jpg
+	stbi_flip_vertically_on_write(true);
+	stbi_write_jpg("sphere-refl.jpg",200,200,3,result,100); 
+
 }
 
 
@@ -351,7 +358,7 @@ static void windowDisplay(void)
 	glClear(GL_COLOR_BUFFER_BIT);
 	glRasterPos2i(0, 0);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glDrawPixels(width, height, GL_RGB, GL_UNSIGNED_BYTE,plane_arr_f);
+	glDrawPixels(width, height, GL_RGB, GL_UNSIGNED_BYTE,result);
 	glFlush();
 }
 static void processMouse(int button, int state, int x, int y)
@@ -373,7 +380,7 @@ int main(int argc, char *argv[])
 	//initialize the global variables
 	width = 200;
 	height = 200;
-	plane_arr_f = new unsigned char[200 * 200 * 3];
+	result = new unsigned char[200 * 200 * 3];
 
 	setPixels();
 

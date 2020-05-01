@@ -69,7 +69,7 @@ float crop(float min, float max, float x) {
 }
 void setPixels()
 {
-
+	//load dark image
 	stbi_set_flip_vertically_on_load(true);
 	dark_img = stbi_load("sphere_d.jpg", &width, &height, &channels1, STBI_rgb);
 	for (int y = 0; y < height; y++) {
@@ -80,7 +80,8 @@ void setPixels()
 			dark_arr[i] = dark_img[i++];
 		}
 	}
-
+	
+	//load light image
 	light_img = stbi_load("sphere_l.jpg", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -90,7 +91,8 @@ void setPixels()
 			light_arr[i] = light_img[i++];
 		}
 	}
-
+	
+	//load specular image
 	spec_img = stbi_load("sphere_s.jpg", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -101,6 +103,7 @@ void setPixels()
 		}
 	}
 
+	//load normal map
 	depth_img = stbi_load("NormalMap2.png", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -123,6 +126,7 @@ void setPixels()
 		}
 	}
 
+	//convert normal map to vector field
 	env_img = stbi_load("pic2.jpg", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -139,8 +143,10 @@ void setPixels()
 	float eta = eta2 / eta1;
 	float a = -1 / eta;
 
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
+	for (int y = 0; y < height; y++) 
+	{
+		for (int x = 0; x < width; x++) 
+		{
 			int i = (y * width + x) * 3;
 
 			float T = 0.5*(normal_mod[i] + normal_mod[i + 1]) + 0.5;
@@ -149,8 +155,6 @@ void setPixels()
 			float S_x, S_y, S_z;
 			float T_x, T_y, T_z;
 			float a = log2(eta);
-
-			//cout << eta << endl << a << endl;
 
 			S_x =  normal_mod[i + 2]*normal_mod[i];
 			S_y =  normal_mod[i + 2] * normal_mod[i + 1];
@@ -182,19 +186,16 @@ void setPixels()
 
 			T = crop(0, 1, T);
 
-				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
-				result[i] = result[i] * (1 -kt) + env_arr[ind++] * kt;
-				//result[i] = (1 - B)*result[i] + B * 0;
+			result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
+			result[i] = result[i] * (1 -kt) + env_arr[ind++] * kt;
 			i++;
 
-				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
-				result[i] = result[i] * (1 - kt) + env_arr[ind++] * kt;
-				//result[i] = (1 - B)*result[i] + B * 0;
+			result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
+			result[i] = result[i] * (1 - kt) + env_arr[ind++] * kt;
 			i++;
 
-				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
-				result[i] = result[i] * (1 - kt) + env_arr[ind++] * kt;
-				//result[i] = (1 - B)*result[i] + B * 0;
+			result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
+			result[i] = result[i] * (1 - kt) + env_arr[ind++] * kt;
 		}
 	}
 }
