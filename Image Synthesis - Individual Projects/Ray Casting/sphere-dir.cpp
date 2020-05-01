@@ -389,25 +389,8 @@ Vector castRay(Vector &Pe, Vector &npe, Vector &default_col,const int &depth=0)
 		Vector n=objects[index]->n;
 		
 		double T = 0.5*(L*n) + 0.5;
-		double Sp= 2 * (n.z * (n.x + n.y));
-		Sp=crop(0,1,Sp);
 		T=crop(0,1,T);
 
-		Vector S;
-		S.x=255;
-		S.y=255;
-		S.z=255;
-		int ind;
-		float t_h;
-
-		//shadow ray
-		L=L*-1;
-		if(trace(P_hit,L,ind,t_h) && ind!=index)
-		{
-			T=1;
-			Sp=0;
-
-		}
 		hit_col=(objects[index]->color*(1-T)+dark*(T)); 
 	}
 	else
