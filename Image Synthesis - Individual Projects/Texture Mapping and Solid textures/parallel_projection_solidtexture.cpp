@@ -1,21 +1,3 @@
-// =============================================================================
-// VIZA654/CSCE646 at Texas A&M UniversiT_y
-// Homework 0
-// Created by Anton Agana based from Ariel Chisholm's template
-// 05.23.2011
-//
-// This file is supplied with an associated makefile. Put both files in the same
-// directory, navigate to that directory from the Linux shell, and T_yPr 'make'.
-// This will create a program called 'pr01' that you can run by entering
-// 'homework0' as a command in the shell.
-//
-// If you are new to programming in Linux, there is an
-// excellent introduction to makefile structure and the gcc compiler here:
-//
-// http://www.cs.T_xstate.edu/labs/tutorials/tut_docs/Linux_Prog_Environment.pdf
-//
-// =============================================================================
-
 #include <cstdlib>
 #include <iostream>
 #include <GL/glut.h>
@@ -40,10 +22,16 @@ using namespace std;
 // These variables will store the input ppm image's width, height, and color
 // =============================================================================
 
-unsigned char *plane_arr_f;
+unsigned char *result;
+
+unsigned char *texture_arr;
+unsigned char *texture_img;
+
+unsigned char *env_arr;
+unsigned char *env_img;
+
 
 int width = 200, height = 200, channels1, channels2, channels3;
-
 class Vector
 {
 public:
@@ -81,7 +69,7 @@ friend Vector operator*(Vector a, float b)
 
 };
 
-float r=50;
+float r=55;
 
 
 // =============================================================================
@@ -117,117 +105,161 @@ float crop(float min, float max, float x) {
 float sphere_eq(float a,float b,float c)
 {
 
-Vector P;
-P.x=a;
-P.y=b;
-P.z=c;
+	Vector P;
+	P.x=a;
+	P.y=b;
+	P.z=c;
 
-Vector Pc;
-Pc.x=-100;
-Pc.y=100;
-Pc.z=-10;
+	Vector Pc;
+	Pc.x=-200;
+	Pc.y=200;
+	Pc.z=-10;
 
-return (P-Pc)*(P-Pc) - pow(r,2);
+	return (P-Pc)*(P-Pc) - pow(r,2);
 }
 
 
+//setup
 void setPixels()
 {
 
-Vector Pc;
-Pc.x=-100;
-Pc.y=100;
-Pc.z=-10;
+	//load texture image
+	stbi_set_flip_vertically_on_load(true);
+	texture_img = stbi_load("st1.jpg", &width, &height, &channels1, STBI_rgb);
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			int i = (y * width + x) * 3;
+			texture_arr[i] = texture_img[i];
+			i++;
+			texture_arr[i] = texture_img[i];
+			i++;
+			texture_arr[i] = texture_img[i];
+			i++;
+		}
+	}
 
-Vector Vup;
-Vup.x=150;
-Vup.y=15;
-Vup.z=-100;
+	//sphere center
+	Vector Pc;
+	Pc.x=-200;
+	Pc.y=200;
+	Pc.z=-10;
 
-Vector V_view;
-V_view.x=10;
-V_view.y=10;
-V_view.z=100;
+	//camera setup
+	//camera up vector
 
-Vector V0= cross_product(V_view,Vup);
-Vector n0;
-n0=V0*(1/magnitude(V0.x,V0.y,V0.z));
-Vector n2;
-n2=V_view*(1/magnitude(V_view.x,V_view.y,V_view.z));
+	Vector Vup;
+	Vup.x=150;
+	Vup.y=15;
+	Vup.z=-100;
 
-Vector n1= cross_product(n0,n2);
+	//camera view direction
+	Vector V_view;
+	V_view.x=10;
+	V_view.y=10;
+	V_view.z=100;
 
-Vector Pe;
-Pe.x=-100;
-Pe.y=100;
-Pe.z=-200;
+	//camera local normals
+	Vector V0= cross_product(V_view,Vup);
+	Vector n0;
+	n0=V0*(1/magnitude(V0.x,V0.y,V0.z));
+	Vector n2;
+	n2=V_view*(1/magnitude(V_view.x,V_view.y,V_view.z));
 
-float d=140,sx=150;
-float sy=sx*height/width;
+	Vector n1= cross_product(n0,n2)
 
-Vector P_Cam;
-P_Cam=Pe+(n2*d);
+	//eyepoint
+	Vector Pe;
+	Pe.x=-200;
+	Pe.y=200;
+	Pe.z=-200;
 
-Vector P00;
-P00=P_Cam-(n0*(sx/2))- (n1*(sy/2));
+	//camera dimesnsions and distance from eyepoint
+	float d=140,sx=150;
+	float sy=sx*height/width;
 
-for (int y = 0; y < height; y++) {
-	for (int x = 0; x < width; x++) {
-		int i = (y * width + x) * 3;
-			
-Vector Pp,npe,P_hit;
+	//center of camera
+	Vector P_Cam;
+	P_Cam=Pe+(n2*d);
 
-Pp=P00+(n0*(sx*x/width))+(n1*(sy*y/height));
+	//bottom-left corner of camera
+	Vector P00;
+	P00=P_Cam-(n0*(sx/2))- (n1*(sy/2));
 
-npe=Pp-Pe;
-npe=npe*(1/magnitude(npe.x,npe.y,npe.z));
+	for (int y = 0; y < height; y++) 
+	{
+		for (int x = 0; x < width; x++) 
+		{
+			int i = (y * width + x) * 3;
+				
+			Vector Pp,npe,P_hit;
 
-float b=npe*(Pe-Pc);
-float c=sphere_eq(Pe.x,Pe.y,Pe.z);
+			Pp=P00+(n0*(sx*x/width))+(n1*(sy*y/height));
 
-float disc=sqrt(pow(b,2)-c);
-if(b>0 || isnan(disc))
-{
-}
-else
-{
-float t_hit=-b-disc;
-P_hit=Pe+(npe*t_hit);
-Vector n_hit;
-n_hit.x=(P_hit.x-Pc.x)/r;
-n_hit.y=(P_hit.y-Pc.y)/r;
-n_hit.z=(P_hit.z-Pc.z)/r;
-Vector L;
-			L.x=(200);
-			L.y=(200);
-			L.z=(200);
-			L=L*(1/magnitude(L.x,L.y,L.z));
-			double T = 0.5*((L.x*n_hit.x) + (L.y*n_hit.y)+(L.z*n_hit.z)) + 0.5;
+			npe=Pp-Pe;
+			npe=npe*(1/magnitude(npe.x,npe.y,npe.z));
 
-			double S = 2 * (n_hit.z * (n_hit.x + n_hit.y));
-			double B = 1 - (Pe*n_hit);
+			float b=npe*(Pe-Pc);
+			float c=sphere_eq(Pe.x,Pe.y,Pe.z);
 
-			T = crop(0, 1, T);
-			S = crop(0, 1, S);
-			B = crop(0, 1, B);
+			Vector L,Pl;
+			Pl.x=(100);
+			Pl.y=(-50);
+			Pl.z=(120);
+			L=Pl*(1/magnitude(Pl.x,Pl.y,Pl.z));
 
-
-plane_arr_f[i] = 0*(1-T)+255*(T);
-plane_arr_f[i] = plane_arr_f[i]*(1-S)+255*(S);
-plane_arr_f[i] = plane_arr_f[i]*(1-B)+255*(B);
-plane_arr_f[i+1] = 255*(1-T)+0*(T);
-plane_arr_f[i+1] = plane_arr_f[i+1]*(1-S)+255*(S);
-plane_arr_f[i+1] = plane_arr_f[i+1]*(1-B)+0*(B);
-plane_arr_f[i+2] = 255*(1-T)+0*(T);
-plane_arr_f[i+2] = plane_arr_f[i+2]*(1-S)+255*(S);
-plane_arr_f[i+2] = plane_arr_f[i+2]*(1-B)+0*(B);
-}
+			float disc=sqrt(pow(b,2)-c);
+			if(b>0 || isnan(disc))
+			{
 
 			}
+			else
+			{
+
+				float t_hit=-b-disc;
+				P_hit=Pe+(npe*t_hit);
+
+				Vector L,Pl;
+				Pl.x=(100);
+				Pl.y=(-50);
+				Pl.z=(120);
+				L=Pl*(1/magnitude(Pl.x,Pl.y,Pl.z));
+
+				Vector line=(P_hit-Pl);
+
+				float b=n2*(P_hit-Pl);
+				float c=sphere_eq(P_hit.x,P_hit.y,P_hit.z);
+
+				float disc=sqrt(pow(b,2)-c);
+
+				if(b>0 || isnan(disc))
+				{
+
+				}
+				else
+				{
+					float t_h= -b-disc;
+					Vector P_h=line+n2*t_h;
+
+					float u=(n0*(Pp-P00))/sx;
+					float v=(n1*(Pp-P00))/sy;
+
+					if(u>0 && u<1 && v>0 && v<1)
+					{
+
+						float x_prime=v*height;
+						float y_prime=u*width;
+
+						int j=((int)y_prime*width+(int)x_prime)*3;
+						result[i] = texture_arr[j];
+						result[i+1] = texture_arr[j+1];
+						result[i+2] = texture_arr[j+2];
+					}
+				}
+			}
 		}
+	}
+
 }
-
-
 // =============================================================================
 // OPrnGL Display and Mouse Processing Functions.
 //
@@ -249,7 +281,7 @@ static void windowDisplay(void)
 	glClear(GL_COLOR_BUFFER_BIT);
 	glRasterPos2i(0, 0);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glDrawPixels(width, height, GL_RGB, GL_UNSIGNED_BYTE,plane_arr_f);
+	glDrawPixels(width, height, GL_RGB, GL_UNSIGNED_BYTE,result);
 	glFlush();
 }
 static void processMouse(int button, int state, int x, int y)
@@ -271,7 +303,8 @@ int main(int argc, char *argv[])
 	//initialize the global variables
 	width = 200;
 	height = 200;
-	plane_arr_f = new unsigned char[200 * 200 * 3];
+	result = new unsigned char[200 * 200 * 3];
+	texture_arr = new unsigned char[200 * 200 * 3];
 
 	setPixels();
 

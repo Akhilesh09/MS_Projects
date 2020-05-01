@@ -1,21 +1,3 @@
-// =============================================================================
-// VIZA654/CSCE646 at Texas A&M UniversiT_y
-// Homework 0
-// Created by Anton Agana based from Ariel Chisholm's template
-// 05.23.2011
-//
-// This file is supplied with an associated makefile. Put both files in the same
-// directory, navigate to that directory from the Linux shell, and T_yPr 'make'.
-// This will create a program called 'pr01' that you can run by entering
-// 'homework0' as a command in the shell.
-//
-// If you are new to programming in Linux, there is an
-// excellent introduction to makefile structure and the gcc compiler here:
-//
-// http://www.cs.T_xstate.edu/labs/tutorials/tut_docs/Linux_Prog_Environment.pdf
-//
-// =============================================================================
-
 #include <cstdlib>
 #include <iostream>
 #include <GL/glut.h>
@@ -41,7 +23,7 @@ using namespace std;
 // =============================================================================
 
 
-unsigned char *plane_arr_f;
+unsigned char *result;
 
 unsigned char *texture_arr;
 unsigned char *texture_img;
@@ -137,8 +119,11 @@ Pc.z=-10;
 return (P-Pc)*(P-Pc) - pow(r,2);
 }
 
+//setup
 void setPixels()
 {
+
+	//load texture image
 	stbi_set_flip_vertically_on_load(true);
 	texture_img = stbi_load("st2_v1.jpg", &width, &height, &channels1, STBI_rgb);
 	for (int y = 0; y < height; y++) 
@@ -155,6 +140,8 @@ void setPixels()
 		}
 	}
 
+
+	//load normal map
 	texture_nm_img = stbi_load("texture_nm_2.jpg", &width, &height, &channels1, STBI_rgb);
 	for (int y = 0; y < height; y++) 
 	{
@@ -170,6 +157,7 @@ void setPixels()
 		}
 	}
 
+	//convert normal map to vector field
 	for (int y = 0; y < height; y++) 
 	{
 		for (int x = 0; x < width; x++) 
@@ -184,23 +172,27 @@ void setPixels()
 		}
 	}
 
+	//sphere center
 	Vector Pc;
 	Pc.x=-100;
 	Pc.y=100;
 	Pc.z=-10;
+	
+	//camera setup
+	//camera up vector
 
 	Vector Vup;
-	Vup.x=180;
-	Vup.y=255;
-	Vup.z=50;
-	Vup=Vup*(1*magnitude(Vup.x,Vup.y,Vup.z));
+	Vup.x=150;
+	Vup.y=15;
+	Vup.z=-100;
 
+	//camera view direction
 	Vector V_view;
-	V_view.x=30;
+	V_view.x=10;
 	V_view.y=10;
-	V_view.z=200;
-	V_view=V_view*(1*magnitude(V_view.x,V_view.y,V_view.z));
+	V_view.z=100;
 
+	//camera local normals
 	Vector V0= cross_product(V_view,Vup);
 	Vector n0;
 	n0=V0*(1/magnitude(V0.x,V0.y,V0.z));
@@ -208,18 +200,22 @@ void setPixels()
 	n2=V_view*(1/magnitude(V_view.x,V_view.y,V_view.z));
 
 	Vector n1= cross_product(n0,n2);
-
+	
+	//eyepoint
 	Vector Pe;
-	Pe.x=-120;
+	Pe.x=-100;
 	Pe.y=100;
 	Pe.z=-200;
 
-	float d=150,sx=150;
+	//camera dimesnsions and distance from eyepoint
+	float d=140,sx=150;
 	float sy=sx*height/width;
 
+	//center of camera
 	Vector P_Cam;
 	P_Cam=Pe+(n2*d);
 
+	//bottom-left corner of camera
 	Vector P00;
 	P00=P_Cam-(n0*(sx/2))- (n1*(sy/2));
 
@@ -228,9 +224,9 @@ void setPixels()
 		for (int x = 0; x < width; x++) 
 		{
 			int i = (y * width + x) * 3;
-			plane_arr_f[i] = 255;
-			plane_arr_f[i+1] = 255;
-			plane_arr_f[i+2] = 0;
+			result[i] = 255;
+			result[i+1] = 255;
+			result[i+2] = 0;
 		}
 	}
 
@@ -295,15 +291,15 @@ void setPixels()
 				}
 
 
-				plane_arr_f[i] = 255*(1-T)+0*(T);
-				plane_arr_f[i] = plane_arr_f[i]*(1-S)+255*(S);
-				plane_arr_f[i] = plane_arr_f[i]*(1-B)+255*(B);
-				plane_arr_f[i+1] = 255*(1-T)+0*(T);
-				plane_arr_f[i+1] = plane_arr_f[i+1]*(1-S)+255*(S);
-				plane_arr_f[i+1] = plane_arr_f[i+1]*(1-B)+0*(B);
-				plane_arr_f[i+2] = 255*(1-T)+0*(T);
-				plane_arr_f[i+2] = plane_arr_f[i+2]*(1-S)+255*(S);
-				plane_arr_f[i+2] = plane_arr_f[i+2]*(1-B)+0*(B);
+				result[i] = 255*(1-T)+0*(T);
+				result[i] = result[i]*(1-S)+255*(S);
+				result[i] = result[i]*(1-B)+255*(B);
+				result[i+1] = 255*(1-T)+0*(T);
+				result[i+1] = result[i+1]*(1-S)+255*(S);
+				result[i+1] = result[i+1]*(1-B)+0*(B);
+				result[i+2] = 255*(1-T)+0*(T);
+				result[i+2] = result[i+2]*(1-S)+255*(S);
+				result[i+2] = result[i+2]*(1-B)+0*(B);
 			}
 
 			float b=npe*(Pe-Pc);
@@ -329,8 +325,7 @@ void setPixels()
 			float disc=sqrt(pow(b,2)-c);
 			if(b<0 && !isnan(disc))
 			{
-				// float t_hit=-b-disc;
-				// P_hit=Pe+(npe*t_hit);
+				
 				float t_hit=-b-disc;
 				P_hit=Pe+(npe*t_hit);
 
@@ -351,9 +346,7 @@ void setPixels()
 				float y_prime=u*width;
 
 				int j=((int)y_prime*width+(int)x_prime)*3;
-				// plane_arr_f[i] = texture_arr[j];
-				// plane_arr_f[i+1] = texture_arr[j+1];
-				// plane_arr_f[i+2] = texture_arr[j+2];
+				
 				Vector n_hit;
 				n_hit.x=texture_nm_arr[i];
 				n_hit.y=texture_nm_arr[i+1];
@@ -375,15 +368,9 @@ void setPixels()
 				cout<<T<<endl;
 
 
-				plane_arr_f[i] = texture_arr[j]*(1-T)+0*(T);
-				// plane_arr_f[i] = plane_arr_f[i]*(1-S)+255*(S);
-				// plane_arr_f[i] = plane_arr_f[i]*(1-B)+255*(B);
-				plane_arr_f[i+1] = texture_arr[j+1]*(1-T)+0*(T);
-				// plane_arr_f[i+1] = plane_arr_f[i+1]*(1-S)+255*(S);
-				// plane_arr_f[i+1] = plane_arr_f[i+1]*(1-B)+0*(B);
-				plane_arr_f[i+2] = texture_arr[j+2]*(1-T)+0*(T);
-				// plane_arr_f[i+2] = plane_arr_f[i+2]*(1-S)+255*(S);
-				// plane_arr_f[i+2] = plane_arr_f[i+2]*(1-B)+0*(B);
+				result[i] = texture_arr[j]*(1-T)+0*(T);
+				result[i+1] = texture_arr[j+1]*(1-T)+0*(T);
+				result[i+2] = texture_arr[j+2]*(1-T)+0*(T);
 			}
 		}
 	}
@@ -411,7 +398,7 @@ static void windowDisplay(void)
 	glClear(GL_COLOR_BUFFER_BIT);
 	glRasterPos2i(0, 0);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glDrawPixels(width, height, GL_RGB, GL_UNSIGNED_BYTE,plane_arr_f);
+	glDrawPixels(width, height, GL_RGB, GL_UNSIGNED_BYTE,result);
 	glFlush();
 }
 static void processMouse(int button, int state, int x, int y)
@@ -433,9 +420,7 @@ int main(int argc, char *argv[])
 	//initialize the global variables
 	width = 200;
 	height = 200;
-	plane_arr_f = new unsigned char[200 * 200 * 3];
-
-	plane_arr_f = new unsigned char[200 * 200 * 3];
+	result = new unsigned char[200 * 200 * 3];
 	texture_arr = new unsigned char[200 * 200 * 3];
 	texture_nm_arr = new float[200 * 200 * 3];
 

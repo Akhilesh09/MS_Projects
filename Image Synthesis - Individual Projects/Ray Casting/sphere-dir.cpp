@@ -498,7 +498,7 @@ void setPixels()
 	Vector P_Cam;
 	P_Cam=Pe+(n2*d);
 
-	//bottom-left cornerof camera
+	//bottom-left corner of camera
 	Vector P00;
 	P00=P_Cam-(n0*(sx/2))- (n1*(sy/2));
 

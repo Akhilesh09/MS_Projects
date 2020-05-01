@@ -1,21 +1,3 @@
-// =============================================================================
-// VIZA654/CSCE646 at Texas A&M UniversiT_y
-// Homework 0
-// Created by Anton Agana based from Ariel Chisholm's template
-// 05.23.2011
-//
-// This file is supplied with an associated makefile. Put both files in the same
-// directory, navigate to that directory from the Linux shell, and T_yPr 'make'.
-// This will create a program called 'pr01' that you can run by entering
-// 'homework0' as a command in the shell.
-//
-// If you are new to programming in Linux, there is an
-// excellent introduction to makefile structure and the gcc compiler here:
-//
-// http://www.cs.T_xstate.edu/labs/tutorials/tut_docs/Linux_Prog_Environment.pdf
-//
-// =============================================================================
-
 #include <cstdlib>
 #include <iostream>
 #include <GL/glut.h>
@@ -42,7 +24,7 @@ using namespace std;
 unsigned char *texture_arr;
 unsigned char *texture_img;
 
-unsigned char *plane_arr_f;
+unsigned char *result;
 
 int width = 200, height = 200, channels1, channels2, channels3;
 
@@ -113,8 +95,11 @@ float crop(float min, float max, float x) {
 	return -2 * pow(x, 3) + 3 * pow(x, 2);
 }
 
+//setup
 void setPixels()
 {
+
+	//load texture image
 	stbi_set_flip_vertically_on_load(true);
 	texture_img = stbi_load("texture2.jpg", &width, &height, &channels1, STBI_rgb);
 	for (int y = 0; y < height; y++) {
@@ -129,21 +114,27 @@ void setPixels()
 		}
 	}
 
+	//sphere center
 	Vector Pc;
 	Pc.x=-100;
 	Pc.y=100;
 	Pc.z=-10;
+	
+	//camera setup
+	//camera up vector
 
 	Vector Vup;
 	Vup.x=150;
 	Vup.y=15;
 	Vup.z=-100;
 
+	//camera view direction
 	Vector V_view;
 	V_view.x=10;
 	V_view.y=10;
 	V_view.z=100;
 
+	//camera local normals
 	Vector V0= cross_product(V_view,Vup);
 	Vector n0;
 	n0=V0*(1/magnitude(V0.x,V0.y,V0.z));
@@ -151,21 +142,26 @@ void setPixels()
 	n2=V_view*(1/magnitude(V_view.x,V_view.y,V_view.z));
 
 	Vector n1= cross_product(n0,n2);
-
+	
+	//eyepoint
 	Vector Pe;
 	Pe.x=-100;
 	Pe.y=100;
 	Pe.z=-200;
 
+	//camera dimesnsions and distance from eyepoint
 	float d=140,sx=150;
 	float sy=sx*height/width;
 
+	//center of camera
 	Vector P_Cam;
 	P_Cam=Pe+(n2*d);
 
+	//bottom-left corner of camera
 	Vector P00;
 	P00=P_Cam-(n0*(sx/2))- (n1*(sy/2));
-
+	
+	//point on plane
 	Vector P_p1;
 	P_p1.x=-100;
 	P_p1.y=100;
@@ -183,6 +179,7 @@ void setPixels()
 
 	Vector n_p3=cross_product(n_p1,n_p2);
 
+	//dimensions for repeating texture
 	float p_sx=30,p_sy=p_sx*height/width;
 
 
@@ -239,9 +236,9 @@ void setPixels()
 				int J=floor(y+0.5);
 
 				int k=(int)((J*width+I)*3);
-				plane_arr_f[i] = texture_arr[k];
-				plane_arr_f[i+1] = texture_arr[k+1];
-				plane_arr_f[i+2] = texture_arr[k+2];
+				result[i] = texture_arr[k];
+				result[i+1] = texture_arr[k+1];
+				result[i+2] = texture_arr[k+2];
 
 			}
 		}
@@ -271,7 +268,7 @@ static void windowDisplay(void)
 	glClear(GL_COLOR_BUFFER_BIT);
 	glRasterPos2i(0, 0);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glDrawPixels(width, height, GL_RGB, GL_UNSIGNED_BYTE,plane_arr_f);
+	glDrawPixels(width, height, GL_RGB, GL_UNSIGNED_BYTE,result);
 	glFlush();
 }
 static void processMouse(int button, int state, int x, int y)
@@ -293,7 +290,7 @@ int main(int argc, char *argv[])
 	//initialize the global variables
 	width = 200;
 	height = 200;
-	plane_arr_f = new unsigned char[200 * 200 * 3];
+	result = new unsigned char[200 * 200 * 3];
 	texture_arr = new unsigned char[200 * 200 * 3];
 	setPixels();
 
