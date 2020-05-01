@@ -19,22 +19,12 @@ using namespace std;
 // These variables will store the input ppm image's width, height, and color
 // =============================================================================
 //int width, height;
-unsigned char *dark_arr;
-unsigned char *dark_img;
-
-unsigned char *light_arr;
-unsigned char *light_img;
 
 unsigned char *normal_arr;
 unsigned char *normal_map;
 
-unsigned char *spec_arr;
-unsigned char *spec_img;
-
 double *normal_mod;
-double* dark_arr_mod;
-double* light_arr_mod;
-double* spec_arr_mod;
+
 unsigned char *result;
 
 int width = 300, height = 300, channels1, channels2, channels3;
@@ -57,6 +47,7 @@ double crop(double min, double max, double x) {
 }
 void setPixels()
 {
+	//load normal map
 	normal_map = stbi_load("nmap.png", &width, &height, &channels3, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -67,7 +58,7 @@ void setPixels()
 		}
 	}
 
-
+	//convert normal map to vector field
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int i = (y * width + x) * 3;
@@ -80,60 +71,43 @@ void setPixels()
 		}
 	}
 
-	double L_x[100], L_y[100], lz[100];
-
-
-	for (int i = 0; i < 100; i++)
+	for (int y = 0; y < height; y++) 
 	{
-		L_x[i] = sin(i + 10);
-		L_y[i] = cos(i + 10);
-	}
+		for (int x = 0; x < width; x++) 
+		{
+			int i = (y * width + x) * 3;
+			// Assumed light at (1,1,0)
+			double T = 0.5*(normal_mod[i]) + 0.5;
+			double S = 2 * normal_mod[i + 2] * (normal_mod[i]);
+			double B = 1 - normal_mod[i + 2];
 
-
-	for (int l = 0; l < 5; l++)
-	{
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				int i = (y * width + x) * 3;
-
-				//normal_mod is normal map with values from -1 to 1
-				//i is the x component, i+1 is the y component and i+2 is the z component
-				// Assumed light at (1,1,0)
-				double T = 0.5*(normal_mod[i]) + 0.5;
-				double S = 2 * normal_mod[i + 2] * (normal_mod[i]);
-				double B = 1 - normal_mod[i + 2];
-
-				T = crop(0, 1, T);
-				S = crop(0, 1, S);
-
-				if ((int)normal_arr[i + 2] != 1) {
-					result[i] = (255 * (T) + 255 * (1-T));
-					result[i] = (result[i] * (1 - S) + 255 * S);
-				}
-				else
-					result[i] = (255 * 255) / 255;
-				i++;
-
-				if ((int)normal_arr[i + 1] != 1) {
-					result[i] = (255 * (T) + 0 * (1-T));
-					result[i] = (result[i] * (1 - S) + 255 * S);
-				}
-				else
-					result[i] = (0 * 255) / 255;
-				i++;
-
-			    if ((int)normal_arr[i] != 1) {
-					result[i] = (0 * (T) + 0* (1-T));
-					result[i] = (result[i] * (1 - S) + 255 * S);
-				}
-				else
-					result[i] = (255 * 0) / 255;
+			T = crop(0, 1, T);
+			S = crop(0, 1, S);
+			
+			//shading for foreground
+			if ((int)normal_arr[i + 2] != 1) {
+				result[i] = (255 * (T) + 255 * (1-T));
+				result[i] = (result[i] * (1 - S) + 255 * S);
 			}
+			else
+				result[i] = (255 * 255) / 255;
+			i++;
 
+			if ((int)normal_arr[i + 1] != 1) {
+				result[i] = (255 * (T) + 0 * (1-T));
+				result[i] = (result[i] * (1 - S) + 255 * S);
+			}
+			else
+				result[i] = (0 * 255) / 255;
+			i++;
+
+			if ((int)normal_arr[i] != 1) {
+				result[i] = (0 * (T) + 0* (1-T));
+				result[i] = (result[i] * (1 - S) + 255 * S);
+			}
+			else
+				result[i] = (255 * 0) / 255;
 		}
-
-		string filename1 = "output/h" + to_string(l) + ".jpg";
-		stbi_write_jpg(filename1.c_str(), 300, 300, channels1, result, 100);
 	}
 }
 
@@ -181,14 +155,8 @@ int main(int argc, char *argv[])
 	//initialize the global variables
 	width = 300;
 	height = 300;
-	dark_arr = new unsigned char[300 * 300 * 3];
-	light_arr = new unsigned char[300 * 300 * 3];
 	normal_arr = new unsigned char[300 * 300 * 3];
-	spec_arr = new unsigned char[300 * 300 * 3];
-	spec_arr_mod = new double[300 * 300 * 3];
 	normal_mod = new double[300 * 300 * 3];
-	dark_arr_mod = new double[300 * 300 * 3];
-	light_arr_mod = new double[300 * 300 * 3];
 	result = new unsigned char[300 * 300 * 3];
 
 	setPixels();
