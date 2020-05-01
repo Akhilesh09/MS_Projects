@@ -1,21 +1,3 @@
-﻿// =============================================================================
-// VIZA654/CSCE646 at Texas A&M UniversiT_y
-// Homework 0
-// Created by Anton Agana based from Ariel Chisholm's template
-// 05.23.2011
-//
-// This file is supplied with an associated makefile. Put both files in the same
-// directory, navigate to that directory from the Linux shell, and T_ype 'make'.
-// This will create a program called 'pr01' that you can run by entering
-// 'homework0' as a command in the shell.
-//
-// If you are new to programming in Linux, there is an
-// excellent introduction to makefile structure and the gcc compiler here:
-//
-// http://www.cs.T_xstate.edu/labs/tutorials/tut_docs/Linux_Prog_Environment.pdf
-//
-// =============================================================================
-
 #include <cstdlib>
 #include <iostream>
 #include <GL/glut.h>
