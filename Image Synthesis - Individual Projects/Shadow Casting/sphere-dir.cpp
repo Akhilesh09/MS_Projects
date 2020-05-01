@@ -507,7 +507,7 @@ void setPixels()
 	Pe.y=-55;
 	Pe.z=2.943;
 
-	//camera dimesnsions and distance from eyepoint
+	//camera dimensions and distance from eyepoint
 	float d=100,sx=200;
 	float sy=sx*height/width;
 
