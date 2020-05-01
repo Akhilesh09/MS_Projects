@@ -16,7 +16,7 @@ using namespace std;
 // These variables will store the input ppm image's width, height, and color
 // =============================================================================
 
-unsigned char *plane_arr_f;
+unsigned char *result;
 
 int width = 200, height = 200, channels1, channels2, channels3;
 
@@ -526,9 +526,9 @@ void setPixels()
 			final_col=castRay(Pe,npe,default_col);
 
 			//output array
-			plane_arr_f[i] = final_col.x;
-			plane_arr_f[i+1] = final_col.y;
-			plane_arr_f[i+2] = final_col.z;
+			result[i] = final_col.x;
+			result[i+1] = final_col.y;
+			result[i+2] = final_col.z;
 
 			
 		}
@@ -557,7 +557,7 @@ static void windowDisplay(void)
 	glClear(GL_COLOR_BUFFER_BIT);
 	glRasterPos2i(0, 0);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glDrawPixels(width, height, GL_RGB, GL_UNSIGNED_BYTE,plane_arr_f);
+	glDrawPixels(width, height, GL_RGB, GL_UNSIGNED_BYTE,result);
 	glFlush();
 }
 static void processMouse(int button, int state, int x, int y)
@@ -579,7 +579,7 @@ int main(int argc, char *argv[])
 	//initialize the global variables
 	width = 200;
 	height = 200;
-	plane_arr_f = new unsigned char[200 * 200 * 3];
+	result = new unsigned char[200 * 200 * 3];
 
 	setPixels();
 
