@@ -394,7 +394,11 @@ Vector castRay(Vector &Pe, Vector &npe, Vector &default_col,const int &depth=0)
 		
 		double T = 0.5*(dir*n) + 0.5;
 		T=crop(0,1,T);
-		
+
+		if (L*dir - cos(10*3.14/180) < 0) // if outside spot light cone
+		{
+			T=1;
+		}	
 		hit_col=(objects[index]->color*(1-T)+dark*(T)); 
 	}
 	else
