@@ -1,0 +1,17 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
+edge [fontname=helvetica] ;
+0 [label=<system.cpu.rename.serializingInsts &le; 1e-05<br/>gini = 0.32<br/>samples = 200<br/>value = [200, 50]<br/>class = benign>, fillcolor="#eca06a"] ;
+1 [label=<system.cpu.commit.op_class_0::FloatAdd &le; 0.000109<br/>gini = 0.102028<br/>samples = 159<br/>value = [193, 11]<br/>class = benign>, fillcolor="#e68844"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label=<gini = 0.0<br/>samples = 9<br/>value = [0, 11]<br/>class = malicous>, fillcolor="#399de5"] ;
+1 -> 2 ;
+3 [label=<gini = 0.0<br/>samples = 150<br/>value = [193, 0]<br/>class = benign>, fillcolor="#e58139"] ;
+1 -> 3 ;
+4 [label=<system.l2.UpgradeReq_accesses::total &le; 0.019222<br/>gini = 0.258034<br/>samples = 41<br/>value = [7, 39]<br/>class = malicous>, fillcolor="#5dafea"] ;
+0 -> 4 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+5 [label=<gini = 0.0<br/>samples = 34<br/>value = [0, 39]<br/>class = malicous>, fillcolor="#399de5"] ;
+4 -> 5 ;
+6 [label=<gini = 0.0<br/>samples = 7<br/>value = [7, 0]<br/>class = benign>, fillcolor="#e58139"] ;
+4 -> 6 ;
+}

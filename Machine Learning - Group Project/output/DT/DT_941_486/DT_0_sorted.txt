@@ -1,0 +1,4 @@
+system.cpu.commit.op_class_0::SimdAlu
+system.cpu.commit.op_class_0::SimdMisc
+system.l2.ReadSharedReq_mshr_misses::total
+system.cpu.fetch.PendingTrapStallCycles

@@ -1,0 +1,13 @@
+|--- system.cpu.commit.op_class_0::SimdAlu <= 62.00
+|   |--- weights: [0.00, 34.00] class: 1
+|--- system.cpu.commit.op_class_0::SimdAlu >  62.00
+|   |--- system.cpu.commit.op_class_0::SimdMisc <= 1781.00
+|   |   |--- system.cpu.dcache.ReadReq_mshr_hits::total <= 2471.50
+|   |   |   |--- weights: [202.00, 0.00] class: 0
+|   |   |--- system.cpu.dcache.ReadReq_mshr_hits::total >  2471.50
+|   |   |   |--- weights: [0.00, 3.00] class: 1
+|   |--- system.cpu.commit.op_class_0::SimdMisc >  1781.00
+|   |   |--- system.mem_ctrls_0.totalIdleTime <= 114557927424.00
+|   |   |   |--- weights: [0.00, 10.00] class: 1
+|   |   |--- system.mem_ctrls_0.totalIdleTime >  114557927424.00
+|   |   |   |--- weights: [1.00, 0.00] class: 0

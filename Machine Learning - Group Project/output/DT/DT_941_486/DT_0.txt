@@ -1,0 +1,13 @@
+|--- system.cpu.commit.op_class_0::SimdAlu <= -0.05
+|   |--- weights: [0.00, 104.00] class: 1
+|--- system.cpu.commit.op_class_0::SimdAlu >  -0.05
+|   |--- system.cpu.commit.op_class_0::SimdMisc <= -0.04
+|   |   |--- system.l2.ReadSharedReq_mshr_misses::total <= -0.04
+|   |   |   |--- weights: [478.00, 0.00] class: -1
+|   |   |--- system.l2.ReadSharedReq_mshr_misses::total >  -0.04
+|   |   |   |--- weights: [0.00, 3.00] class: 1
+|   |--- system.cpu.commit.op_class_0::SimdMisc >  -0.04
+|   |   |--- system.cpu.fetch.PendingTrapStallCycles <= 0.05
+|   |   |   |--- weights: [0.00, 37.00] class: 1
+|   |   |--- system.cpu.fetch.PendingTrapStallCycles >  0.05
+|   |   |   |--- weights: [5.00, 0.00] class: -1

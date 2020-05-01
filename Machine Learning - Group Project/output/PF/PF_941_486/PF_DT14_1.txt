@@ -1,0 +1,7 @@
+|--- system.cpu.commit.op_class_0::FloatAdd <= 0.00
+|   |--- weights: [0.00, 43.00] class: 1
+|--- system.cpu.commit.op_class_0::FloatAdd >  0.00
+|   |--- system.l2.ReadExReq_miss_rate::total <= 0.89
+|   |   |--- weights: [0.00, 20.00] class: 1
+|   |--- system.l2.ReadExReq_miss_rate::total >  0.89
+|   |   |--- weights: [187.00, 0.00] class: 0

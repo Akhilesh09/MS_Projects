@@ -1,0 +1,4 @@
+features,weight
+PFDT1,3.0000e-02
+PFDT0,2.0000e-02
+bias,-4.0000e-02

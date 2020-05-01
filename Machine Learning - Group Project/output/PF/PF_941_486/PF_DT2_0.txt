@@ -1,0 +1,7 @@
+|--- system.cpu.commit.op_class_0::FloatAdd <= 5.50
+|   |--- weights: [0.00, 54.00] class: 1
+|--- system.cpu.commit.op_class_0::FloatAdd >  5.50
+|   |--- system.cpu.rename.ROBFullEvents <= 1028.00
+|   |   |--- weights: [183.00, 0.00] class: 0
+|   |--- system.cpu.rename.ROBFullEvents >  1028.00
+|   |   |--- weights: [0.00, 13.00] class: 1

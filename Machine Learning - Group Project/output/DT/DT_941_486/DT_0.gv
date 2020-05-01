@@ -1,0 +1,21 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
+edge [fontname=helvetica] ;
+0 [label=<system.cpu.commit.op_class_0::SimdAlu &le; -0.051182<br/>entropy = 0.777427<br/>samples = 627<br/>value = [483, 144]<br/>class = benign>, fillcolor="#eda774"] ;
+1 [label=<entropy = 0.0<br/>samples = 104<br/>value = [0, 104]<br/>class = malicous>, fillcolor="#399de5"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label=<system.cpu.commit.op_class_0::SimdMisc &le; -0.043947<br/>entropy = 0.38966<br/>samples = 523<br/>value = [483, 40]<br/>class = benign>, fillcolor="#e78b49"] ;
+0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+3 [label=<system.l2.ReadSharedReq_mshr_misses::total &le; -0.041075<br/>entropy = 0.054656<br/>samples = 481<br/>value = [478, 3]<br/>class = benign>, fillcolor="#e5823a"] ;
+2 -> 3 ;
+4 [label=<entropy = 0.0<br/>samples = 478<br/>value = [478, 0]<br/>class = benign>, fillcolor="#e58139"] ;
+3 -> 4 ;
+5 [label=<entropy = 0.0<br/>samples = 3<br/>value = [0, 3]<br/>class = malicous>, fillcolor="#399de5"] ;
+3 -> 5 ;
+6 [label=<system.cpu.fetch.PendingTrapStallCycles &le; 0.053113<br/>entropy = 0.526617<br/>samples = 42<br/>value = [5, 37]<br/>class = malicous>, fillcolor="#54aae9"] ;
+2 -> 6 ;
+7 [label=<entropy = 0.0<br/>samples = 37<br/>value = [0, 37]<br/>class = malicous>, fillcolor="#399de5"] ;
+6 -> 7 ;
+8 [label=<entropy = 0.0<br/>samples = 5<br/>value = [5, 0]<br/>class = benign>, fillcolor="#e58139"] ;
+6 -> 8 ;
+}

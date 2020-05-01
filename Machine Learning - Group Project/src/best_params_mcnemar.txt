@@ -1,0 +1,281 @@
+>>>>>>>>>> Preprocessing phase...
+>>>>>>>>>> Learner evaluation phase...
+tree model
+=============================================
+\textbf{Fold} & \textbf{TP} & \textbf{TN} & \textbf{FP} & \textbf{FN} & \textbf{Accuracy} \\ \hline \hline
+1 & 72 & 240 & 1 & 1 & 0.9936  \\ \hline
+2 & 72 & 240 & 2 & 0 & 0.9936  \\ \hline
+3 & 71 & 241 & 0 & 1 & 0.9968  \\ \hline
+=============================================
+\textbf{Quantity}    & \textbf{Value}       \\ \hline \hline
+Mean Accuracy        & 0.9947 \\ \hline
+Standard Deviation   & 0.0024 \\ \hline
+95.00\% Confidence   & 0.9947 $\pm$ 0.0075 \\ \hline
+Accuracy Range       & (0.9871, 1.0000) \\ \hline
+Best Accuracy        & 0.9968 \\ \hline
+Training Time        & 0.2110 s\\ \hline
+Classification Time  & 0.0043 s \\ \hline
+=============================================
+
+
+
+perceptron model
+=============================================
+\textbf{Fold} & \textbf{TP} & \textbf{TN} & \textbf{FP} & \textbf{FN} & \textbf{Accuracy} \\ \hline \hline
+1 & 71 & 241 & 0 & 2 & 0.9936  \\ \hline
+2 & 72 & 240 & 2 & 0 & 0.9936  \\ \hline
+3 & 71 & 239 & 2 & 1 & 0.9904  \\ \hline
+=============================================
+\textbf{Quantity}    & \textbf{Value}       \\ \hline \hline
+Mean Accuracy        & 0.9926 \\ \hline
+Standard Deviation   & 0.0028 \\ \hline
+95.00\% Confidence   & 0.9926 $\pm$ 0.0055 \\ \hline
+Accuracy Range       & (0.9871, 0.9981) \\ \hline
+Best Accuracy        & 0.9936 \\ \hline
+Training Time        & 0.0450 s\\ \hline
+Classification Time  & 0.0033 s \\ \hline
+=============================================
+
+
+
+perceptron_forest model
+=============================================
+\textbf{Fold} & \textbf{TP} & \textbf{TN} & \textbf{FP} & \textbf{FN} & \textbf{Accuracy} \\ \hline \hline
+1 & 72 & 241 & 0 & 1 & 0.9968  \\ \hline
+2 & 72 & 242 & 0 & 0 & 1.0000  \\ \hline
+3 & 72 & 241 & 0 & 0 & 1.0000  \\ \hline
+=============================================
+\textbf{Quantity}    & \textbf{Value}       \\ \hline \hline
+Mean Accuracy        & 0.9989 \\ \hline
+Standard Deviation   & 0.0011 \\ \hline
+95.00\% Confidence   & 0.9989 $\pm$ 0.0034 \\ \hline
+Accuracy Range       & (0.9956, 1.0000) \\ \hline
+Best Accuracy        & 1.0000 \\ \hline
+Training Time        & 0.1641 s\\ \hline
+Classification Time  & 0.0055 s \\ \hline
+=============================================
+
+
+
+knn model
+=============================================
+\textbf{Fold} & \textbf{TP} & \textbf{TN} & \textbf{FP} & \textbf{FN} & \textbf{Accuracy} \\ \hline \hline
+1 & 73 & 241 & 0 & 0 & 1.0000  \\ \hline
+2 & 72 & 242 & 0 & 0 & 1.0000  \\ \hline
+3 & 71 & 240 & 1 & 1 & 0.9936  \\ \hline
+=============================================
+\textbf{Quantity}    & \textbf{Value}       \\ \hline \hline
+Mean Accuracy        & 0.9979 \\ \hline
+Standard Deviation   & 0.0015 \\ \hline
+95.00\% Confidence   & 0.9979 $\pm$ 0.0029 \\ \hline
+Accuracy Range       & (0.9949, 1.0000) \\ \hline
+Best Accuracy        & 1.0000 \\ \hline
+Training Time        & 0.0206 s\\ \hline
+Classification Time  & 0.0235 s \\ \hline
+=============================================
+
+
+
+neural_network model
+=============================================
+\textbf{Fold} & \textbf{TP} & \textbf{TN} & \textbf{FP} & \textbf{FN} & \textbf{Accuracy} \\ \hline \hline
+1 & 71 & 241 & 0 & 2 & 0.9936  \\ \hline
+2 & 71 & 242 & 0 & 1 & 0.9968  \\ \hline
+3 & 71 & 237 & 4 & 1 & 0.9840  \\ \hline
+=============================================
+\textbf{Quantity}    & \textbf{Value}       \\ \hline \hline
+Mean Accuracy        & 0.9915 \\ \hline
+Standard Deviation   & 0.0030 \\ \hline
+95.00\% Confidence   & 0.9915 $\pm$ 0.0059 \\ \hline
+Accuracy Range       & (0.9856, 0.9974) \\ \hline
+Best Accuracy        & 0.9968 \\ \hline
+Training Time        & 1.8358 s\\ \hline
+Classification Time  & 0.0046 s \\ \hline
+=============================================
+
+
+
+ensemble_network model
+=============================================
+\textbf{Fold} & \textbf{TP} & \textbf{TN} & \textbf{FP} & \textbf{FN} & \textbf{Accuracy} \\ \hline \hline
+1 & 73 & 241 & 0 & 0 & 1.0000  \\ \hline
+2 & 72 & 241 & 1 & 0 & 0.9968  \\ \hline
+3 & 72 & 239 & 2 & 0 & 0.9936  \\ \hline
+=============================================
+\textbf{Quantity}    & \textbf{Value}       \\ \hline \hline
+Mean Accuracy        & 0.9968 \\ \hline
+Standard Deviation   & 0.0018 \\ \hline
+95.00\% Confidence   & 0.9968 $\pm$ 0.0036 \\ \hline
+Accuracy Range       & (0.9932, 1.0000) \\ \hline
+Best Accuracy        & 1.0000 \\ \hline
+Training Time        & 1.2350 s\\ \hline
+Classification Time  & 0.0100 s \\ \hline
+=============================================
+
+
+
+\begin{table}[H]
+	\centering
+	\caption{McNemar test results for tree and perceptron (p = 5.000e-01)}
+	\begin{tabular}{|c||c|c|}
+		\hline
+		& Tree Correct & Tree Incorrect \\ \hline \hline
+		Perceptron Correct & 938 & 2 \\ \hline
+		Perceptron Incorrect& 0 & 1 \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{McNemar test results for tree and perceptron forest (p = 1.000e+00)}
+	\begin{tabular}{|c||c|c|}
+		\hline
+		& Tree Correct & Tree Incorrect \\ \hline \hline
+		Perceptron Forest Correct & 939 & 1 \\ \hline
+		Perceptron Forest Incorrect& 1 & 0 \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{McNemar test results for tree and knn (p = 1.000e+00)}
+	\begin{tabular}{|c||c|c|}
+		\hline
+		& Tree Correct & Tree Incorrect \\ \hline \hline
+		Knn Correct & 939 & 1 \\ \hline
+		Knn Incorrect& 0 & 1 \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{McNemar test results for tree and neural network (p = 1.250e-01)}
+	\begin{tabular}{|c||c|c|}
+		\hline
+		& Tree Correct & Tree Incorrect \\ \hline \hline
+		Neural Network Correct & 936 & 4 \\ \hline
+		Neural Network Incorrect& 0 & 1 \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{McNemar test results for tree and ensemble network (p = 6.250e-01)}
+	\begin{tabular}{|c||c|c|}
+		\hline
+		& Tree Correct & Tree Incorrect \\ \hline \hline
+		Ensemble Network Correct & 937 & 3 \\ \hline
+		Ensemble Network Incorrect& 1 & 0 \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{McNemar test results for perceptron and perceptron forest (p = 6.250e-01)}
+	\begin{tabular}{|c||c|c|}
+		\hline
+		& Perceptron Correct & Perceptron Incorrect \\ \hline \hline
+		Perceptron Forest Correct & 937 & 1 \\ \hline
+		Perceptron Forest Incorrect& 3 & 0 \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{McNemar test results for perceptron and knn (p = 1.000e+00)}
+	\begin{tabular}{|c||c|c|}
+		\hline
+		& Perceptron Correct & Perceptron Incorrect \\ \hline \hline
+		Knn Correct & 938 & 0 \\ \hline
+		Knn Incorrect& 1 & 2 \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{McNemar test results for perceptron and neural network (p = 6.250e-01)}
+	\begin{tabular}{|c||c|c|}
+		\hline
+		& Perceptron Correct & Perceptron Incorrect \\ \hline \hline
+		Neural Network Correct & 935 & 3 \\ \hline
+		Neural Network Incorrect& 1 & 2 \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{McNemar test results for perceptron and ensemble network (p = 1.000e+00)}
+	\begin{tabular}{|c||c|c|}
+		\hline
+		& Perceptron Correct & Perceptron Incorrect \\ \hline \hline
+		Ensemble Network Correct & 935 & 3 \\ \hline
+		Ensemble Network Incorrect& 3 & 0 \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{McNemar test results for perceptron forest and knn (p = 1.000e+00)}
+	\begin{tabular}{|c||c|c|}
+		\hline
+		& Perceptron Forest Correct & Perceptron Forest Incorrect \\ \hline \hline
+		Knn Correct & 938 & 2 \\ \hline
+		Knn Incorrect& 1 & 0 \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{McNemar test results for perceptron forest and neural network (p = 2.188e-01)}
+	\begin{tabular}{|c||c|c|}
+		\hline
+		& Perceptron Forest Correct & Perceptron Forest Incorrect \\ \hline \hline
+		Neural Network Correct & 935 & 5 \\ \hline
+		Neural Network Incorrect& 1 & 0 \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{McNemar test results for perceptron forest and ensemble network (p = 6.250e-01)}
+	\begin{tabular}{|c||c|c|}
+		\hline
+		& Perceptron Forest Correct & Perceptron Forest Incorrect \\ \hline \hline
+		Ensemble Network Correct & 937 & 3 \\ \hline
+		Ensemble Network Incorrect& 1 & 0 \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{McNemar test results for knn and neural network (p = 2.500e-01)}
+	\begin{tabular}{|c||c|c|}
+		\hline
+		& Knn Correct & Knn Incorrect \\ \hline \hline
+		Neural Network Correct & 936 & 3 \\ \hline
+		Neural Network Incorrect& 0 & 2 \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{McNemar test results for knn and ensemble network (p = 1.000e+00)}
+	\begin{tabular}{|c||c|c|}
+		\hline
+		& Knn Correct & Knn Incorrect \\ \hline \hline
+		Ensemble Network Correct & 936 & 3 \\ \hline
+		Ensemble Network Incorrect& 2 & 0 \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{McNemar test results for neural network and ensemble network (p = 6.875e-01)}
+	\begin{tabular}{|c||c|c|}
+		\hline
+		& Neural Network Correct & Neural Network Incorrect \\ \hline \hline
+		Ensemble Network Correct & 934 & 2 \\ \hline
+		Ensemble Network Incorrect& 4 & 1 \\ \hline
+	\end{tabular}
+\end{table}
+

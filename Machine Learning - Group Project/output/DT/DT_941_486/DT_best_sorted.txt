@@ -1,0 +1,5 @@
+system.cpu.commit.op_class_0::SimdAlu
+system.cpu.commit.op_class_0::SimdMisc
+system.cpu.rename.serializingInsts
+system.cpu.commit.op_class_0::IntMult
+system.cpu.branchPred.indirectMisses

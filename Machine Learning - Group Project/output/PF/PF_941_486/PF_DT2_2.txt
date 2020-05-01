@@ -1,0 +1,13 @@
+|--- system.cpu.commit.op_class_0::SimdAlu <= 64.00
+|   |--- weights: [0.00, 48.00] class: 1
+|--- system.cpu.commit.op_class_0::SimdAlu >  64.00
+|   |--- system.cpu.commit.op_class_0::SimdMisc <= 1781.00
+|   |   |--- system.cpu.rename.serializeStallCycles <= 5207.50
+|   |   |   |--- weights: [186.00, 0.00] class: 0
+|   |   |--- system.cpu.rename.serializeStallCycles >  5207.50
+|   |   |   |--- weights: [0.00, 2.00] class: 1
+|   |--- system.cpu.commit.op_class_0::SimdMisc >  1781.00
+|   |   |--- system.membus.trans_dist::CleanEvict <= 2567.00
+|   |   |   |--- weights: [0.00, 12.00] class: 1
+|   |   |--- system.membus.trans_dist::CleanEvict >  2567.00
+|   |   |   |--- weights: [3.00, 0.00] class: 0

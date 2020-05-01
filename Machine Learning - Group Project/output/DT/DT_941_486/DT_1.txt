@@ -1,0 +1,16 @@
+|--- system.cpu.commit.op_class_0::SimdAlu <= -0.05
+|   |--- weights: [0.00, 113.00] class: 1
+|--- system.cpu.commit.op_class_0::SimdAlu >  -0.05
+|   |--- system.cpu.commit.op_class_0::SimdMisc <= -0.04
+|   |   |--- system.cpu.iew.iewIQFullEvents <= -0.03
+|   |   |   |--- system.cpu.iew.lsq.thread0.forwLoads <= -0.07
+|   |   |   |   |--- weights: [0.00, 1.00] class: 1
+|   |   |   |--- system.cpu.iew.lsq.thread0.forwLoads >  -0.07
+|   |   |   |   |--- weights: [478.00, 0.00] class: -1
+|   |   |--- system.cpu.iew.iewIQFullEvents >  -0.03
+|   |   |   |--- weights: [0.00, 5.00] class: 1
+|   |--- system.cpu.commit.op_class_0::SimdMisc >  -0.04
+|   |   |--- system.tol2bus.respLayer0.occupancy <= 0.45
+|   |   |   |--- weights: [0.00, 26.00] class: 1
+|   |   |--- system.tol2bus.respLayer0.occupancy >  0.45
+|   |   |   |--- weights: [4.00, 0.00] class: -1

@@ -1,0 +1,17 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
+edge [fontname=helvetica] ;
+0 [label=<system.cpu.commit.op_class_0::SimdAlu &le; 62.0<br/>gini = 0.360608<br/>samples = 208<br/>value = [191, 59]<br/>class = benign>, fillcolor="#eda876"] ;
+1 [label=<gini = 0.0<br/>samples = 42<br/>value = [0, 49]<br/>class = malicous>, fillcolor="#399de5"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label=<system.l2.ReadExReq_mshr_miss_rate::total &le; 0.99007<br/>gini = 0.094552<br/>samples = 166<br/>value = [191, 10]<br/>class = benign>, fillcolor="#e68843"] ;
+0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+3 [label=<gini = 0.0<br/>samples = 7<br/>value = [0, 7]<br/>class = malicous>, fillcolor="#399de5"] ;
+2 -> 3 ;
+4 [label=<system.cpu.iew.iewExecSquashedInsts &le; 1032.5<br/>gini = 0.03045<br/>samples = 159<br/>value = [191, 3]<br/>class = benign>, fillcolor="#e5833c"] ;
+2 -> 4 ;
+5 [label=<gini = 0.0<br/>samples = 3<br/>value = [0, 3]<br/>class = malicous>, fillcolor="#399de5"] ;
+4 -> 5 ;
+6 [label=<gini = 0.0<br/>samples = 156<br/>value = [191, 0]<br/>class = benign>, fillcolor="#e58139"] ;
+4 -> 6 ;
+}

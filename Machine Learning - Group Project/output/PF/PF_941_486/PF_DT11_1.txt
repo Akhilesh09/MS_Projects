@@ -1,0 +1,4 @@
+|--- system.cpu.commit.op_class_0::FloatAdd <= 0.00
+|   |--- weights: [0.00, 12.00] class: 1
+|--- system.cpu.commit.op_class_0::FloatAdd >  0.00
+|   |--- weights: [50.00, 0.00] class: 0

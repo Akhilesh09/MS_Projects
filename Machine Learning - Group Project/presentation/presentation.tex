@@ -1,0 +1,448 @@
+\documentclass[xcolor={usenames,dvipsnames,svgnames,table}]{beamer}
+
+\mode<presentation>
+\usetheme{Madrid}
+
+\usecolortheme[RGB={80,0,0}]{structure}
+\useoutertheme[subsection=false]{miniframes}
+\useinnertheme{default}
+
+% hide navigation controlls
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamercolor{normal text}{fg=black}
+\setbeamercovered{dynamic}
+\beamertemplatetransparentcovereddynamicmedium
+\setbeamertemplate{caption}[numbered]
+
+\definecolor{Maroon}{RGB}{80,0,0}
+\definecolor{BurntOrange}{RGB}{204,85,0}
+
+% load macros and prevent authblk from loading
+\input{macros.tex}
+\dontusepackage{authblk}
+
+% load packages, settings and definitions
+\input{packages.tex}
+\input{settings.tex}
+\input{definitions.tex}
+
+% nicer item settings
+\setlist[1]{nolistsep,label=\(\textcolor{Maroon}{\blacksquare}\)}
+\setlist[2]{nolistsep,label=\(\textcolor{Maroon}{\bullet}\)}
+
+\setenumerate[1]{
+	label=\protect\usebeamerfont{enumerate item}%
+	\protect\usebeamercolor[fg]{enumerate item}%
+	\insertenumlabel.
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% edit to fit your document
+
+% set up pdf support and indexing
+\hypersetup{
+    pdftitle={<Title>},
+    pdfauthor={<author>},
+    pdfsubject={<subject>},
+    pdfkeywords={<keywords>},
+}
+
+\title[Final Project]{Final Project: Attack Detection}
+\author[Hardy, Behne, German, Vijaykumar \& Singh]{
+	Zachary Hardy (Team Captain), Patrick Behne, Peter German, \\ Akhilesh Vijaykumar, Harpreet Singh
+}
+\institute[Texas A\&M]{CSCE 633 \\ Texas A\&M University}
+\date[April 27, 2020]{April 27, 2020}
+
+\begin{document}
+
+% title page, do not edit
+{
+\setbeamertemplate{headline}[default] 
+\begin{frame}
+\vfill
+\titlepage
+\vfill
+%\begin{figure}[t]
+%	\centering
+%	\includegraphics[width=.5\textwidth]{images/nuen}
+%\end{figure}
+%\vfill
+\end{frame}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}	% define sections here, it is possible to get section slides automatically, but this is not enabled
+\subsection{}	% we have to keep these to get the navigation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]\frametitle{Outline}
+\tableofcontents
+ \end{frame}
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Input Transformations}
+\subsection{}
+
+\begin{frame}[t]\frametitle{Input Transformations}
+	\begin{itemize}
+		\item Transformations only on training data to remove bias. \vspace*{0.05in}
+		
+		\item Normalization across all samples or samples sharing a time-stamp. \vspace*{0.05in}
+		
+		\item Available feature-wise normalization techniques:
+		\begin{itemize}
+			
+			\item Max: Map $X$ to $X \in \left[ \frac{X_{\min}}{X_{\max}}, 1\right]$. \\
+			
+			\item Standard: Map $X$ to a zero mean and unit variance. \\
+			
+			\item Robust: Map $X$ by removing the median and dividing with the IQR. \\
+			
+		\end{itemize} \vspace*{0.05in}
+		
+		\item Principal Component Analysis (PCA):
+		\begin{itemize}
+			\item Dimensionality reduction.
+			\item Fully decouple the inputs by changing to an orthogonal coordinate system.
+		\end{itemize}	
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[t]\frametitle{Singular Value Decomposition of Input Data}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.5]{../report/figures/pca.pdf}
+	\end{figure}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+\section{Feature Selection}
+\subsection{}
+
+\begin{frame}[t]\frametitle{Feature Selection}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item Correlation filter:
+				\begin{itemize}
+					\footnotesize
+					\item Pearson correlation
+					\begin{equation*}
+					c_{i,j} = \frac{\sum\limits_{k=1}^{N} (x_{i,k} - \bar{x}_i)(x_{j,k} - \bar{x}_j)}
+					{\sqrt{\sum\limits_{k=1}^{N} (x_{i,k} - \bar{x}_i)^2 \sum\limits_{k=1}^{N} (x_{j,k} - \bar{x}_j)^2}}
+					\end{equation*}
+					\item Linear Algebra correlation
+					\begin{equation*}
+					c_{i,j}=\frac{x_i \cdot x_j}{||x_i||||x_j||},
+					\end{equation*}
+				\end{itemize}
+				\item Can filter based on:
+				\begin{itemize}
+					\item feature-feature correlation
+					\item feature-label correlation
+				\end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}  %%<--- here
+			\begin{center}
+				\vskip -0.3cm
+				\includegraphics[width=0.8\linewidth]{../output/features/figures/global_max_feature_correlation}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Previous Models}
+\subsection{}
+
+\begin{frame}[t]\frametitle{Previous Model Performance}
+	\begin{minipage}{\linewidth}
+		\begin{table}
+			\centering
+			\begin{tabular}{|c|c|c|c|c|c|}
+				\hline
+				\multirow{2}{*}{\textbf{Rank}} & \multirow{2}{*}{\textbf{Model}} & \multicolumn{2}{c|}{\textbf{Accuracy}} & \multirow{2}{*}{\textbf{Domain}} & \multirow{2}{*}{\textbf{Normalization}} \\ \cline{3-4}
+				& & \textbf{Optimized} & \textbf{HW 3} & & \\ \hline \hline
+				1 & \makecell{Perceptron\\Forest} & \makecell{(0.9956,\\1.0000)} & \makecell{(0.9866,\\1.0000)} & Global & Any \\ \hline
+				1\footnote{McNemar test \cite{Raschka}.} & KNN & \makecell{(0.9949,\\1.0000)} & \makecell{(0.9814,\\0.9952)} & Global & Standard \\ \hline
+				1 & \makecell{Decision\\Tree} & \makecell{(0.9871,\\1.0000)} & \makecell{(0.9914,\\1.0000)} & Global & Any \\ \hline
+				1 & Perceptron & \makecell{(0.9871,\\0.9981)} & \makecell{(0.9315,\\0.9600)} & Global & Standard \\ \hline
+			\end{tabular}
+		\end{table}
+	\end{minipage}
+	\vspace{-0.3cm}
+\end{frame}
+
+\begin{frame}[t]\frametitle{Grid Search}
+
+	\begin{figure}
+		\begin{subfigure}{0.45\linewidth}
+			\centering
+			\includegraphics[scale=0.225]{../output/DT/DT_941_486/DT_gridsearch_941_486_global_standard.pdf}
+			\caption{Decision tree.}
+		\end{subfigure}
+		\begin{subfigure}{0.45\linewidth}
+			\centering
+			\includegraphics[scale=0.225]{../output/Perceptron/P_941_486/P_gridsearch_941_486_global_standard.pdf}
+			\caption{Perceptron.}
+		\end{subfigure}
+		\begin{subfigure}{0.45\linewidth}
+			\centering
+			\includegraphics[scale=0.225]{../output/PF/PF_941_486/PF_gridsearch_941_486_global_standard.pdf}
+			\caption{Perceptron forest.}
+		\end{subfigure}
+		\begin{subfigure}{0.45\linewidth}
+			\centering
+			\includegraphics[scale=0.225]{../output/KNN/KNN_941_486/KNN_gridsearch_941_486_global_standard.pdf}
+			\caption{KNN.}
+		\end{subfigure}
+	\end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+\section{Neural Network}
+\subsection{}
+
+\begin{frame}[t]\frametitle{Neural Network Optimizations I}
+	\begin{itemize}
+		\item Batch/Mini-batch/Stochastic:
+		\begin{figure}
+			\begin{subfigure}{0.45\linewidth}
+				\centering
+				\includegraphics[width=0.9\linewidth]{../output/neural_network/figures/nn_convergence_global_standard_941_486}
+			\end{subfigure}
+			\begin{subfigure}{0.45\linewidth}
+				\centering
+				\includegraphics[width=0.9\linewidth]{../output/neural_network/figures/nn_convergence_global_standard_941_486_time}
+			\end{subfigure}
+		\end{figure}
+		\item[-] Number of hidden neurons: 4x7
+		\item[-] Stochastic is the best in number of epochs till convergence
+		\item[-] Stochastic is the worst in terms of training time (due to large number of parameters)
+		\item[-] Both tanh(x) and ReLU(x) activation functions perform better than the sigmoid 
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[t]\frametitle{Neural Network  Optimizations II}
+\begin{itemize}
+	\item Number of layers, number of neurons per layer:
+	\begin{figure}
+		\begin{subfigure}{0.45\linewidth}
+			\centering
+			\includegraphics[width=1.0\linewidth]{../output/neural_network/figures/nn_architecture_global_standard_941_486}
+			\caption{Number of features: 486}
+		\end{subfigure}
+		\begin{subfigure}{0.45\linewidth}
+			\centering
+			\includegraphics[width=1.0\linewidth]{../output/neural_network/figures/nn_architecture_global_standard_941_486_feature_pearson_90}
+			\caption{Number of features: 101}
+		\end{subfigure}
+	\end{figure}
+
+	\item[-] Connecting multiple layers with only one neuron is not worth it.
+	\item[-] Above 6-7 neurons per layer, no statistical improvement observed.
+	\item[-] Removing redundant features has little impact on accuracy.
+\end{itemize}
+\end{frame}
+\centering
+\begin{frame}[t]\frametitle{Best Neural Network Results}
+	\begin{table}[H]
+		\small
+		\centering
+		\begin{tabular}{|c|c|}
+			\hline
+                         \textbf{Attribute} & \textbf{Value} \\ \hline \hline
+			Normalization         &Global Standardization \\ \hline
+			Number of layers     & 2 \\ \hline
+			Neurons per layer    & 9  \\ \hline
+			Mean Accuracy        & 0.9936 \\ \hline
+			Standard Deviation   & 0.0026 \\ \hline
+			95.00\% Confidence   & 0.9936 $\pm$ 0.0051   \\ \hline
+			Accuracy Range       & (0.9885, 0.9987)      \\ \hline
+			Best Accuracy        & 0.9968                \\ \hline
+			Training Time        & 7.5350 s              \\ \hline
+			Classification Time  & 0.0039 s               \\ \hline
+		\end{tabular}
+	\end{table}
+\vskip 0.3cm
+Slow to train and not necessarily better than other learners!
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Novel Learner}
+\subsection{}
+
+\begin{frame}[t]\frametitle{Ensemble Network Motivation}
+
+\begin{itemize}
+	\item Training neural networks is expensive.
+	
+	\item Employing a bagger as a filter could reduce the dimensionality of the input data and simplify the target function a neural network must learn.
+	
+	\item Baggers have been shown to be more accurate with unstable weak learners.
+	\begin{itemize}
+		\item Unstable $\equiv$ Sensitive to training data.
+		\item If classifiers within an ensemble have uncorrelated outputs, the output of the ensemble will have higher accuracy than the individual classifiers.
+		\item The author's of \cite{ensemble-lit1} show this by comparing unstable decision trees to stable naive Bayes learners.
+	\end{itemize}
+
+\item An ensemble approach with decision trees is the appropriate design for the novel learner.
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[t]\frametitle{Ensemble Network Algorithm}
+	\begin{center}
+		\makebox[\linewidth][c]{	
+			\begin{tikzpicture}[scale=0.3]
+			% get node at origin
+			% variable definitions
+			\def\s{3.}; % size of each DT input square
+			\def\vertOffset{0.5*\s}; % distance to offset next box above previous
+			\def\r{1.5*\s}; % perceptron radius
+			\def\d{6*\s}; % distance between inputs and perceptron
+			\def\picWidth{3.0};
+			
+			% draw perceptron
+			\draw[fill=cyan] (\d, 0) circle (\r) node {Neural Network};
+			
+			% draw bias
+			\def\i{2}
+			\node at (0.5*\s, {\i*(\s + \vertOffset)}) {1};
+%			\node[anchor=south] at (0.5*\s, {\i*(\s + \vertOffset) + 0.8*\s}) {Decision tree output = perceptron input};
+			\node[anchor=south] at (0.5*\s, {\i*(\s + \vertOffset) + 0.5*\s}) {$x_0$};
+			% put box around tree
+			\draw (0, {\i*(\s + \vertOffset) - 0.5*\s}) rectangle (\s, {\i*(\s + \vertOffset) + 0.5*\s});
+			% draw line from box to perceptron
+			\draw (\s, {\i*(\s + \vertOffset)}) -- (\d-\r,0);
+			% label line with bias
+			\path (\s, {\i*(\s + \vertOffset)}) -- (\d-\r,0) node[midway,above] {$b$};
+			
+			% draw DTs
+			\draw (0.5*\s, 0) circle (0.0) node {\vdots};
+			\foreach \i / \ID / \j in {1/1/1, -1/2/N-1, -2/13/N}
+			{
+				% insert tree
+				\node at (0.5*\s, {\i*(\s + \vertOffset)}) {\includegraphics[width=1cm]{../output/PF/PF_941_486/PF_DT\ID_best.gv.pdf}};
+				\node[anchor=south] at (0.5*\s, {\i*(\s + \vertOffset) + 0.5*\s}) {$x_{\j}$};
+				% put box around tree
+				\draw (0, {\i*(\s + \vertOffset) - 0.5*\s}) rectangle (\s, {\i*(\s + \vertOffset) + 0.5*\s});
+				% draw line from box to perceptron
+				\draw (\s, {\i*(\s + \vertOffset)}) -- (\d-\r,0);
+				% label line with weight
+				\path (\s, {\i*(\s + \vertOffset)}) -- (\d-\r,0) node[midway,above] {$w_{\j}$};
+			}
+			\end{tikzpicture}
+		}
+	\end{center}
+\end{frame}
+
+\begin{frame}[t]\frametitle{Ensemble Network Architecture Optimization}
+	\begin{itemize}
+		\item Number of estimators, network architecture:
+		\begin{figure}
+			\begin{subfigure}{0.45\linewidth}
+				\centering
+				\includegraphics[width=1.0\linewidth]{../output/EN/EN_941_486/EN_gridsearch_941_486_global_max_range26.pdf}
+			\end{subfigure}
+			\begin{subfigure}{0.45\linewidth}
+				\centering
+				\includegraphics[width=1.0\linewidth]{../output/EN/EN_941_486/EN_gridsearch_941_486_global_max_range51.pdf}
+			\end{subfigure}
+		\end{figure}
+		
+		\item[-] Significant reduction in overall size of neural network.
+		\item[-] Optimum number of hidden layers 2.
+		\item[-] Best Configuration:
+		\begin{itemize}
+			\item[*] Number of estimators: 8
+			\item[*] Architecture: (3, 3)
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[t]\frametitle{Best Ensemble Network Results}
+	\begin{table}[H]
+		\small
+		\centering
+		\begin{tabular}{|c|c|}
+			\hline
+			\textbf{Attribute} & \textbf{Value} \\ \hline \hline
+			Normalization	& Global Standardization \\ \hline
+			Mean Accuracy        & 0.9979 \\ \hline
+			Standard Deviation   & 0.0015 \\ \hline
+			95.00\% Confidence   & 0.9979 $\pm$ 0.0048 \\ \hline
+			Accuracy Range       & (0.9931, 1.0000) \\ \hline
+			Best Accuracy        & 1.0000 \\ \hline
+			Training Time        & 2.5403 s\\ \hline
+			Classification Time  & 0.0242 s \\ \hline
+		\end{tabular}
+	\end{table}
+	\begin{center}
+		Greatest mean accuracy of all models and $\approx 66\%$ reduction in training time compared to the neural network!
+	\end{center}
+	\vskip 0.5cm
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Performance Comparisons}
+\subsection{}
+
+\begin{frame}[t]\frametitle{Model Comparisons}
+\begin{minipage}{\linewidth}
+	\begin{table}
+		\centering
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			\multirow{2}{*}{\textbf{Rank}} & \multirow{2}{*}{\textbf{Model}} & \multicolumn{2}{c|}{\textbf{Accuracy}} & \multirow{2}{*}{\textbf{Domain}} & \multirow{2}{*}{\textbf{Normalization}} \\ \cline{3-4}
+			& & \textbf{Optimized} & \textbf{HW 3} & & \\ \hline \hline
+			1 & \makecell{Perceptron\\Forest} & \makecell{(0.9956,\\1.0000)} & \makecell{(0.9866,\\1.0000)} & Global & Any \\ \hline
+			1 & KNN & \makecell{(0.9949,\\1.0000)} & \makecell{(0.9814,\\0.9952)} & Global & Standard \\ \hline
+			\textcolor{blue}{1} & \textcolor{blue}{\makecell{Ensemble\\Network}} & \textcolor{blue}{\makecell{(0.9931,\\1.0000)}} & \textcolor{blue}{--} & \textcolor{blue}{Global} & \textcolor{blue}{Any} \\ \hline
+			\textcolor{blue}{1} & \textcolor{blue}{\makecell{Neural\\Network}} & \textcolor{blue}{\makecell{(0.9885,\\0.9987)}} & \textcolor{blue}{--} & \textcolor{blue}{Global} & \textcolor{blue}{Standard} \\ \hline
+			1 & \makecell{Decision\\Tree} & \makecell{(0.9871,\\1.0000)} & \makecell{(0.9914,\\1.0000)} & Global & Any \\ \hline
+			1 & Perceptron & \makecell{(0.9871,\\0.9981)} & \makecell{(0.9315,\\0.9600)} & Global & Standard \\ \hline
+		\end{tabular}
+	\end{table}
+\end{minipage}
+\vspace{-0.3cm}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Conclusion}
+\subsection{}
+
+\begin{frame}[t]\frametitle{Conclusions}
+	\begin{itemize}
+		\item For neural networks, $\tanh(x)$ and mini-batch learning yield the minimum training times.
+		\vspace*{0.1in}
+		
+		\item The novel learner yielded comparable to better accuracy to the neural network. \vspace*{0.1in}
+	
+		\item The novel learner sports a 66\% reduction in training time compared to the neural network.
+		\vspace*{0.1in}
+		
+		\item Further optimizations on the novel learner architecture and exploration of PCA to come!
+		
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[t]\frametitle{References}
+	\bibliographystyle{ieeetr}
+	%custom ANS journal submission template bibliography style
+	\bibliography{bibliography}
+\end{frame}
+
+\end{document}

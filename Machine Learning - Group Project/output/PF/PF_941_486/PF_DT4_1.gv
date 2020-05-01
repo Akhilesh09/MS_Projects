@@ -1,0 +1,21 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
+edge [fontname=helvetica] ;
+0 [label=<system.cpu.commit.op_class_0::SimdAlu &le; 62.0<br/>gini = 0.305312<br/>samples = 209<br/>value = [203, 47]<br/>class = benign>, fillcolor="#eb9e67"] ;
+1 [label=<gini = 0.0<br/>samples = 32<br/>value = [0, 34]<br/>class = malicous>, fillcolor="#399de5"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label=<system.cpu.commit.op_class_0::SimdMisc &le; 1781.0<br/>gini = 0.113126<br/>samples = 177<br/>value = [203, 13]<br/>class = benign>, fillcolor="#e78946"] ;
+0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+3 [label=<system.cpu.dcache.ReadReq_mshr_hits::total &le; 2471.5<br/>gini = 0.02884<br/>samples = 166<br/>value = [202, 3]<br/>class = benign>, fillcolor="#e5833c"] ;
+2 -> 3 ;
+4 [label=<gini = 0.0<br/>samples = 164<br/>value = [202, 0]<br/>class = benign>, fillcolor="#e58139"] ;
+3 -> 4 ;
+5 [label=<gini = 0.0<br/>samples = 2<br/>value = [0, 3]<br/>class = malicous>, fillcolor="#399de5"] ;
+3 -> 5 ;
+6 [label=<system.mem_ctrls_0.totalIdleTime &le; 114557927424.0<br/>gini = 0.165289<br/>samples = 11<br/>value = [1, 10]<br/>class = malicous>, fillcolor="#4da7e8"] ;
+2 -> 6 ;
+7 [label=<gini = 0.0<br/>samples = 10<br/>value = [0, 10]<br/>class = malicous>, fillcolor="#399de5"] ;
+6 -> 7 ;
+8 [label=<gini = 0.0<br/>samples = 1<br/>value = [1, 0]<br/>class = benign>, fillcolor="#e58139"] ;
+6 -> 8 ;
+}

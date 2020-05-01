@@ -1,0 +1,10 @@
+|--- system.cpu.commit.op_class_0::SimdAlu <= -0.05
+|   |--- weights: [0.00, 37.00] class: 1
+|--- system.cpu.commit.op_class_0::SimdAlu >  -0.05
+|   |--- system.cpu.commit.op_class_0::SimdMisc <= -0.04
+|   |   |--- weights: [201.00, 0.00] class: 0
+|   |--- system.cpu.commit.op_class_0::SimdMisc >  -0.04
+|   |   |--- system.cpu.icache.ReadReq_mshr_misses::total <= 1.97
+|   |   |   |--- weights: [0.00, 10.00] class: 1
+|   |   |--- system.cpu.icache.ReadReq_mshr_misses::total >  1.97
+|   |   |   |--- weights: [2.00, 0.00] class: 0

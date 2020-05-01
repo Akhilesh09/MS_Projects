@@ -1,0 +1,10 @@
+|--- system.cpu.commit.op_class_0::SimdAlu <= -0.06
+|   |--- weights: [0.00, 41.00] class: 1
+|--- system.cpu.commit.op_class_0::SimdAlu >  -0.06
+|   |--- system.cpu.iq.iqSquashedNonSpecRemoved <= -0.09
+|   |   |--- weights: [0.00, 4.00] class: 1
+|   |--- system.cpu.iq.iqSquashedNonSpecRemoved >  -0.09
+|   |   |--- system.cpu.fetch.PendingQuiesceStallCycles <= 0.62
+|   |   |   |--- weights: [204.00, 0.00] class: 0
+|   |   |--- system.cpu.fetch.PendingQuiesceStallCycles >  0.62
+|   |   |   |--- weights: [0.00, 2.00] class: 1

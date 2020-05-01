@@ -1,0 +1,25 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
+edge [fontname=helvetica] ;
+0 [label=<system.cpu.commit.op_class_0::SimdAlu &le; -0.061179<br/>entropy = 0.779563<br/>samples = 628<br/>value = [483, 145]<br/>class = benign>, fillcolor="#eda774"] ;
+1 [label=<entropy = 0.0<br/>samples = 105<br/>value = [0, 105]<br/>class = malicous>, fillcolor="#399de5"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label=<system.cpu.commit.op_class_0::SimdMisc &le; -0.057641<br/>entropy = 0.38966<br/>samples = 523<br/>value = [483, 40]<br/>class = benign>, fillcolor="#e78b49"] ;
+0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+3 [label=<system.cpu.rename.serializingInsts &le; -0.087613<br/>entropy = 0.108922<br/>samples = 485<br/>value = [478, 7]<br/>class = benign>, fillcolor="#e5833c"] ;
+2 -> 3 ;
+4 [label=<system.cpu.commit.op_class_0::IntMult &le; -0.09045<br/>entropy = 0.021597<br/>samples = 479<br/>value = [478, 1]<br/>class = benign>, fillcolor="#e58139"] ;
+3 -> 4 ;
+5 [label=<entropy = 0.0<br/>samples = 1<br/>value = [0, 1]<br/>class = malicous>, fillcolor="#399de5"] ;
+4 -> 5 ;
+6 [label=<entropy = 0.0<br/>samples = 478<br/>value = [478, 0]<br/>class = benign>, fillcolor="#e58139"] ;
+4 -> 6 ;
+7 [label=<entropy = 0.0<br/>samples = 6<br/>value = [0, 6]<br/>class = malicous>, fillcolor="#399de5"] ;
+3 -> 7 ;
+8 [label=<system.cpu.branchPred.indirectMisses &le; 0.334694<br/>entropy = 0.561753<br/>samples = 38<br/>value = [5, 33]<br/>class = malicous>, fillcolor="#57ace9"] ;
+2 -> 8 ;
+9 [label=<entropy = 0.0<br/>samples = 33<br/>value = [0, 33]<br/>class = malicous>, fillcolor="#399de5"] ;
+8 -> 9 ;
+10 [label=<entropy = 0.0<br/>samples = 5<br/>value = [5, 0]<br/>class = benign>, fillcolor="#e58139"] ;
+8 -> 10 ;
+}

@@ -1,0 +1,21 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
+edge [fontname=helvetica] ;
+0 [label=<system.cpu.commit.op_class_0::SimdAlu &le; -0.051182<br/>entropy = 0.774509<br/>samples = 250<br/>value = [193, 57]<br/>class = benign>, fillcolor="#eda673"] ;
+1 [label=<entropy = 0.0<br/>samples = 40<br/>value = [0, 40]<br/>class = malicous>, fillcolor="#399de5"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label=<system.cpu.commit.op_class_0::SimdMisc &le; -0.043947<br/>entropy = 0.405526<br/>samples = 210<br/>value = [193, 17]<br/>class = benign>, fillcolor="#e78c4a"] ;
+0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+3 [label=<system.l2.ReadSharedReq_mshr_miss_latency::total &le; -0.036002<br/>entropy = 0.047206<br/>samples = 191<br/>value = [190, 1]<br/>class = benign>, fillcolor="#e5823a"] ;
+2 -> 3 ;
+4 [label=<entropy = 0.0<br/>samples = 190<br/>value = [190, 0]<br/>class = benign>, fillcolor="#e58139"] ;
+3 -> 4 ;
+5 [label=<entropy = 0.0<br/>samples = 1<br/>value = [0, 1]<br/>class = malicous>, fillcolor="#399de5"] ;
+3 -> 5 ;
+6 [label=<system.cpu.itb.wrMisses &le; 0.022055<br/>entropy = 0.629249<br/>samples = 19<br/>value = [3, 16]<br/>class = malicous>, fillcolor="#5eafea"] ;
+2 -> 6 ;
+7 [label=<entropy = 0.0<br/>samples = 16<br/>value = [0, 16]<br/>class = malicous>, fillcolor="#399de5"] ;
+6 -> 7 ;
+8 [label=<entropy = 0.0<br/>samples = 3<br/>value = [3, 0]<br/>class = benign>, fillcolor="#e58139"] ;
+6 -> 8 ;
+}

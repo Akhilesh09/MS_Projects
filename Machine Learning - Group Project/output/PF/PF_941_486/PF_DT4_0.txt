@@ -1,0 +1,13 @@
+|--- system.cpu.commit.op_class_0::SimdAlu <= 62.00
+|   |--- weights: [0.00, 33.00] class: 1
+|--- system.cpu.commit.op_class_0::SimdAlu >  62.00
+|   |--- system.cpu.commit.op_class_0::SimdMisc <= 1967.50
+|   |   |--- system.cpu.fetch.PendingQuiesceStallCycles <= 376.00
+|   |   |   |--- weights: [198.00, 0.00] class: 0
+|   |   |--- system.cpu.fetch.PendingQuiesceStallCycles >  376.00
+|   |   |   |--- weights: [0.00, 2.00] class: 1
+|   |--- system.cpu.commit.op_class_0::SimdMisc >  1967.50
+|   |   |--- system.mem_ctrls.bytesWrittenSys <= 452928.00
+|   |   |   |--- weights: [0.00, 16.00] class: 1
+|   |   |--- system.mem_ctrls.bytesWrittenSys >  452928.00
+|   |   |   |--- weights: [1.00, 0.00] class: 0

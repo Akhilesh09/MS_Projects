@@ -1,0 +1,25 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
+edge [fontname=helvetica] ;
+0 [label=<system.cpu.commit.op_class_0::SimdAlu &le; -0.050537<br/>entropy = 0.780201<br/>samples = 627<br/>value = [482, 145]<br/>class = benign>, fillcolor="#eda775"] ;
+1 [label=<entropy = 0.0<br/>samples = 113<br/>value = [0, 113]<br/>class = malicous>, fillcolor="#399de5"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label=<system.cpu.commit.op_class_0::SimdMisc &le; -0.042878<br/>entropy = 0.336339<br/>samples = 514<br/>value = [482, 32]<br/>class = benign>, fillcolor="#e78946"] ;
+0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+3 [label=<system.cpu.iew.iewIQFullEvents &le; -0.029683<br/>entropy = 0.096293<br/>samples = 484<br/>value = [478, 6]<br/>class = benign>, fillcolor="#e5833b"] ;
+2 -> 3 ;
+4 [label=<system.cpu.iew.lsq.thread0.forwLoads &le; -0.072573<br/>entropy = 0.021597<br/>samples = 479<br/>value = [478, 1]<br/>class = benign>, fillcolor="#e58139"] ;
+3 -> 4 ;
+5 [label=<entropy = 0.0<br/>samples = 1<br/>value = [0, 1]<br/>class = malicous>, fillcolor="#399de5"] ;
+4 -> 5 ;
+6 [label=<entropy = 0.0<br/>samples = 478<br/>value = [478, 0]<br/>class = benign>, fillcolor="#e58139"] ;
+4 -> 6 ;
+7 [label=<entropy = 0.0<br/>samples = 5<br/>value = [0, 5]<br/>class = malicous>, fillcolor="#399de5"] ;
+3 -> 7 ;
+8 [label=<system.tol2bus.respLayer0.occupancy &le; 0.452758<br/>entropy = 0.56651<br/>samples = 30<br/>value = [4, 26]<br/>class = malicous>, fillcolor="#57ace9"] ;
+2 -> 8 ;
+9 [label=<entropy = 0.0<br/>samples = 26<br/>value = [0, 26]<br/>class = malicous>, fillcolor="#399de5"] ;
+8 -> 9 ;
+10 [label=<entropy = 0.0<br/>samples = 4<br/>value = [4, 0]<br/>class = benign>, fillcolor="#e58139"] ;
+8 -> 10 ;
+}

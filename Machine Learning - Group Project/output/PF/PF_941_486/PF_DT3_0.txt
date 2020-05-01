@@ -1,0 +1,7 @@
+|--- system.cpu.commit.op_class_0::FloatAdd <= 5.50
+|   |--- weights: [0.00, 46.00] class: 1
+|--- system.cpu.commit.op_class_0::FloatAdd >  5.50
+|   |--- system.cpu.commit.op_class_0::FloatCvt <= 16.00
+|   |   |--- weights: [189.00, 0.00] class: 0
+|   |--- system.cpu.commit.op_class_0::FloatCvt >  16.00
+|   |   |--- weights: [0.00, 15.00] class: 1

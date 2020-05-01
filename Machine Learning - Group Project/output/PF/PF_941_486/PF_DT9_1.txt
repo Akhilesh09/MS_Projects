@@ -1,0 +1,10 @@
+|--- system.cpu.commit.op_class_0::FloatAdd <= 0.00
+|   |--- weights: [0.00, 85.00] class: 1
+|--- system.cpu.commit.op_class_0::FloatAdd >  0.00
+|   |--- system.cpu.dcache.blocked_cycles::no_mshrs <= 0.69
+|   |   |--- system.tol2bus.reqLayer0.utilization <= 0.11
+|   |   |   |--- weights: [0.00, 1.00] class: 1
+|   |   |--- system.tol2bus.reqLayer0.utilization >  0.11
+|   |   |   |--- weights: [382.00, 0.00] class: 0
+|   |--- system.cpu.dcache.blocked_cycles::no_mshrs >  0.69
+|   |   |--- weights: [0.00, 33.00] class: 1

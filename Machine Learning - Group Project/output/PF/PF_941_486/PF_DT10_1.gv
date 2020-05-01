@@ -1,0 +1,17 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
+edge [fontname=helvetica] ;
+0 [label=<system.cpu.commit.op_class_0::FloatAdd &le; 0.000109<br/>gini = 0.384301<br/>samples = 328<br/>value = [371, 130]<br/>class = benign>, fillcolor="#eead7e"] ;
+1 [label=<gini = 0.0<br/>samples = 56<br/>value = [0, 97]<br/>class = malicous>, fillcolor="#399de5"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label=<system.cpu.dcache.ReadReq_mshr_hits::total &le; 0.078223<br/>gini = 0.150022<br/>samples = 272<br/>value = [371, 33]<br/>class = benign>, fillcolor="#e78c4b"] ;
+0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+3 [label=<gini = 0.0<br/>samples = 251<br/>value = [370, 0]<br/>class = benign>, fillcolor="#e58139"] ;
+2 -> 3 ;
+4 [label=<system.l2.ReadCleanReq_miss_rate::total &le; 0.933932<br/>gini = 0.057093<br/>samples = 21<br/>value = [1, 33]<br/>class = malicous>, fillcolor="#3fa0e6"] ;
+2 -> 4 ;
+5 [label=<gini = 0.0<br/>samples = 1<br/>value = [1, 0]<br/>class = benign>, fillcolor="#e58139"] ;
+4 -> 5 ;
+6 [label=<gini = 0.0<br/>samples = 20<br/>value = [0, 33]<br/>class = malicous>, fillcolor="#399de5"] ;
+4 -> 6 ;
+}

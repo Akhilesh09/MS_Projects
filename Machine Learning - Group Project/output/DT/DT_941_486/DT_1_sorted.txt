@@ -1,0 +1,5 @@
+system.cpu.commit.op_class_0::SimdAlu
+system.cpu.commit.op_class_0::SimdMisc
+system.cpu.iew.iewIQFullEvents
+system.cpu.iew.lsq.thread0.forwLoads
+system.tol2bus.respLayer0.occupancy

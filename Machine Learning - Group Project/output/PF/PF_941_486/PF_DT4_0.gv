@@ -1,0 +1,21 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
+edge [fontname=helvetica] ;
+0 [label=<system.cpu.commit.op_class_0::SimdAlu &le; 62.0<br/>gini = 0.324768<br/>samples = 209<br/>value = [199, 51]<br/>class = benign>, fillcolor="#eca16c"] ;
+1 [label=<gini = 0.0<br/>samples = 28<br/>value = [0, 33]<br/>class = malicous>, fillcolor="#399de5"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label=<system.cpu.commit.op_class_0::SimdMisc &le; 1967.5<br/>gini = 0.152137<br/>samples = 181<br/>value = [199, 18]<br/>class = benign>, fillcolor="#e78c4b"] ;
+0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+3 [label=<system.cpu.fetch.PendingQuiesceStallCycles &le; 376.0<br/>gini = 0.0198<br/>samples = 166<br/>value = [198, 2]<br/>class = benign>, fillcolor="#e5823b"] ;
+2 -> 3 ;
+4 [label=<gini = 0.0<br/>samples = 165<br/>value = [198, 0]<br/>class = benign>, fillcolor="#e58139"] ;
+3 -> 4 ;
+5 [label=<gini = 0.0<br/>samples = 1<br/>value = [0, 2]<br/>class = malicous>, fillcolor="#399de5"] ;
+3 -> 5 ;
+6 [label=<system.mem_ctrls.bytesWrittenSys &le; 452928.0<br/>gini = 0.110727<br/>samples = 15<br/>value = [1, 16]<br/>class = malicous>, fillcolor="#45a3e7"] ;
+2 -> 6 ;
+7 [label=<gini = 0.0<br/>samples = 14<br/>value = [0, 16]<br/>class = malicous>, fillcolor="#399de5"] ;
+6 -> 7 ;
+8 [label=<gini = 0.0<br/>samples = 1<br/>value = [1, 0]<br/>class = benign>, fillcolor="#e58139"] ;
+6 -> 8 ;
+}

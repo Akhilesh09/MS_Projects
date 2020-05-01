@@ -1,0 +1,13 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
+edge [fontname=helvetica] ;
+0 [label=<system.cpu.commit.op_class_0::FloatAdd &le; 5.5<br/>gini = 0.392352<br/>samples = 208<br/>value = [183, 67]<br/>class = benign>, fillcolor="#efaf81"] ;
+1 [label=<gini = 0.0<br/>samples = 45<br/>value = [0, 54]<br/>class = malicous>, fillcolor="#399de5"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label=<system.cpu.rename.ROBFullEvents &le; 1028.0<br/>gini = 0.123855<br/>samples = 163<br/>value = [183, 13]<br/>class = benign>, fillcolor="#e78a47"] ;
+0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+3 [label=<gini = 0.0<br/>samples = 151<br/>value = [183, 0]<br/>class = benign>, fillcolor="#e58139"] ;
+2 -> 3 ;
+4 [label=<gini = 0.0<br/>samples = 12<br/>value = [0, 13]<br/>class = malicous>, fillcolor="#399de5"] ;
+2 -> 4 ;
+}

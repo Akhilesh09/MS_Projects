@@ -1,0 +1,7 @@
+|--- system.cpu.commit.op_class_0::FloatAdd <= 0.00
+|   |--- weights: [0.00, 74.00] class: 1
+|--- system.cpu.commit.op_class_0::FloatAdd >  0.00
+|   |--- system.cpu.dcache.blocked_cycles::no_mshrs <= 0.69
+|   |   |--- weights: [398.00, 0.00] class: 0
+|   |--- system.cpu.dcache.blocked_cycles::no_mshrs >  0.69
+|   |   |--- weights: [0.00, 29.00] class: 1

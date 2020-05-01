@@ -1,0 +1,17 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
+edge [fontname=helvetica] ;
+0 [label=<system.cpu.commit.op_class_0::SimdAlu &le; -0.061179<br/>entropy = 0.695685<br/>samples = 251<br/>value = [204, 47]<br/>class = benign>, fillcolor="#eb9e67"] ;
+1 [label=<entropy = 0.0<br/>samples = 41<br/>value = [0, 41]<br/>class = malicous>, fillcolor="#399de5"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label=<system.cpu.iq.iqSquashedNonSpecRemoved &le; -0.08675<br/>entropy = 0.187176<br/>samples = 210<br/>value = [204, 6]<br/>class = benign>, fillcolor="#e6853f"] ;
+0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+3 [label=<entropy = 0.0<br/>samples = 4<br/>value = [0, 4]<br/>class = malicous>, fillcolor="#399de5"] ;
+2 -> 3 ;
+4 [label=<system.cpu.fetch.PendingQuiesceStallCycles &le; 0.619441<br/>entropy = 0.078856<br/>samples = 206<br/>value = [204, 2]<br/>class = benign>, fillcolor="#e5823b"] ;
+2 -> 4 ;
+5 [label=<entropy = 0.0<br/>samples = 204<br/>value = [204, 0]<br/>class = benign>, fillcolor="#e58139"] ;
+4 -> 5 ;
+6 [label=<entropy = 0.0<br/>samples = 2<br/>value = [0, 2]<br/>class = malicous>, fillcolor="#399de5"] ;
+4 -> 6 ;
+}
