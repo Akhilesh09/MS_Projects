@@ -12,6 +12,7 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 #include <string>
+#include<math.h>
 
 using namespace std;
 
@@ -19,6 +20,14 @@ using namespace std;
 // These variables will store the input ppm image's width, height, and color
 // =============================================================================
 //int width, height;
+unsigned char *env_img;
+unsigned char *fore_img;
+unsigned char *depth_img;
+
+unsigned char *env_arr;
+unsigned char *fore_arr;
+unsigned char *result;
+
 unsigned char *dark_arr;
 unsigned char *dark_img;
 
@@ -31,9 +40,7 @@ unsigned char *normal_map;
 unsigned char *spec_arr;
 unsigned char *spec_img;
 
-double *normal_mod;
-
-unsigned char *result;
+float *normal_mod;
 
 int width = 600, height = 600, channels1, channels2, channels3;
 
@@ -44,62 +51,33 @@ int width = 600, height = 600, channels1, channels2, channels3;
 // This function stores the RGB values of each pixel to "pixmap."
 // Then, "glutDisplayFunc" below will use pixmap to display the pixel colors.
 // =============================================================================
+float magnitude(float a, float b, float c)
+{
+	return pow(pow(a, 2) + pow(b, 2) + pow(c, 2), 0.5);
+}
 
-double crop(double min, double max, double x) {
+
+float crop(float min, float max, float x) {
 	x = (x - min) / (max - min);
-	if (x > max)
+	if (x > 1)
 		x = 1;
-	if (x < min)
+	if (x < 0)
 		x = 0;
-	return x;
+	return -2 * pow(x, 3) + 3 * pow(x, 2);
 }
 void setPixels()
 {
 
 	stbi_set_flip_vertically_on_load(true);
-	
-	//load dark image
-	dark_img = stbi_load("nm_d.png", &width, &height, &channels1, STBI_rgb);
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
-			int i = (y * width + x) * 3;
-			//cout << y<<endl << x << endl;
-			dark_arr[i] = dark_img[i];
-			dark_arr[i+1] = dark_img[i+1];
-			dark_arr[i+2] = dark_img[i+2];
-		}
-	}
 
-	//load light image
-	light_img = stbi_load("nm_l.png", &width, &height, &channels2, STBI_rgb);
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
-			int i = (y * width + x) * 3;
-			light_arr[i] = light_img[i++];
-			light_arr[i] = light_img[i++];
-			light_arr[i] = light_img[i++];
-		}
-	}
-
-	//load specular image
-	spec_img = stbi_load("nm_s.png", &width, &height, &channels2, STBI_rgb);
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
-			int i = (y * width + x) * 3;
-			spec_arr[i] = spec_img[i++];
-			spec_arr[i] = spec_img[i++];
-			spec_arr[i] = spec_img[i++];
-		}
-	}
-	
 	//load normal map
-	normal_map = stbi_load("nm.png", &width, &height, &channels3, STBI_rgb);
+	depth_img = stbi_load("nm.png", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int i = (y * width + x) * 3;
-			normal_arr[i] = normal_map[i++];
-			normal_arr[i] = normal_map[i++];
-			normal_arr[i] = normal_map[i++];
+			normal_arr[i] = depth_img[i++];
+			normal_arr[i] = depth_img[i++];
+			normal_arr[i] = depth_img[i++];
 		}
 	}
 
@@ -107,53 +85,109 @@ void setPixels()
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int i = (y * width + x) * 3;
-			normal_mod[i] = (double)(2 * normal_arr[i] / 255.0 - 1);
+			normal_mod[i] = (float)(2 * (int)normal_arr[i] / 255.0 - 1);
 			i++;
-			normal_mod[i] = (double)(2 * normal_arr[i] / 255.0 - 1);
+			normal_mod[i] = (float)(2 * (int)normal_arr[i] / 255.0 - 1);
 			i++;
-			normal_mod[i] = (double)(2 * normal_arr[i] / 255.0 - 1);
+			normal_mod[i] = (float)(2 * (int)normal_arr[i] / 255.0 - 1);
 			i++;
 		}
 	}
 
-	for (int y = 0; y < height; y++) 
-	{
-		for (int x = 0; x < width; x++) 
-		{
+	//load background image
+	env_img = stbi_load("back.png", &width, &height, &channels2, STBI_rgb);
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			int i = (y * width + x) * 3;
+			env_arr[i] = env_img[i++];
+			env_arr[i] = env_img[i++];
+			env_arr[i] = env_img[i++];
+		}
+	}
+	
+	//load foreground image
+	fore_img = stbi_load("env.jpg", &width, &height, &channels2, STBI_rgb);
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			int i = (y * width + x) * 3;
+			fore_arr[i] = fore_img[i++];
+			fore_arr[i] = fore_img[i++];
+			fore_arr[i] = fore_img[i++];
+		}
+	}
+
+	int d = 1;
+	float eta2 = 1;
+	float eta1 = 1.66;
+	float eta = eta2 / eta1;
+	float a = -1 / eta;
+
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
 			int i = (y * width + x) * 3;
 
-			// Assumed light at (1,1,0)
-			double T = 0.5*(normal_mod[i] + normal_mod[i + 1]) + 0.5;
-			double S = 2 * normal_mod[i + 2] * (normal_mod[i] + normal_mod[i + 1]);
-			double B = 1 - normal_mod[i + 2];
+			float T = 0.5*(normal_mod[i] + normal_mod[i + 1]) + 0.5;
+			float C = normal_mod[i + 2];
+			float B = 1 - normal_mod[i + 2];
+			float S_x, S_y, S_z;
+			float T_x, T_y, T_z;
+			float a = log2(eta);
+
+			//cout << eta << endl << a << endl;
+
+			S_x = normal_mod[i + 2] * normal_mod[i];
+			S_y = normal_mod[i + 2] * normal_mod[i + 1];
+			S_z = -1 + normal_mod[i + 2] * normal_mod[i + 2];
+			S_x = S_x / magnitude(S_x, S_y, S_z);
+			S_y = S_y / magnitude(S_x, S_y, S_z);
+			S_z = S_z / magnitude(S_x, S_y, S_z);
+
+			T_x = (a - 1)*S_x;
+			T_y = (a - 1)*S_y;
+			T_z = a + (a - 1)*S_z;
+			T_x = T_x / magnitude(T_x, T_y, T_z);
+			T_y = T_y / magnitude(T_x, T_y, T_z);
+			T_z = T_z / magnitude(T_x, T_y, T_z);
+
+			T_x = T_x / T_z;
+			T_y = T_y / T_z;
+
+			float b = (C / eta) - pow(((pow(C, 2) - 1) / pow(eta, 2)) + 1, 2);
+
+
+			int indx = x + (T_x*d);
+			int indy = y + (T_y*d);
+			if (indy > height - 1)
+				indy = (height)-(indy % (height)) - 1;
+			else if (indy < 0)
+				indy = (height)-(indy % (height)) - 1;
+			if (indx > width - 1)
+				indx = (width)-(indx % (width)) - 1;
+			else if (indx < 0)
+				indx = (width)-(indx % (width)) - 1;
+			int ind = (indy*width + indx) * 3;
+
+			float kt = 1;
 
 			T = crop(0, 1, T);
-			
-			//shading for foreground
-			if ((int)normal_arr[i + 2] != 0) {
-				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
-				result[i] = (result[i] * (1 - S) + spec_arr[i] * S);
-
-			}
-			else
-				result[i] = (light_arr[i] * dark_arr[i]) / 255;
+			if (normal_arr[i + 2] != 0) {
+				result[i] = fore_arr[i] * (1 -kt) + env_arr[ind++] * kt;
 			i++;
 
-			if ((int)normal_arr[i + 1] != 0) {
-				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
-				result[i] = (result[i] * (1 - S) + spec_arr[i] * S);
-			}
-			else
-				result[i] = (light_arr[i] * dark_arr[i]) / 255;
+			result[i] = fore_arr[i] * (1 - kt) + env_arr[ind++] * kt;
 			i++;
 
-			if ((int)normal_arr[i] != 0) {
-				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
-				result[i] = (result[i] * (1 - S) + spec_arr[i] * S);
+			result[i] = fore_arr[i] * (1 - kt) + env_arr[ind++] * kt;
 			}
 			else
-				result[i] = (light_arr[i] * dark_arr[i]) / 255;
+			{
+				result[i++] = 0;
+				result[i++] = 0;
+				result[i] = 0;
+
+			}
 		}
+
 	}
 }
 
@@ -189,7 +223,7 @@ static void processMouse(int button, int state, int x, int y)
 }
 static void init(void)
 {
-	glClearColor(1, 1, 1, 1); // Set background color.nm
+	glClearColor(1, 1, 1, 1); // Set background color.
 }
 
 // =============================================================================
@@ -201,15 +235,13 @@ int main(int argc, char *argv[])
 	//initialize the global variables
 	width = 600;
 	height = 600;
-	dark_arr = new unsigned char[600 * 600 * 3];
-	light_arr = new unsigned char[600 * 600 * 3];
+	env_arr = new unsigned char[600 * 600 * 3];
+	fore_arr = new unsigned char[600 * 600 * 3];
 	normal_arr = new unsigned char[600 * 600 * 3];
-	spec_arr = new unsigned char[600 * 600 * 3];
-	normal_mod = new double[600 * 600 * 3];
+	normal_mod = new float[600 * 600 * 3];
 	result = new unsigned char[600 * 600 * 3];
 
 	setPixels();
-
 
 	// OpenGL Commands:
 	// Once "glutMainLoop" is executed, the program loops indefiniteL_y to all
