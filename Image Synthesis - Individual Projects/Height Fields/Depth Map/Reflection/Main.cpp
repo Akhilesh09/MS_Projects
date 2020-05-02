@@ -27,7 +27,7 @@ unsigned char *env_arr;
 unsigned char *result;
 
 unsigned char *depth_img_org;
-unsigned char *dm_arr;
+unsigned char *depthmap_arr;
 
 unsigned char *dark_arr;
 unsigned char *dark_img;
@@ -70,6 +70,7 @@ void setPixels()
 {
 
 	stbi_set_flip_vertically_on_load(true);
+	//load dark image
 	dark_img = stbi_load("nm_d.png", &width, &height, &channels1, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -79,7 +80,8 @@ void setPixels()
 			dark_arr[i] = dark_img[i++];
 		}
 	}
-
+	
+	//load light image
 	light_img = stbi_load("nm_l.png", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -90,6 +92,7 @@ void setPixels()
 		}
 	}
 
+	//load specular image
 	spec_img = stbi_load("nm_s.png", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -100,7 +103,8 @@ void setPixels()
 		}
 	}
 
-	depth_img = stbi_load("nm.png", &width, &height, &channels2, STBI_rgb);
+	//load normal map
+	normal_img= stbi_load("nm.png", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int i = (y * width + x) * 3;
@@ -109,7 +113,8 @@ void setPixels()
 			normal_arr[i] = depth_img[i++];
 		}
 	}
-
+	
+	//convert normal map to vector field
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int i = (y * width + x) * 3;
@@ -122,16 +127,18 @@ void setPixels()
 		}
 	}
 
+	//load depth map
 	depth_img_org = stbi_load("hf.jpg", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int i = (y * width + x) * 3;
-			dm_arr[i] = depth_img_org[i++];
-			dm_arr[i] = depth_img_org[i++];
-			dm_arr[i] = depth_img_org[i++];
+			depthmap_arr[i] = depth_img_org[i++];
+			depthmap_arr[i] = depth_img_org[i++];
+			depthmap_arr[i] = depth_img_org[i++];
 		}
 	}
-
+	
+	//load environment map
 	env_img = stbi_load("back.png", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -149,14 +156,7 @@ void setPixels()
 			int i = (y * width + x) * 3;
 			int indx = abs(((2 * normal_mod[i] * normal_mod[i + 2] * d) / (-1 + 2 * normal_mod[i + 2] * normal_mod[i + 2])) + x);
 			int indy = abs(((2 * normal_mod[i + 1] * normal_mod[i + 2] * d) / (-1 + 2 * normal_mod[i + 2] * normal_mod[i + 2])) + y);
-			/*if (indy > height - 1)
-				indy = (height)-(indy % (height)) - 1;
-			else if (indy < 0)
-				indy = (height)-(indy % (height)) - 1;
-			if (indx > width - 1)
-				indx = (width)-(indx % (width)) - 1;
-			else if (indx < 0)
-				indx = (width)-(indx % (width)) - 1;*/
+			
 			indx = indx % 600;
 			indy = indy % 600;
 			if (indy > height - 1)
@@ -178,21 +178,20 @@ void setPixels()
 
 			T = crop(0, 1, T);
 			S = crop(0, 1, S);
-			if (dm_arr[i + 2] != 22 && dm_arr[i + 1] != 22 && dm_arr[i] != 22)
+			
+			//shading for foreground
+			if (depthmap_arr[i + 2] != 22 && depthmap_arr[i + 1] != 22 && depthmap_arr[i] != 22)
 			{
 				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
-				result[i] = (1 - (kr))*result[i] + kr * env_arr[ind++];// +255 * ks*S);
-				//result[i] = (1 - B)*result[i] + B * 0;
+				result[i] = (1 - (kr))*result[i] + kr * env_arr[ind++];
 				i++;
 
 				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
-				result[i] = (1 - (kr))*result[i] + kr * env_arr[ind++];// +255 * ks*S);
-				//result[i] = (1 - B)*result[i] + B * 0;
+				result[i] = (1 - (kr))*result[i] + kr * env_arr[ind++];
 				i++;
 
 				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
-				result[i] = (1 - (kr))*result[i] + kr * env_arr[ind++];// +255 * ks*S);
-				//result[i] = (1 - B)*result[i] + B * 0;
+				result[i] = (1 - (kr))*result[i] + kr * env_arr[ind++];
 				i++;
 			}
 			else
@@ -257,10 +256,8 @@ int main(int argc, char *argv[])
 	env_arr = new unsigned char[600 * 600 * 3];
 	normal_arr = new unsigned char[600 * 600 * 3];
 	normal_mod = new float[600 * 600 * 3];
-	dark_arr_mod = new float[600 * 600 * 3];
-	light_arr_mod = new float[600 * 600 * 3];
 	result = new unsigned char[600 * 600 * 3];
-	dm_arr = new unsigned char[600 * 600 * 3];
+	depthmap_arr = new unsigned char[600 * 600 * 3];
 
 	setPixels();
 

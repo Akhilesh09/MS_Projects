@@ -32,9 +32,7 @@ unsigned char *spec_arr;
 unsigned char *spec_img;
 
 double *normal_mod;
-double* dark_arr_mod;
-double* light_arr_mod;
-double* spec_arr_mod;
+
 unsigned char *result;
 
 int width = 600, height = 600, channels1, channels2, channels3;
@@ -59,6 +57,8 @@ void setPixels()
 {
 
 	stbi_set_flip_vertically_on_load(true);
+	
+	//load dark image
 	dark_img = stbi_load("nm_d.png", &width, &height, &channels1, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -70,6 +70,7 @@ void setPixels()
 		}
 	}
 
+	//load light image
 	light_img = stbi_load("nm_l.png", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -80,6 +81,7 @@ void setPixels()
 		}
 	}
 
+	//load specular image
 	spec_img = stbi_load("nm_s.png", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -89,40 +91,8 @@ void setPixels()
 			spec_arr[i] = spec_img[i++];
 		}
 	}
-
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
-			int i = (y * width + x) * 3;
-			dark_arr_mod[i] = (double)(dark_arr[i] / 255.0);
-			i++;
-			dark_arr_mod[i] = (double)(dark_arr[i] / 255.0);
-			i++;
-			dark_arr_mod[i] = (double)(dark_arr[i] / 255.0);
-			i++;
-		}
-	}
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
-			int i = (y * width + x) * 3;
-			light_arr_mod[i] = (double)(light_arr[i] / 255.0);
-			i++;
-			light_arr_mod[i] = (double)(light_arr[i] / 255.0);
-			i++;
-			light_arr_mod[i] = (double)(light_arr[i] / 255.0);
-			i++;
-		}
-	}
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
-			int i = (y * width + x) * 3;
-			spec_arr_mod[i] = (double)(spec_arr[i] / 255.0);
-			i++;
-			spec_arr_mod[i] = (double)(spec_arr[i] / 255.0);
-			i++;
-			spec_arr_mod[i] = (double)(spec_arr[i] / 255.0);
-			i++;
-		}
-	}
+	
+	//load normal map
 	normal_map = stbi_load("nm.png", &width, &height, &channels3, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -133,7 +103,7 @@ void setPixels()
 		}
 	}
 
-
+	//convert normal map to vector field
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int i = (y * width + x) * 3;
@@ -146,26 +116,22 @@ void setPixels()
 		}
 	}
 
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
+	for (int y = 0; y < height; y++) 
+	{
+		for (int x = 0; x < width; x++) 
+		{
 			int i = (y * width + x) * 3;
 
-			//normal_mod is normal map with values from -1 to 1
-			//i is the x component, i+1 is the y component and i+2 is the z component
 			// Assumed light at (1,1,0)
 			double T = 0.5*(normal_mod[i] + normal_mod[i + 1]) + 0.5;
 			double S = 2 * normal_mod[i + 2] * (normal_mod[i] + normal_mod[i + 1]);
 			double B = 1 - normal_mod[i + 2];
 
 			T = crop(0, 1, T);
-			//S = crop(0, 1, S);
-			B = crop(0.2, 0.5, B);
-
-
-
+			
+			//shading for foreground
 			if ((int)normal_arr[i + 2] != 0) {
 				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
-			//	result[i] = (result[i] * (1 - B) + 255 * B);
 				result[i] = (result[i] * (1 - S) + spec_arr[i] * S);
 
 			}
@@ -175,7 +141,6 @@ void setPixels()
 
 			if ((int)normal_arr[i + 1] != 0) {
 				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
-				//result[i] = (result[i] * (1 - B));
 				result[i] = (result[i] * (1 - S) + spec_arr[i] * S);
 			}
 			else
@@ -184,14 +149,11 @@ void setPixels()
 
 			if ((int)normal_arr[i] != 0) {
 				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
-				//result[i] = (result[i] * (1 - B));
 				result[i] = (result[i] * (1 - S) + spec_arr[i] * S);
 			}
 			else
 				result[i] = (light_arr[i] * dark_arr[i]) / 255;
 		}
-
-
 	}
 }
 
@@ -243,10 +205,7 @@ int main(int argc, char *argv[])
 	light_arr = new unsigned char[600 * 600 * 3];
 	normal_arr = new unsigned char[600 * 600 * 3];
 	spec_arr = new unsigned char[600 * 600 * 3];
-	spec_arr_mod = new double[600 * 600 * 3];
 	normal_mod = new double[600 * 600 * 3];
-	dark_arr_mod = new double[600 * 600 * 3];
-	light_arr_mod = new double[600 * 600 * 3];
 	result = new unsigned char[600 * 600 * 3];
 
 	setPixels();

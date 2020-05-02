@@ -73,6 +73,7 @@ void setPixels()
 {
 
 	stbi_set_flip_vertically_on_load(true);
+	//load dark image
 	dark_img = stbi_load("nm_d.png", &width, &height, &channels1, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -82,7 +83,8 @@ void setPixels()
 			dark_arr[i] = dark_img[i++];
 		}
 	}
-
+	
+	//load light image
 	light_img = stbi_load("nm_l.png", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -93,6 +95,7 @@ void setPixels()
 		}
 	}
 
+	//load specular image
 	spec_img = stbi_load("nm_s.png", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -103,7 +106,8 @@ void setPixels()
 		}
 	}
 
-	depth_img = stbi_load("nm.png", &width, &height, &channels2, STBI_rgb);
+	//load normal map
+	normal_img= stbi_load("nm.png", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int i = (y * width + x) * 3;
@@ -113,6 +117,7 @@ void setPixels()
 		}
 	}
 
+	//load depth map
 	depth_img_org = stbi_load("depthmap.png", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -123,6 +128,7 @@ void setPixels()
 		}
 	}
 
+	//convert normal map to vector field
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int i = (y * width + x) * 3;
@@ -135,6 +141,7 @@ void setPixels()
 		}
 	}
 
+	//load environment map
 	env_img = stbi_load("back2.jpg", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -162,7 +169,6 @@ void setPixels()
 			float T_x, T_y, T_z;
 			float a = log2(eta);
 
-			//cout << eta << endl << a << endl;
 
 			S_x = normal_mod[i + 2] * normal_mod[i];
 			S_y = normal_mod[i + 2] * normal_mod[i + 1];
@@ -199,22 +205,20 @@ void setPixels()
 			float kt = 1;
 
 			T = crop(0, 1, T);
+			//shading for foreground
 			if (dm_arr[i + 2] != 22 && dm_arr[i + 1] != 22 && dm_arr[i] != 22)
 			{
 
 				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
 				result[i] = result[i] * (1 - kt) + env_arr[ind++] * kt;
-				//result[i] = (1 - B)*result[i] + B * 0;
 				i++;
 
 				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
 				result[i] = result[i] * (1 - kt) + env_arr[ind++] * kt;
-				//result[i] = (1 - B)*result[i] + B * 0;
 				i++;
 
 				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
 				result[i] = result[i] * (1 - kt) + env_arr[ind++] * kt;
-				//result[i] = (1 - B)*result[i] + B * 0;
 			}
 			else
 			{
