@@ -129,9 +129,9 @@ void setPixels()
 		}
 	}
 
-	int d =24;
-	float eta2 = 1.66;
-	float eta1 = 1;
+	int d =10;
+	float eta2 = 1;
+	float eta1 = 1.66;
 	float eta = eta2 / eta1;
 	float a = -1 / eta;
 
