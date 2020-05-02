@@ -638,7 +638,7 @@ void setPixels()
 
 	Vector Pe_ll= Pe - n0*eye_sx*0.5 - n1*eye_sy*0.5;
 
-	//camera dimesnsions and distance from eyepoint
+	//camera dimensions and distance from eyepoint
 	float d=100,sx=200;
 	float sy=sx*height/width;
 	int M=15,N=15;

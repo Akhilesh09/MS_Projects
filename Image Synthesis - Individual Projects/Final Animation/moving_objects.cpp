@@ -1,21 +1,3 @@
-// =============================================================================
-// VIZA654/CSCE646 at Texas A&M UniversiT_y
-// Homework 0
-// Created by Anton Agana based from Ariel Chisholm's template
-// 05.23.2011
-//
-// This file is supplied with an associated makefile. Put both files in the same
-// directory, navigate to that directory from the Linux shell, and T_yPr 'make'.
-// This will create a program called 'pr01' that you can run by entering
-// 'homework0' as a command in the shell.
-//
-// If you are new to programming in Linux, there is an
-// excellent introduction to makefile structure and the gcc compiler here:
-//
-// http://www.cs.T_xstate.edu/labs/tutorials/tut_docs/Linux_Prog_Environment.pdf
-//
-// =============================================================================
-
 #include <cstdlib>
 #include <iostream>
 #include <GL/glut.h>
@@ -40,7 +22,7 @@ using namespace std;
 // These variables will store the input ppm image's width, height, and color
 // =============================================================================
 
-unsigned char *plane_arr_f;
+unsigned char *result;
 
 int width = 200, height = 200, channels1, channels2, channels3;
 
@@ -122,6 +104,7 @@ float crop(float min, float max, float x) {
 	return -2 * pow(x, 3) + 3 * pow(x, 2);
 }
 
+//Parent class for different objects
 class Object
 {
 public: 
@@ -148,10 +131,11 @@ virtual bool intersect(Vector &P, Vector &dir,float &t_hit)
 		}
 };
 
+//Child class for Sphere
 class Sphere : public Object
 {
 public:
-	
+	//Constructor to intialize required members
 	Sphere(float x,float y,float z, float radius, Vector &c,bool refl,bool refr,char t,float ir)
 	{
 		Pc.x=x;
@@ -168,52 +152,54 @@ public:
 
 	}
 
-
+	//compute normal at hitpoint
 	void normal(Vector &P)
 	{
 		n=(P-Pc)*(1/r);
 
 	}
 
+	//sphere equation
 	float eq(Vector &P)
 	{
-
-
-	return (P-Pc)*(P-Pc) - pow(r,2);
+		return (P-Pc)*(P-Pc) - pow(r,2);
 	}
 
+	//print
 	void print()
 	{
 		cout<<"Center:"<<Pc<<endl;
 	}
 
+	//check ray-sphere intersection
 	bool intersect(Vector &P, Vector &dir,float &t_hit)
 	{
-			float b,c,disc;
-			b=dir*(P-Pc);
-			c=eq(P);
-			disc=sqrt(pow(b,2)-c);
-			if((b>0 || isnan(disc)))
-			{
+		float b,c,disc;
+		b=dir*(P-Pc);
+		c=eq(P);
+		disc=sqrt(pow(b,2)-c);
+		if((b>0 || isnan(disc)))
+		{
 
-			}
-			else
-			{
+		}
+		else
+		{
 
-				t_hit=-b-disc;
-				return true;
-			}
-			return false;
+			t_hit=-b-disc;
+			return true;
+		}
+		return false;
 	}
 
 	
 
 };
 
+//Child class for Plane
 class Plane : public Object
 {
 public:
-	
+	//Constructor to intialize required members
 	Plane(Vector &P, Vector &normal,Vector &c,bool refl,bool refr,char t,float ir)
 	{
 		Pc.x=P.x;
@@ -230,13 +216,14 @@ public:
 
 	}
 
-
+	//dummy normal function
 	void normal(Vector &P)
 	{
 		return;
 
 	}
 
+	//plane equation
 	float eq(Vector &P)
 	{
 
@@ -244,34 +231,36 @@ public:
 	return n*(P-Pc);
 	}
 
+	//print
 	void print()
 	{
 		cout<<"Point:"<<Pc<<endl;
 	}
 
-bool intersect(Vector &P, Vector &dir,float &t_hit)
+	//check ray-plane intersection
+	bool intersect(Vector &P, Vector &dir,float &t_hit)
 	{
 		float num=(n*(Pc-P));
-			float den=(n*dir);
-			if(num<0 && den<0)
-			{
-				t_hit=num/den;
+		float den=(n*dir);
+		if(num<0 && den<0)
+		{
+			t_hit=num/den;
 
-				Vector P_hit=P+(dir*t_hit);
-				
-				return true;
-			}
-			return false;
+			Vector P_hit=P+(dir*t_hit);
+			
+			return true;
+		}
+		return false;
 	}
 	
 
 };
 
-
+//Child class for Triangle
 class Triangle : public Object
 {
 public:
-	
+	//Constructor to intialize required members
 	Triangle(Vector &S1,Vector &S2, Vector &S3, Vector &c,bool refl,bool refr,char t,float ir)
 	{
 		P0=S1;
@@ -283,6 +272,7 @@ public:
 		refractive=refr;
 		ior=ir;
 	}
+	//compute face normal
 	void normal(Vector &P)
 	{
 
@@ -299,51 +289,55 @@ public:
 
 	}
 
+	//print
 	void print()
 	{
 		cout<<"Face:"<<P0<<","<<P1<<","<<P2<<endl;
 	}
 
-bool intersect(Vector &P, Vector &dir,float &t_hit)
+	//check ray-triangle intersection
+	bool intersect(Vector &P, Vector &dir,float &t_hit)
 	{
 			
-			float num=(n*(P1-P));
-			float den=(n*dir);
-			float t;
-			if(num<0 && den<0)
+		float num=(n*(P1-P));
+		float den=(n*dir);
+		float t;
+		if(num<0 && den<0)
+		{
+			t_hit=num/den;
+
+			Vector P_hit=P+(dir*t_hit);
+			
+			Vector T_A0,T_A1,T_A2;
+
+			T_A0=cross_product(P_hit-P2,P1-P_hit);
+			T_A0=T_A0*0.5;
+			T_A1=cross_product(P_hit-P0,P2-P_hit);
+			T_A1=T_A1*0.5;
+			T_A2=cross_product(P_hit-P1,P0-P_hit);
+			T_A2=T_A2*0.5;
+
+
+			float s,t,u;
+			s=(n*T_A1)/magnitude(A.x,A.y,A.z);
+			t=(n*T_A2)/magnitude(A.x,A.y,A.z);
+			u=(n*T_A0)/magnitude(A.x,A.y,A.z);
+
+
+			if(s>0 && s<1 && t>0 && t<1 && u>0 && u<1)
 			{
-				t_hit=num/den;
-
-				Vector P_hit=P+(dir*t_hit);
-				
-				Vector T_A0,T_A1,T_A2;
-
-				T_A0=cross_product(P_hit-P2,P1-P_hit);
-				T_A0=T_A0*0.5;
-				T_A1=cross_product(P_hit-P0,P2-P_hit);
-				T_A1=T_A1*0.5;
-				T_A2=cross_product(P_hit-P1,P0-P_hit);
-				T_A2=T_A2*0.5;
-
-
-				float s,t,u;
-				s=(n*T_A1)/magnitude(A.x,A.y,A.z);
-				t=(n*T_A2)/magnitude(A.x,A.y,A.z);
-				u=(n*T_A0)/magnitude(A.x,A.y,A.z);
-
-
-				if(s>0 && s<1 && t>0 && t<1 && u>0 && u<1)
-				{
-					return true;
-				}
+				return true;
 			}
-			return false;
+		}
+		return false;
 	}
 };
 
 
 
 Object* objects[3];
+
+//check if intersection with any object
 int trace(Vector &P, Vector &dir,int &index,float &t_hit)
 	{
 	float t_min=999;
@@ -368,6 +362,7 @@ int trace(Vector &P, Vector &dir,int &index,float &t_hit)
 	return t_hit!=999 && index!=999;
 }
 
+//maximum of two floats
 float max(float a,float b)
 {
 	if(a>b)
@@ -375,12 +370,14 @@ float max(float a,float b)
 	return b;
 }
 
+//minimum of two floats
 float min(float a,float b)
 {
 	if(a>b)
 		return b;
 	return a;
 }
+
 
 
 
@@ -428,7 +425,7 @@ Vector reflect(const Vector &I, const Vector &N)
 
 Vector castRay(Vector &Pe, Vector &npe, Vector &default_col,const int &depth=0)
 {
-	
+	//Light Position
 	Vector L;
 	L.x=(60);
 	L.y=(-100);
@@ -447,22 +444,24 @@ Vector castRay(Vector &Pe, Vector &npe, Vector &default_col,const int &depth=0)
 
 	if(depth>2)
 		return default_col;
-	// cout<<trace(Pe,npe,index,t_hit)<<endl;
+	
+	//if there is an intersection
 	if(trace(Pe,npe,index,t_hit))
 	{
-
-		// cout<<index<<endl<<t_hit<<endl;
+		//hitpoint
 		Vector P_hit=Pe+(npe*t_hit);
 		objects[index]->normal(P_hit);
 		Vector n=objects[index]->n;
 		double T = 0.5*(L*n) + 0.5;
-
+		
+		//N.L
 		bool outside = npe*n < 0; 
 		Vector bias = n*0.0001;
 
-		// float cosi=npe*n,cost;
-		if(objects[index]->reflective && objects[index]->refractive)
+		//if object is reflective
+		if(objects[index]->reflective)
 		{
+			//reflection
 			Vector refl_col=dark;
 
             Vector n_refl = reflect(npe, n);
@@ -475,7 +474,7 @@ Vector castRay(Vector &Pe, Vector &npe, Vector &default_col,const int &depth=0)
 
 		}
 		else
-			hit_col=objects[index]->color;
+			hit_col=objects[index]->color; //no intersection
 
 	}
 	else
@@ -485,11 +484,11 @@ Vector castRay(Vector &Pe, Vector &npe, Vector &default_col,const int &depth=0)
 }
 
 
-
+//setup
 void setPixels()
 {
-
-	Vector sph1_c,sph2_c,sph3_c,tri_c1,tri_c2,tri_c3,pl_c,p2_c;
+	//base colors
+	Vector sph1_c,sph2_c,sph3_c,pl_c,p2_c;
 	sph1_c.x=255;
 	sph1_c.y=255;
 	sph1_c.z=0;
@@ -510,19 +509,7 @@ void setPixels()
 	sph3_c.y=0;
 	sph3_c.z=0;
 
-	tri_c1.x=255;
-	tri_c1.y=255;
-	tri_c1.z=255;
-
-	tri_c2.x=255;
-	tri_c2.y=255;
-	tri_c2.z=255;
-
-	tri_c3.x=255;
-	tri_c3.y=255;
-	tri_c3.z=255;
-
-
+	//plane points and normals
 
 	Vector P_p1;
 	P_p1.x=50;
@@ -545,7 +532,8 @@ void setPixels()
 	pn2.z=3;
 	pn2=pn2*(1/magnitude(pn2.x,pn2.y,pn2.z));
 
-	Sphere *sp=new Sphere(-40,20,-20,40,sph2_c,true,true,'s',1.66);
+	//Adding sphere objects
+	Sphere *sp=new Sphere(-40,20,-20,40,sph2_c,true,false,'s',1.66);
 	objects[ind]= sp;
 	ind+=1;
 
@@ -557,6 +545,7 @@ void setPixels()
 	objects[ind]= sp;
 	ind+=1;
 
+	//adding plane object
 	Plane *p=new Plane(P_p2,pn2,p2_c,false,false,'p',1);
 	objects[ind]= p;
 	ind+=1;
@@ -565,21 +554,26 @@ void setPixels()
 	objects[ind]= p;
 	ind+=1;
 
+	//default color for no intersection
 	Vector default_col;
 	default_col.x=255;
 	default_col.y=255;
 	default_col.z=255;
 
+	//camera setup
+	//camera up vector
 	Vector Vup;
 	Vup.x=1;
 	Vup.y=1;
 	Vup.z=1;
 
+	//camera view direction
 	Vector V_view;
 	V_view.x=0;
 	V_view.y=-1;
 	V_view.z=0;
 
+	//camera local normals
 	Vector V0= cross_product(V_view,Vup);
 	Vector n0;
 	n0=V0*(1/magnitude(V0.x,V0.y,V0.z));
@@ -588,21 +582,28 @@ void setPixels()
 
 	Vector n1= cross_product(n0,n2);
 
+	//eyepoint
 	Vector Pe;
 	Pe.x=0;
 	Pe.y=185;
 	Pe.z=3;
-
+	
+	//camera dimensions and distance from eyepoint
 	float d=100,sx=200;
 	float sy=sx*height/width;
 
+	//center of camera
 	Vector P_Cam;
 	P_Cam=Pe+(n2*d);
 
+	//bottom-left corner of camera
 	Vector P00;
 	P00=P_Cam-(n0*(sx/2))- (n1*(sy/2));
+	
+	//for each frame
 	for(int f=0;f<48;f++)
 	{
+		//move spheres
 		const float radius = 10.0f;
 		float camX = sin(f) * radius;
 		float camZ = cos(f) * radius;
@@ -612,7 +613,7 @@ void setPixels()
 		objects[2]->Pc.y+=camZ*5;
 
 
-
+		//main raycasting loop
 		for (int y = 0; y < height; y++) 
 		{
 			for (int x = 0; x < width; x++) 
@@ -629,8 +630,10 @@ void setPixels()
 					{
 						Vector Pp,npe,P_hit,P_h;
 						
+						//point on camera plane
 						Pp=P00+(n0*(sx*(x+(m/5.0))/width))+(n1*(sy*(y+(n/5.0))/height));
 
+						//primary ray directionnpe
 						npe=Pp-Pe;
 						npe=npe*(1/magnitude(npe.x,npe.y,npe.z));
 
@@ -641,17 +644,19 @@ void setPixels()
 					}
 				}	
 
-
-				plane_arr_f[i] = final_col.x/25;
-				plane_arr_f[i+1] = final_col.y/25;
-				plane_arr_f[i+2] = final_col.z/25;
+				//output array
+				result[i] = final_col.x/25;
+				result[i+1] = final_col.y/25;
+				result[i+2] = final_col.z/25;
 
 					
 			}
 		}
+		
+		//write result to jpg
 		stbi_flip_vertically_on_write(true);
 		std::string filename="moving_objects/sphere-fresnel"+std::to_string(f)+".jpg";
-		stbi_write_jpg(filename.c_str(),200,200,3,plane_arr_f,100);
+		stbi_write_jpg(filename.c_str(),200,200,3,result,100);
 	}
 }
 
@@ -677,7 +682,7 @@ static void windowDisplay(void)
 	glClear(GL_COLOR_BUFFER_BIT);
 	glRasterPos2i(0, 0);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glDrawPixels(width, height, GL_RGB, GL_UNSIGNED_BYTE,plane_arr_f);
+	glDrawPixels(width, height, GL_RGB, GL_UNSIGNED_BYTE,result);
 	glFlush();
 }
 static void processMouse(int button, int state, int x, int y)
@@ -699,7 +704,7 @@ int main(int argc, char *argv[])
 	//initialize the global variables
 	width = 200;
 	height = 200;
-	plane_arr_f = new unsigned char[200 * 200 * 3];
+	result = new unsigned char[200 * 200 * 3];
 	setPixels();
 
 	// OPrnGL Commands:
