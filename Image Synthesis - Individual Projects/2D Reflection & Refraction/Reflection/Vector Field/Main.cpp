@@ -20,9 +20,8 @@ using namespace std;
 // =============================================================================
 //int width, height;
 unsigned char *env_img;
-unsigned char *depth_img;
+unsigned char *normal_img;
 
-unsigned char *depth_arr;
 unsigned char *env_arr;
 unsigned char *result;
 
@@ -39,9 +38,6 @@ unsigned char *spec_arr;
 unsigned char *spec_img;
 
 float *normal_mod;
-float* dark_arr_mod;
-float* light_arr_mod;
-float* spec_arr_mod;
 
 int width = 300, height = 300, channels1, channels2, channels3;
 
@@ -67,6 +63,7 @@ void setPixels()
 {
 
 	stbi_set_flip_vertically_on_load(true);
+	//load dark image
 	dark_img = stbi_load("nmap_d.png", &width, &height, &channels1, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -77,6 +74,7 @@ void setPixels()
 		}
 	}
 
+	//load light image
 	light_img = stbi_load("nmap_l.png", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -87,6 +85,7 @@ void setPixels()
 		}
 	}
 
+	//load specular image
 	spec_img = stbi_load("nmap_s.png", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -97,16 +96,18 @@ void setPixels()
 		}
 	}
 
-	depth_img = stbi_load("NormalMap4.jpg", &width, &height, &channels2, STBI_rgb);
+	//load normal map
+	normal_img = stbi_load("NormalMap4.jpg", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int i = (y * width + x) * 3;
-			normal_arr[i] = depth_img[i++];
-			normal_arr[i] = depth_img[i++];
-			normal_arr[i] = depth_img[i++];
+			normal_arr[i] = normal_img[i++];
+			normal_arr[i] = normal_img[i++];
+			normal_arr[i] = normal_img[i++];
 		}
 	}
 
+	//convert normal map to vector field
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int i = (y * width + x) * 3;
@@ -118,7 +119,8 @@ void setPixels()
 			i++;
 		}
 	}
-
+	
+	//load environment map
 	env_img = stbi_load("envmap2.jpg", &width, &height, &channels2, STBI_rgb);
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -141,28 +143,21 @@ void setPixels()
 			int ind = (indy*width + indx) * 3;
 
 			float T = 0.5*(normal_mod[i] + normal_mod[i + 1]) + 0.5;
-			float S = 2 * normal_mod[i + 2] * (normal_mod[i] + normal_mod[i + 1]);
-			float B = 1 - normal_mod[i + 2];
 
-			float ks = 0.1;
 			float kr = 1;
 
 			T = crop(0, 1, T);
-			S = crop(0, 1, S);
 
-				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
-				result[i] = (1 - ( kr))*result[i] + kr * env_arr[ind++];// +255 * ks*S);
-				//result[i] = (1 - B)*result[i] + B * 0;
+			result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
+			result[i] = (1 - ( kr))*result[i] + kr * env_arr[ind++];
 			i++;
 
-				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
-				result[i] = (1 - (kr))*result[i] + kr * env_arr[ind++];// +255 * ks*S);
-				//result[i] = (1 - B)*result[i] + B * 0;
+			result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
+			result[i] = (1 - (kr))*result[i] + kr * env_arr[ind++];
 			i++;
 
-				result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
-				result[i] = (1 - ( kr))*result[i] + kr * env_arr[ind++];// +255 * ks*S);
-				//result[i] = (1 - B)*result[i] + B * 0;
+			result[i] = (light_arr[i] * (1 - T) + dark_arr[i] * (T));
+			result[i] = (1 - ( kr))*result[i] + kr * env_arr[ind++];
 		}
 	}
 }
@@ -214,12 +209,9 @@ int main(int argc, char *argv[])
 	dark_arr = new unsigned char[300 * 300 * 3];
 	light_arr = new unsigned char[300 * 300 * 3];
 	spec_arr = new unsigned char[300 * 300 * 3];
-	depth_arr = new unsigned char[300 * 300 * 3];
 	env_arr = new unsigned char[300 * 300 * 3];
 	normal_arr = new unsigned char[300 * 300 * 3];
 	normal_mod = new float[300 * 300 * 3];
-	dark_arr_mod = new float[300 * 300 * 3];
-	light_arr_mod = new float[300 * 300 * 3];
 	result = new unsigned char[300 * 300 * 3];
 
 	setPixels();

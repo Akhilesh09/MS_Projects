@@ -32,9 +32,6 @@ unsigned char *spec_arr;
 unsigned char *spec_img;
 
 double *normal_mod;
-double* dark_arr_mod;
-double* light_arr_mod;
-double* spec_arr_mod;
 unsigned char *result;
 
 int width = 300, height = 300, channels1, channels2, channels3;
@@ -59,6 +56,40 @@ void setPixels()
 {
 
 	stbi_set_flip_vertically_on_load(true);
+	//load dark image
+	stbi_set_flip_vertically_on_load(true);
+	dark_img = stbi_load("DI0b.png", &width, &height, &channels1, STBI_rgb);
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			int i = (y * width + x) * 3;
+			dark_arr[i] = dark_img[i++];
+			dark_arr[i] = dark_img[i++];
+			dark_arr[i] = dark_img[i++];
+		}
+	}
+
+	//load light image
+	light_img = stbi_load("DI1.png", &width, &height, &channels2, STBI_rgb);
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			int i = (y * width + x) * 3;
+			light_arr[i] = light_img[i++];
+			light_arr[i] = light_img[i++];
+			light_arr[i] = light_img[i++];
+		}
+	}
+
+	//load specular image
+	spec_img = stbi_load("DI1b.png", &width, &height, &channels2, STBI_rgb);
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			int i = (y * width + x) * 3;
+			spec_arr[i] = spec_img[i++];
+			spec_arr[i] = spec_img[i++];
+			spec_arr[i] = spec_img[i++];
+		}
+	}
+	
 	//load normal map
 	normal_map = stbi_load("SM.png", &width, &height, &channels3, STBI_rgb);
 	for (int y = 0; y < height; y++) {
@@ -172,10 +203,7 @@ int main(int argc, char *argv[])
 	light_arr = new unsigned char[300 * 300 * 3];
 	normal_arr = new unsigned char[300 * 300 * 3];
 	spec_arr = new unsigned char[300 * 300 * 3];
-	spec_arr_mod = new double[300 * 300 * 3];
 	normal_mod = new double[300 * 300 * 3];
-	dark_arr_mod = new double[300 * 300 * 3];
-	light_arr_mod = new double[300 * 300 * 3];
 	result = new unsigned char[300 * 300 * 3];
 
 	setPixels();
