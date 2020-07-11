@@ -1,6 +1,4 @@
-# CSCE 633: Machine Learning Project
-
-Repository for Spring 2020 CSCE 633: Machine Learning Project
+# Attack Detection Using Machine Learning
 
 Description:
 The following models are implemented to classify a program as Benign or Malicious:
