@@ -1,15 +1,16 @@
-This repository contains the solutions for CSCE 633 Machine Learning final project.
+# Attack Detection Using Machine Learning
 
-File of interest are:
+Description:
+The following models are implemented to classify a program as Benign or Malicious:
+  Decision Tree
+  Perceptron
+  Ensemble Model
+    Weak Learners - Decision Trees
+    Outputs from the Decision Trees are used to train a Perceptron
+  Neural Network
+  Novel Model
+    Weak Learners - Decision Trees
+    Outputs from the Decision Trees are used to train a Deep Neural Network
 
-src/main.py
-
-    Runs all learners. Includes option for correlation filtering, PCA, and
-    data normalization. Can also toggle grid search (we advise against running
-    the grid search, as it can take a while.
-
-Any of these files may be run entering the command:
-
-python filename (mac/linux)
-py filename     (windows)
+Team members: Patrick Behne , Zachary Hardy ,Peter German ,Akhilesh Vijaykumar,Harpreet Singh
 
