@@ -79,7 +79,7 @@
 \usepackage{fancyhdr} % Custom headers and footers
 \pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
 \fancyhead{} % No page header - if you want one, create it in the same way as the footers below
-\fancyfoot[L]{Hardy, Behne, German, Vijaykumar \& Singh} % Empty left footer
+\fancyfoot[L]{Vijaykumar} % Empty left footer
 \fancyfoot[C]{} % Empty center footer
 \fancyfoot[R]{\thepage} % Page numbering for right footer
 \renewcommand{\headrulewidth}{0pt} % Remove header underlines
@@ -133,120 +133,25 @@
 \title{	
 \normalfont \normalsize 
 \horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
-\LARGE CSCE 633 Machine Learning \\
-\LARGE Final Project \\ % The home/pbehne/git\_repos/CSCE633\_S20\_PATRICK\_BEHNE/hw1/dataset/assignment title
+\LARGE CSCE 636 Deep Learning \\
+\LARGE Assignment1 Report \\ % The home/pbehne/git\_repos/CSCE633\_S20\_PATRICK\_BEHNE/hw1/dataset/assignment title
 \horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
 }
 
-\author{Zachary Hardy (Team Captain), Patrick Behne, Peter German, \\ Akhilesh Vijaykumar, Harpreet Singh} % Your name
-
-\date{\normalsize\today} % Today's date or a custom date
+\author{Akhilesh Vijaykumar} % Your name
 \begin{document}
 
 \maketitle % Print the title
 
 %----------------------------------------------------------------------------------------
-
-\section*{Link to Repository}
-
-\begin{center}
-	\url{https://github.tamu.edu/pbehne/CSCE633_S20_ZACHARY_PATRICK_PETER_AKHILESH_HARPREET_PROJECT}
-\end{center}
-
-\section*{Contributions, Team Work} \label{sec:contributions}
-
-The team had online meetings every other day throughout the project, and kept in touch using \texttt{GroupMe} and \texttt{Discord} almost non-stop.
-The team benefited from the distributed work since the review-based system decreased the probability of leaving bugs in the code and typos and incorrect results/statements/conclusions in the documentation.
-The contribution histogram from the repository is shown below. 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.7\linewidth]{figures/contributions}
-	\caption{The contributions of team members to the repository (in terms of commit numbers).}
-	\label{fig:github_contrib}
-\end{figure}
-
-However, in our opinion, the number of commits is not a good measure of the amount of work invested in this project coming from each team member.
-In this homework, different parts of the work (implementation of novel learner, refurnishing old code) required considerably larger effort and the statistics of the repository might not reflect this.  
-Therefore, we summarize the contribution for all team members separately in itemized lists: 
 \begin{enumerate}
-	\item Zachary Hardy (Nuclear Engineering)
-	\begin{itemize}
-		\item Organized and led meetings.
-		\item General oversight over the team to ensure progress and to offer help where needed.
-		\item Implemented all input transformation routines:
-		\begin{itemize}
-			\item Wrapped routines into model evaluations to evaluate on only training sets.
-			\item Normalization using Max, Minmax, Norm, Standard, or Robust options.
-			\item Normalization over full training sets or over subsets with the same time-stamp.
-			\item Principal component analysis (implemented but unused due to time constraints).
-		\end{itemize}
-		\item Initial refactor of source code directory for improved readability and functionality.
-		\item Ensemble network:
-		\begin{itemize}
-			\item Refactored Harpreet's initial implementation.
-			\item Modified a version of Peter's neural network architecture exploration routines to make them compatible with the ensemble network.
-			\item Analysis of ensemble network results. 
-		\end{itemize}
-		\item Prepared report and presentation outlines
-		\item Primary editor for all sections of the report authored by others.
-		\item Primary author for the first several administrative sections (\ref{sec: intro}, \ref{sec: software}, \ref{sec: structure}), input transformation section (\ref{sec: input scaling}) and the results of the ensemble network section (\ref{sec: novel}).
-	\end{itemize}
-	\item Patrick Behne (Nuclear Engineering)
-	\begin{itemize}
-		\item Grid search for hyper-parameter optimization
-		\begin{itemize}
-			\item Refactored Akhilesh's initial implementation
-			\begin{itemize}
-				\item Made \verb|GridSearchCV| compatible with wrapper learner classes
-				\item Decoupled ensemble component hyper-parameters for simultaneous ensemble grid searches
-			\end{itemize}
-			\item Implemented robust plotting function for grid search visualization
-		\end{itemize}
-		\item McNemar test refactor
-		\item Model optimization
-		\begin{itemize}
-			\item Decision tree
-			\item Perceptron
-			\item Perceptron forest
-			\item $k$ nearest neighbors
-		\end{itemize}
-		\item Created and maintained Scikit-Learn Interfaces
-		\item Co-Authored old model comparison section
-		\item Reviewed others' report sections
-		\item Co-Authored Appendix \ref{app: mcnemar}
-	\end{itemize}
-	\item P\'eter German (Nuclear Engineering)
-	\begin{itemize}
-		\item Codings tasks:
-		\begin{itemize}
-			\item Implemented correlation filtering algorithms
-			\item Tested correlation filtering algorithms
-			\item Implemented Neural Network wrapper
-			\item Created numerical experiments for Neural Networks
-		\end{itemize}
-		\item Documentation tasks:
-		\begin{itemize}
-			\item Documented the correlation filtering algorithms
-			\item Documented tests for the neural networks
-			\item Added sections for conclusions and contributions
-			\item Created numerical experiments for Neural Networks
-			\item Occasionally reviewed new parts of the text
-		\end{itemize}  
-	\end{itemize} 
-	\item Akhilesh Vijaykumar (Visualization)
-	\begin{itemize}
-		\item Novel Learner Literature Review
-		\item GridSearchCV's initial implementation
-		\item McNemar test implementation
-		\item Co-Authored old model comparison section
-		\item Co-Authored Appendix \ref{app: mcnemar}
-	\end{itemize}
-	\item Harpreet Singh (Computer Engineering)
-	\begin{itemize}
-		\item Implementation of the novel learner's algorithm.
-                \item Framework for hyperparameter tuning to obtain optimal architecture of novel learner.
-                \item Authored the algorithm and model optimization sections of novel learner (\ref{sec: novel}).
-	\end{itemize} 
+	\item \begin{enumerate}
+		\item Two
+		\item Three
+		\item Four
+	\end{enumerate}
+	\item Five
+	\item Six
 \end{enumerate}
 
 \section{Introduction} \label{sec: intro}
