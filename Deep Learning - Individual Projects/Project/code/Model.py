@@ -9,6 +9,7 @@ import math
 from sklearn.metrics import plot_confusion_matrix
 from tensorflow.keras.optimizers import Adam, RMSprop, SGD
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.callbacks import ModelCheckpoint, LearningRateScheduler
 
 
 """This script defines the training, validation and testing process.
