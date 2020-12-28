@@ -164,8 +164,10 @@ block_end_node_outer=hou.node("../mesh_group_net").createNode("block_end")
 block_end_node_outer.setInput(0,block_end_node_inner)
 block_end_node_outer.parm("itermethod").set(1)
 block_end_node_outer.parm("method").set(2)
+block_end_node_outer.parm("usemaxiter").set(True)
 block_end_node_outer.parm("maxiter").set("1")
 block_end_node_outer.parm("blockpath").set("../block_begin3")
 block_end_node_outer.parm("templatepath").set("../block_begin3")
 block_end_node_outer.setDisplayFlag(True)
+
         
