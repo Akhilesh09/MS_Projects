@@ -1,6 +1,8 @@
 import os
 
+// user input - absolute path to meshes
 res = hou.ui.readInput("Enter absolute path to directory containing meshes. \n", buttons=("OK", "Cancel"))
+
 if res[0] == 0:
     objects_path=res[1]+"\\"
     folder=os.listdir(objects_path)
@@ -8,9 +10,13 @@ if res[0] == 0:
     transf_nodes=list()
     centroids=list()
     
+	//inside obj node
     obj=hou.node('/obj')
+	
+	//create geometry node
     geo_node=obj.createNode('geo','mesh_group_net')
     
+	// loop through .obj files in input path
     for file in folder:
         if file.endswith(".obj"):
             path=objects_path+file
@@ -82,24 +88,24 @@ if res[0] == 0:
     merge_node_branch1.setInput(0,block1_node)
     merge_node_branch1.setInput(1,block2_node)
     
-    centroid_node_branch2=geo_node.createNode("extractcentroid")
-    centroid_node_branch2.setInput(0,block2_node)
-    centroid_node_branch2.parm("partitiontype").set("detail")
-    centroid_node_branch2.parm("method").set(2)
-    centroid_node_branch2.parm("output").set(2)
-    centroid_node_branch2.parm("centroidattrib").set("centroid_old")
-    centroid_node_branch2.setName("OldCentroid")
+    oldCentroid=geo_node.createNode("extractcentroid")
+    oldCentroid.setInput(0,block2_node)
+    oldCentroid.parm("partitiontype").set("detail")
+    oldCentroid.parm("method").set(2)
+    oldCentroid.parm("output").set(2)
+    oldCentroid.parm("centroidattrib").set("centroid_old")
+    oldCentroid.setName("OldCentroid")
     
-    centroid_node_branch1=geo_node.createNode("extractcentroid")
-    centroid_node_branch1.setInput(0,block1_node)
-    centroid_node_branch1.parm("partitiontype").set("detail")
-    centroid_node_branch1.parm("method").set(2)
-    centroid_node_branch1.parm("output").set(2)
-    centroid_node_branch1.parm("centroidattrib").set("centroid_new")
-    centroid_node_branch1.setName("NewCentroid")
+    newCentroid=geo_node.createNode("extractcentroid")
+    newCentroid.setInput(0,block1_node)
+    newCentroid.parm("partitiontype").set("detail")
+    newCentroid.parm("method").set(2)
+    newCentroid.parm("output").set(2)
+    newCentroid.parm("centroidattrib").set("centroid_new")
+    newCentroid.setName("NewCentroid")
     
     unit_v=geo_node.createNode("attribwrangle")
-    unit_v.setInput(0,centroid_node_branch1)
+    unit_v.setInput(0,newCentroid)
     unit_v.parm("snippet").set("v@vector_first.x=(detail(0,\"centroid_new\",0)-detail(0,\"centroid_old\",0));v@vector_first.y=(detail(0,\"centroid_new\",1)-detail(0,\"centroid_old\",1));v@vector_first.z=(detail(0,\"centroid_new\",2)-detail(0,\"centroid_old\",2));v@unit_v=normalize(@vector_first);")
     unit_v.parm("class").set(0)
     
@@ -140,7 +146,7 @@ if res[0] == 0:
     
     merge_node_branch2=geo_node.createNode("merge")
     merge_node_branch2.setInput(1,transf_node_branch1)
-    merge_node_branch2.setInput(2,centroid_node_branch2)
+    merge_node_branch2.setInput(2,oldCentroid)
     
     copy_to_points_node1.setInput(0,merge_node_branch1)
     copy_to_points_node2.setInput(0,merge_node_branch2)
