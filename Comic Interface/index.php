@@ -141,14 +141,15 @@ select {
         
 
     </div>
-         <div id="selectedChars" style="display:none;">
-            <h2> Selected Characters</h2>
-        </div>
+         
+     <div id="selectedChars" style="display:none;">
+        <h2> Selected Characters</h2>
+    </div>
+         
     <h2> Select 2 Characters</h2>
     <h6> Re-click Character to replace</h6>
          
     <div class="tab">
-
     
     <?php
 
@@ -169,6 +170,7 @@ select {
     endforeach;
 
     ?>
+        
     </div>
          
     
@@ -202,6 +204,7 @@ select {
     <script src="dist/PIXI.TextInput.js" type="text/javascript"></script>
     
     <script src="dist/PIXI.TextInput.min.js" type="text/javascript"></script>
+    
     <script>
         
         function init()
@@ -210,21 +213,21 @@ select {
         }
         
         function openCity(evt, cityName) {
-      var i, tabcontent, tablinks;
-      tabcontent = document.getElementsByClassName("tabcontent");
-      for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-      }
-      tablinks = document.getElementsByClassName("tablinks");
-      for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-      }
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-      }
-      document.getElementById(cityName).style.display = "block";
-      evt.currentTarget.className += " active";
-    }
+          var i, tabcontent, tablinks;
+          tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+          }
+          tablinks = document.getElementsByClassName("tablinks");
+          for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+          }
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+          }
+          document.getElementById(cityName).style.display = "block";
+          evt.currentTarget.className += " active";
+        }
     </script>
     
     <script>
@@ -244,10 +247,7 @@ select {
             selectedDiv.style.display="inline";
             var img_ele;
             
-            var emotions_list= 
-            <?php 
-            echo json_encode($emotions); 
-            ?>;
+            var emotions_list= <?php echo json_encode($emotions); ?>;
             
             var flag=0;
             for(var i=0;i<images.length;i++)
@@ -260,43 +260,47 @@ select {
                     flag=1;
                     }
             }
-            console.log(prev_del);
+            
             var old_selection=document.getElementById("selected"+prev_del);
-            console.log("Flag",flag);
+            
             if(!flag && old_selection==null)
                 {
+                    
                 img_ele=document.createElement("img");
                 img_ele.setAttribute("id","selected"+prev_del);
                 img_ele.setAttribute("src",val);
                 img_ele.style.display="inline";
                 img_ele.setAttribute("width",250);
                 img_ele.setAttribute("height",250);
-            }
-            console.log(images);
+                }
+            
 
             if(images.length<2)
             {
-                if(!flag){
+                if(!flag)
+                {
                     images.splice(prev_del++,0,val);
                     try
                     {
-//                    console.log("not exist");
+                        
                     selectedDiv.appendChild(img_ele);
+                        
                     }
                     catch
                     {
-//                     console.log("exists");
+                        
                      old_selection.setAttribute("src",val);   
-                    old_selection.style.display="inline";
+                     old_selection.style.display="inline";
+                    
                     }
                     console.log("image selected");
                 }
                 else
-                    {
-                        document.getElementById("n-box").style.display="none";
-                        images.splice(prev_del,1);
-                        selectedDiv.removeChild(old_selection);
-                    }
+                {
+                    document.getElementById("n-box").style.display="none";
+                    images.splice(prev_del,1);
+                    selectedDiv.removeChild(old_selection);
+                }
                 
                 
             }
@@ -304,13 +308,14 @@ select {
                 {
                    
                     if(flag)
-                        {
+                    {
+
                         document.getElementById("n-box").style.display="none";
                         images.splice(prev_del,1);
-                        console.log(prev_del);
+
                         old_selection.style.display="none";
-//                        selectedDiv.removeChild(old_selection);
-                        }
+
+                    }
                         
                 }
             
@@ -319,33 +324,31 @@ select {
             if(images.length==2)
                 {
                     if(truth_val)
-                {
-                    current_img=images[parseInt(val[val.length-1])];
-                    
-                    new_img=current_img.split("/");
-                    new_img.splice(new_img.length-1,1,emo_val+".png");
-                    new_img=new_img.join("/");
-                    
-                    images.splice(val[val.length-1],1,new_img);
-                    
-                }
+                    {
+                        current_img=images[parseInt(val[val.length-1])];
+
+                        new_img=current_img.split("/");
+                        new_img.splice(new_img.length-1,1,emo_val+".png");
+                        new_img=new_img.join("/");
+
+                        images.splice(val[val.length-1],1,new_img);
+
+                    }
                     
                      
-                for(var i=0;i<images.length;i++)
-                    {
-                        try
+                    for(var i=0;i<images.length;i++)
+                        {
+                            try
                             {
                                 loader.add(images[i]);
                                 basePath=images[i].split("/")[6];
                                 current_emo=images[i].split("/")[7].split(".")[0];
 
-                                try{
-                                   var old_child=document.getElementById("emo"+i);
+                                try
+                                {
+                                    var old_child=document.getElementById("emo"+i);
                                 }
-                                catch
-                                    {
-
-                            }
+                                catch{}
 
 
 
@@ -357,13 +360,15 @@ select {
                                 select.setAttribute("onchange","select_img(this.id,true,this.value)");
                                 td_ele.appendChild(select);
 
-                                try{
+                                try
+                                {
                                     parent.replaceChild(td_ele,old_child);
 
                                 }
-                                catch{
+                                catch
+                                {
                                     parent.appendChild(td_ele);
-                            }
+                                }
 
                                 var option_ele=document.createElement("option");
                                 option_ele.innerHTML="Choose emotion";
@@ -372,25 +377,27 @@ select {
                                     option_ele.setAttribute("selected","selected");
 
                                 for(var j=0;i<emotions_list[basePath].length;j++)
-                                    {
-                                        var option_ele=document.createElement("option");
-                                        var value=emotions_list[basePath][j].split(".")[0];
-                                        if(value==current_emo && current_emo!="default")
-                                            option_ele.setAttribute("selected","selected");
-                                        option_ele.innerHTML=value;
-                                        select.appendChild(option_ele);
-                                    }
+                                {
+                                    var option_ele=document.createElement("option");
+                                    var value=emotions_list[basePath][j].split(".")[0];
+                                    if(value==current_emo && current_emo!="default")
+                                        option_ele.setAttribute("selected","selected");
+                                    option_ele.innerHTML=value;
+                                    select.appendChild(option_ele);
+                                }
                             }
-                        catch
-                        {
-                            continue;
+                            catch
+                            {
+                                continue;
+                            }
                         }
-                    }
-                 loader.load(setup);  
-                 document.getElementById("n-box").style.display="block";
-                }
+                     loader.load(setup);  
+                     document.getElementById("n-box").style.display="block";
+            }
             
         }
+        
+        
     //This `setup` function will run when the image has loaded
     function setup() {
     
