@@ -124,6 +124,8 @@ select {
              
         </table> 
         
+       
+        
         
         <div align="center" class="slidecontainer">
             
@@ -136,8 +138,12 @@ select {
             </center>
             
         </div>
+        
 
     </div>
+         <div id="selectedChars" style="display:none;">
+            <h2> Selected Characters</h2>
+        </div>
     <h2> Select 2 Characters</h2>
     <h6> Re-click Character to replace</h6>
          
@@ -204,7 +210,6 @@ select {
         }
         
         function openCity(evt, cityName) {
-//        console.log(cityName);
       var i, tabcontent, tablinks;
       tabcontent = document.getElementsByClassName("tabcontent");
       for (i = 0; i < tabcontent.length; i++) {
@@ -235,6 +240,9 @@ select {
         
     function select_img(val,truth_val,emo_val)
         {
+            var selectedDiv=document.getElementById("selectedChars");   
+            selectedDiv.style.display="inline";
+            var img_ele;
             
             var emotions_list= 
             <?php 
@@ -252,11 +260,44 @@ select {
                     flag=1;
                     }
             }
+            console.log(prev_del);
+            var old_selection=document.getElementById("selected"+prev_del);
+            console.log("Flag",flag);
+            if(!flag && old_selection==null)
+                {
+                img_ele=document.createElement("img");
+                img_ele.setAttribute("id","selected"+prev_del);
+                img_ele.setAttribute("src",val);
+                img_ele.style.display="inline";
+                img_ele.setAttribute("width",250);
+                img_ele.setAttribute("height",250);
+            }
+            console.log(images);
 
             if(images.length<2)
             {
-                if(!flag)
+                if(!flag){
                     images.splice(prev_del++,0,val);
+                    try
+                    {
+//                    console.log("not exist");
+                    selectedDiv.appendChild(img_ele);
+                    }
+                    catch
+                    {
+//                     console.log("exists");
+                     old_selection.setAttribute("src",val);   
+                    old_selection.style.display="inline";
+                    }
+                    console.log("image selected");
+                }
+                else
+                    {
+                        document.getElementById("n-box").style.display="none";
+                        images.splice(prev_del,1);
+                        selectedDiv.removeChild(old_selection);
+                    }
+                
                 
             }
             else if(images.length==2 )
@@ -266,7 +307,9 @@ select {
                         {
                         document.getElementById("n-box").style.display="none";
                         images.splice(prev_del,1);
-                        console.log(images);
+                        console.log(prev_del);
+                        old_selection.style.display="none";
+//                        selectedDiv.removeChild(old_selection);
                         }
                         
                 }
@@ -288,62 +331,63 @@ select {
                 }
                     
                      
-                    for(var i=0;i<images.length;i++)
-                        {
-                            try
-                                {
-                                    loader.add(images[i]);
-                                    basePath=images[i].split("/")[6];
-                                    current_emo=images[i].split("/")[7].split(".")[0];
-                                    
-                                    try{
-                                       var old_child=document.getElementById("emo"+i);
-                                        
-                                        
-                                    }
-                                    catch
-                                        {
-                                        
-                                }
-                                    var parent=document.getElementById("dropdown");   
-                                    var td_ele=document.createElement("td");
-                                    td_ele.setAttribute("id","emo"+i);
-                                    var select=document.createElement("select");
-                                    select.setAttribute("id","emolist"+i);
-                                    select.setAttribute("onchange","select_img(this.id,true,this.value)");
-                                    td_ele.appendChild(select);
-                                    
-                                    try{
-                                        parent.replaceChild(td_ele,old_child)
-                                    }
-                                    catch{
-                                        document.getElementById("dropdown").appendChild(td_ele);
-                                        
-                                }
-                            
-                                    var option_ele=document.createElement("option");
-                                    option_ele.innerHTML="Choose emotion";
-                                    select.appendChild(option_ele);
-                                    if(current_emo=="default")
-                                        option_ele.setAttribute("selected","selected");
-                                    
-                                    for(var j=0;i<emotions_list[basePath].length;j++)
-                                        {
-                                            var option_ele=document.createElement("option");
-                                            var value=emotions_list[basePath][j].split(".")[0];
-                                            if(value==current_emo && current_emo!="default")
-                                                option_ele.setAttribute("selected","selected");
-                                            option_ele.innerHTML=value;
-                                            select.appendChild(option_ele);
-                                        }
-                                }
-                            catch
+                for(var i=0;i<images.length;i++)
+                    {
+                        try
                             {
-                                continue;
+                                loader.add(images[i]);
+                                basePath=images[i].split("/")[6];
+                                current_emo=images[i].split("/")[7].split(".")[0];
+
+                                try{
+                                   var old_child=document.getElementById("emo"+i);
+                                }
+                                catch
+                                    {
+
                             }
+
+
+
+                                var parent=document.getElementById("dropdown");   
+                                var td_ele=document.createElement("td");
+                                td_ele.setAttribute("id","emo"+i);
+                                var select=document.createElement("select");
+                                select.setAttribute("id","emolist"+i);
+                                select.setAttribute("onchange","select_img(this.id,true,this.value)");
+                                td_ele.appendChild(select);
+
+                                try{
+                                    parent.replaceChild(td_ele,old_child);
+
+                                }
+                                catch{
+                                    parent.appendChild(td_ele);
+                            }
+
+                                var option_ele=document.createElement("option");
+                                option_ele.innerHTML="Choose emotion";
+                                select.appendChild(option_ele);
+                                if(current_emo=="default")
+                                    option_ele.setAttribute("selected","selected");
+
+                                for(var j=0;i<emotions_list[basePath].length;j++)
+                                    {
+                                        var option_ele=document.createElement("option");
+                                        var value=emotions_list[basePath][j].split(".")[0];
+                                        if(value==current_emo && current_emo!="default")
+                                            option_ele.setAttribute("selected","selected");
+                                        option_ele.innerHTML=value;
+                                        select.appendChild(option_ele);
+                                    }
+                            }
+                        catch
+                        {
+                            continue;
                         }
-                     loader.load(setup);  
-                     document.getElementById("n-box").style.display="block";
+                    }
+                 loader.load(setup);  
+                 document.getElementById("n-box").style.display="block";
                 }
             
         }
