@@ -14,10 +14,9 @@
 {
     -webkit-appearance:slider-vertical;
     height: 50%;
-    position: absolute;
+    float: right;
+/*    position: absolute;*/
 /*        z-index: 1;*/
-    left:80%;
-    top:8%;
 }
     
 .polaroid {
@@ -121,8 +120,12 @@ select {
              <tr id="dropdown">
             </tr> 
                 
+              <input type="range" min="0" max="1" step="0.001" value="1" step="10"  onchange="setup();" id="myRange3"> 
              
         </table> 
+        
+                
+       
         
        
         
@@ -131,11 +134,7 @@ select {
             
             <input type="range" min="0" max="1" step="0.001" value="0.366" class="slider" onchange="setup();" id="myRange">  <br> <br> <br>
             
-            <center>
-                
-                <input type="range" min="0" max="1" step="0.001" value="1" step="10"  onchange="setup();" id="myRange3"> 
-                
-            </center>
+            
             
         </div>
         
