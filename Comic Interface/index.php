@@ -16,8 +16,8 @@
     height: 50%;
     position: absolute;
 /*        z-index: 1;*/
-    left:65%;
-    top:5%;
+    left:80%;
+    top:8%;
 }
     
 .polaroid {
@@ -184,12 +184,16 @@ select {
         foreach( $characters as $character ):
         $emos=scandir( $dir.$category."/".$character );
         $emotions[$character]=array_splice($emos,2);
-            
+         
+        echo "<figure style='display:inline;margin:2%;padding:0;float:left;'>";
         echo "<img src='" . $dir.$category."/".$character."/default.png" . "' class='polaroid' width='250' height='250' onclick='select_img(this.src,false,false);'/>";
+        echo "<figcaption> <b>".preg_replace('/[0-9]+/', '', $character)."</b> </figcaption>";
+        echo "</figure>";
             
         
     endforeach;
          echo "</div>";
+         
     endforeach;
          
     ?>
@@ -293,7 +297,6 @@ select {
                      old_selection.style.display="inline";
                     
                     }
-                    console.log("image selected");
                 }
                 else
                 {
@@ -375,6 +378,8 @@ select {
                                 select.appendChild(option_ele);
                                 if(current_emo=="default")
                                     option_ele.setAttribute("selected","selected");
+                            
+                            
 
                                 for(var j=0;i<emotions_list[basePath].length;j++)
                                 {
