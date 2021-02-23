@@ -14,6 +14,7 @@
 {
     -webkit-appearance:slider-vertical;
     height: 50%;
+    top:5%;
     float: right;
 /*    position: absolute;*/
 /*        z-index: 1;*/
@@ -82,7 +83,17 @@ select {
   -webkit-appearance: button;
   appearance: button;
   outline: none;
-}    
+}   
+    
+table 
+    {
+        border: none;
+    }
+    
+.canvas
+    {
+        border: 5px solid black;
+    }
 
 </style>
 
@@ -95,7 +106,7 @@ select {
         
         
             
-         <table>
+         <table class="canvas">
              
             <tr>
                 <td> <div id="diag1" class="triangle-right" style="border: 2.5px solid black"  ><textarea style="border: none; overflow:hidden" id="inside1" contenteditable="true">Enter Dialogue</textarea></div>
@@ -117,29 +128,25 @@ select {
                 <td><canvas id="c4"></canvas></td>
             </tr>
              
-             <tr id="dropdown">
-            </tr> 
                 
               <input type="range" min="0" max="1" step="0.001" value="1" step="10"  onchange="setup();" id="myRange3"> 
              
         </table> 
         
-                
-       
-        
-       
-        
-        
         <div align="center" class="slidecontainer">
             
             <input type="range" min="0" max="1" step="0.001" value="0.366" class="slider" onchange="setup();" id="myRange">  <br> <br> <br>
             
-            
-            
         </div>
-        
 
     </div>
+         
+    <table>
+        <tr id="dropdown">
+        </tr> 
+    </table>
+         
+    <br><br>
          
      <div id="selectedChars" style="display:none;">
         <h2> Selected Characters</h2>
@@ -185,7 +192,7 @@ select {
         $emotions[$character]=array_splice($emos,2);
          
         echo "<figure style='display:inline;margin:2%;padding:0;float:left;'>";
-        echo "<img src='" . $dir.$category."/".$character."/default.png" . "' class='polaroid' width='250' height='250' onclick='select_img(this.src,false,false);'/>";
+        echo "<img src='" . $dir.$category."/".$character."/default.png" . "' class='polaroid' width='100' height='100' onclick='select_img(this.src,false,false);'/>";
         echo "<figcaption> <b>".preg_replace('/[0-9]+/', '', $character)."</b> </figcaption>";
         echo "</figure>";
             
@@ -373,7 +380,7 @@ select {
                                 }
 
                                 var option_ele=document.createElement("option");
-                                option_ele.innerHTML="Choose emotion";
+                                option_ele.innerHTML="Choose expression";
                                 select.appendChild(option_ele);
                                 if(current_emo=="default")
                                     option_ele.setAttribute("selected","selected");
@@ -488,8 +495,8 @@ select {
         $("#inside1").css('width',image0.width*0.8);
         $("#inside2").css('width',(total_width-image0.width)*0.8);
             
-        $("#emolist0").css('width',image0.width);
-        $("#emolist1").css('width',(total_width-image0.width));
+//        $("#emolist0").css('width',image0.width);
+//        $("#emolist1").css('width',(total_width-image0.width));
 
 
         }
@@ -526,8 +533,8 @@ select {
         $("#inside2").css('width',image1.width*0.8);
         $("#inside1").css('width',(total_width-image1.width)*0.8);
             
-        $("#emolist0").css('width',(total_width-image1.width));
-        $("#emolist1").css('width',image1.width);
+//        $("#emolist0").css('width',(total_width-image1.width));
+//        $("#emolist1").css('width',image1.width);
             
 
         }

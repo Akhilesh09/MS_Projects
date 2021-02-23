@@ -74,11 +74,6 @@ is to other properties or values in creating the effect */
         width:40%;
     }
     
-    table
-    {
-        border: 5px solid black;
-    }
-    
     
     /* cursor draggable sphere */
     #mydiv {
