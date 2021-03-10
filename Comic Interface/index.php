@@ -211,6 +211,8 @@
                 img_ele.style.display="inline";
                 img_ele.setAttribute("width",250);
                 img_ele.setAttribute("height",250);
+                    
+                //button to mirror character vertically
                 flip_button=document.createElement("input");
                 flip_button.setAttribute("type","button");
                 flip_button.setAttribute("id","button"+prev_del);
