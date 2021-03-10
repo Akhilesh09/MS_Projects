@@ -8,94 +8,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 </head>    
-<style>
- /* vertical slider */
- input#myRange3
-{
-    -webkit-appearance:slider-vertical;
-    height: 50%;
-    top:5%;
-    float: right;
-/*    position: absolute;*/
-/*        z-index: 1;*/
-}
-    
-.polaroid {
-/*  width: 80%;*/
-  background-color: white;
-  margin: 3%;
-  box-shadow: 0 8px 16px 0 rgb(0,0,0);
-  
-}
-    
-.polaroid:hover{
-    background-color: lightblue;
-}
-    
-.polaroid:active{
-    transform: translateY(4px);
-}
-    
-.tab {
-  overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
-}
-
-/* Style the buttons inside the tab */
-.tab button {
-  background-color: inherit;
-/*  float: left;*/
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 14px 16px;
-  transition: 0.3s;
-  font-size: 17px;
-}
-
-/* Change background color of buttons on hover */
-.tab button:hover {
-  background-color: #ddd;
-}
-
-/* Create an active/current tablink class */
-.tab button.active {
-  background-color: #ccc;
-}
-
-/* Style the tab content */
-.tabcontent {
-  display: none;
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-  border-top: none;
-}    
-
-select {
-  background-color: skyblue;
-  color: white;
-  padding: 6px;
-  width: 250px;
-  border: none;
-  font-size: 20px;
-  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-  -webkit-appearance: button;
-  appearance: button;
-  outline: none;
-}   
-    
-table 
-    {
-        border: none;
-    }
-    
-.canvas
-    {
-        border: 5px solid black;
-    }
-
-</style>
 
 <body onload="init();"> 
     
@@ -109,10 +21,13 @@ table
          <table class="canvas">
              
             <tr>
+                <!-- Speech bubble left  -->
                 <td> <div id="diag1" class="triangle-right" style="border: 2.5px solid black"  ><textarea style="border: none; overflow:hidden" id="inside1" contenteditable="true">Enter Dialogue</textarea></div>
                 <div class="inner-tri1"></div>
                 <div class="outer-tri1"></div>
                 </td>
+                
+                <!-- Speech bubble right  -->
                 <td> <div id="diag2" class="triangle-right " style="border: 2.5px solid black"  ><textarea style="border: none; overflow:hidden" id="inside2" contenteditable="true">Enter Dialogue</textarea></div>
                 <div class="inner-tri2"></div>
                 <div class="outer-tri2"></div>
@@ -124,23 +39,28 @@ table
             </tr>
              
             <tr>
+                <!-- Image0  -->
                 <td><canvas id="c3"></canvas></td>
+                
+                <!-- Image1  -->
                 <td><canvas id="c4"></canvas></td>
             </tr>
              
-                
+              <!-- Vertical Slider  -->
               <input type="range" min="0" max="1" step="0.001" value="1" step="10"  onchange="setup();" id="myRange3"> 
              
         </table> 
         
         <div align="center" class="slidecontainer">
             
+            <!-- Horizontal Slider  -->
             <input type="range" min="0" max="1" step="0.001" value="0.366" class="slider" onchange="setup();" id="myRange">  <br> <br> <br>
             
         </div>
 
     </div>
          
+    <!-- Expression Dropdowns  -->     
     <table>
         <tr id="dropdown">
         </tr> 
@@ -148,13 +68,15 @@ table
          
     <br><br>
          
-     <div id="selectedChars" style="display:none;">
+    <!-- Selected Characters  -->   
+    <div id="selectedChars" style="display:none;">
         <h2> Selected Characters</h2>
     </div>
          
     <h2> Select 2 Characters</h2>
     <h6> Re-click Character to replace</h6>
          
+    <!-- Character tabs -->   
     <div class="tab">
     
     <?php
@@ -217,6 +139,7 @@ table
     
     <script>
         
+        /* Character tab control */
         function init()
         {
             document.getElementsByClassName("tablinks")[0].click();
@@ -242,7 +165,8 @@ table
     
     <script>
         
-    
+    /* Comic Canvas control */
+        
     let Application = PIXI.Application,
     loader = PIXI.loader,
     resources = PIXI.loader.resources,
@@ -251,6 +175,7 @@ table
     var prev_del=0;
         
         
+    /* Character selection control */
     function select_img(val,truth_val,emo_val)
         {
             var selectedDiv=document.getElementById("selectedChars");   
@@ -260,6 +185,8 @@ table
             var emotions_list= <?php echo json_encode($emotions); ?>;
             
             var flag=0;
+            
+             /* Check if Character already exists */
             for(var i=0;i<images.length;i++)
             {
                 basePath=val.split("/")[6];
@@ -272,8 +199,10 @@ table
             }
             
             var old_selection=document.getElementById("selected"+prev_del);
+            var old_flip=document.getElementById("button"+prev_del);
             
-            if(!flag && old_selection==null)
+            /* if Character doesn't already exist and either of 2 characters remains */
+            if(!flag && old_selection==null  && old_flip==null)
                 {
                     
                 img_ele=document.createElement("img");
@@ -282,11 +211,20 @@ table
                 img_ele.style.display="inline";
                 img_ele.setAttribute("width",250);
                 img_ele.setAttribute("height",250);
+                flip_button=document.createElement("input");
+                flip_button.setAttribute("type","button");
+                flip_button.setAttribute("id","button"+prev_del);
+                flip_button.setAttribute("value","Flip");
+                flip_button.setAttribute("class","1");
+                flip_button.setAttribute("onclick","setup()");
+                flip_button.setAttribute("style","background-color: skyblue; color: white;padding: 6px;width: 5%;border: none;font-size: 20px;box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);-webkit-appearance: button;appearance: button;outline: none;");
+                
                 }
             
-
+            
             if(images.length<2)
             {
+                /* if Character doesn't already exist, add it */
                 if(!flag)
                 {
                     images.splice(prev_del++,0,val);
@@ -294,6 +232,7 @@ table
                     {
                         
                     selectedDiv.appendChild(img_ele);
+                    selectedDiv.appendChild(flip_button);
                         
                     }
                     catch
@@ -301,21 +240,24 @@ table
                         
                      old_selection.setAttribute("src",val);   
                      old_selection.style.display="inline";
+                     old_flip.style.display="inline";
                     
                     }
                 }
+                /* if Character already exists, remove it */
                 else
                 {
                     document.getElementById("n-box").style.display="none";
                     images.splice(prev_del,1);
                     selectedDiv.removeChild(old_selection);
+                    selectedDiv.removeChild(old_flip);
                 }
                 
                 
             }
             else if(images.length==2 )
                 {
-                   
+                    /* if Character already exists, remove it */
                     if(flag)
                     {
 
@@ -323,6 +265,7 @@ table
                         images.splice(prev_del,1);
 
                         old_selection.style.display="none";
+                        old_flip.style.display="none";
 
                     }
                         
@@ -332,6 +275,7 @@ table
             
             if(images.length==2)
                 {
+                    /* if Character emotion changes */
                     if(truth_val)
                     {
                         current_img=images[parseInt(val[val.length-1])];
@@ -344,7 +288,7 @@ table
 
                     }
                     
-                     
+                    /* For each Character, update emotions, show as selected and add to canvas */
                     for(var i=0;i<images.length;i++)
                         {
                             try
@@ -409,7 +353,7 @@ table
         }
         
         
-    //This `setup` function will run when the image has loaded
+    /* Canvas setup  */
     function setup() {
     
       // total width
@@ -467,9 +411,14 @@ table
 
         var s0=t*w/w0;
         var s1=1+(2*(1-s0)*w0/w1);
+            
+        
 
         image0.scale.set(s0*canvas_height/image0.height);
         image1.scale.set(s1*canvas_height/image1.height);
+            
+        
+        
 
         // stop vertical translation when same height
         if(image0.height>canvas_height*(1-2*vertical_amount))
@@ -478,10 +427,10 @@ table
            }
 
 
-        image0.x = 0;
+        image0.x = 1;
         image0.y = (1-s0)*canvas_height -vertical_amount*canvas_height;
 
-        image1.x = 0 ;
+        image1.x = 1 ;
         image1.y = (1-s1)*canvas_height/image1.height; 
 
         // resize canvases
@@ -506,6 +455,8 @@ table
 
         var s1 =   (1-t)*w/w1;
         var s0 =  1+(2*(1-s1)*w1/w0);
+            
+        
 
         image0.scale.set(s0*canvas_height/image0.height);
         image1.scale.set(s1*canvas_height/image1.height);
@@ -516,11 +467,13 @@ table
             vertical_amount=1-(image1.height/canvas_height);
            }
 
-        image0.x = 0;
+        image0.x = 10;
         image0.y = (1-s0)*canvas_height/image0.height; 
 
-        image1.x = 0;
+        image1.x = 10;
         image1.y = (1-s1)*canvas_height-vertical_amount*canvas_height;
+            
+        
 
         // resize canvases
         app1.renderer.resize(total_width-image1.width, canvas_height*(1-vertical_amount));
@@ -538,6 +491,46 @@ table
             
 
         }
+        
+        var button0=document.getElementById("button0");
+        button0.onclick=function()
+                           {
+            
+            
+            if(button0.className=="1")
+                {
+                    
+                    image0.x+=image0.width*s0*canvas_height/image0.height;
+                    image0.scale.x*=-1;
+                    button0.className="-1"
+                }
+            else{
+                
+                    image0.x-=image0.width*s0*canvas_height/image0.height;
+                    image0.scale.x*=-1;
+                    button0.className="1"
+            }
+            
+        };
+            
+        var button1=document.getElementById("button1");
+        button1.onclick=function()
+                           {
+            if(button1.className=="1")
+                {
+                    
+                    image1.x+=image1.width*s1*canvas_height/image1.height;
+                    image1.scale.x*=-1;
+                    button1.className="-1"
+                }
+            else{
+                
+                    image1.x-=image1.width*s1*canvas_height/image1.height;
+                    image1.scale.x*=-1;
+                    button1.className="1"
+            }
+            
+        };
         
         // reduce fontsize as space increases
         $("#inside1").css('font-size',16*(1-vertical_amount+0.5)+'px')
@@ -560,7 +553,7 @@ table
         $(".outer-tri2").css('left',-5+(rect.right-rect.left)/2+"px");
         
 
-        //Add the obama to the stage
+        //Add the images to the stage
         app2.stage.addChild(image1);
         app1.stage.addChild(image0);
 
