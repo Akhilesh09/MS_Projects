@@ -502,13 +502,13 @@
             if(button0.className=="1")
                 {
                     
-                    image0.x+=image0.width*s0*canvas_height/image0.height;
+                    image0.anchor.x+=1;
                     image0.scale.x*=-1;
                     button0.className="-1"
                 }
             else{
                 
-                    image0.x-=image0.width*s0*canvas_height/image0.height;
+                    image0.anchor.x-=1;
                     image0.scale.x*=-1;
                     button0.className="1"
             }
@@ -521,13 +521,13 @@
             if(button1.className=="1")
                 {
                     
-                    image1.x+=image1.width*s1*canvas_height/image1.height;
+                    image1.anchor.x+=1;
                     image1.scale.x*=-1;
                     button1.className="-1"
                 }
             else{
                 
-                    image1.x-=image1.width*s1*canvas_height/image1.height;
+                    image1.anchor.x-=1;
                     image1.scale.x*=-1;
                     button1.className="1"
             }
