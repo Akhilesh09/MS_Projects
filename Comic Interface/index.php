@@ -133,10 +133,6 @@
 
     <script src="node_modules/pixi.js/dist/pixi.min.js"></script>
     
-    <script src="dist/PIXI.TextInput.js" type="text/javascript"></script>
-    
-    <script src="dist/PIXI.TextInput.min.js" type="text/javascript"></script>
-    
     <script>
         
         /* Character tab control */
