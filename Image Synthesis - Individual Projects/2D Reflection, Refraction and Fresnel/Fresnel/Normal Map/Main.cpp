@@ -111,60 +111,64 @@ void setPixels()
 		}
 	}
 
-	int d =44;
-	float eta2 = 1;
-	float eta1 = 1.66;
+	int d = 24;
+	float eta2 = 1.5;
+	float eta1 = 1;
 	float eta = eta2 / eta1;
-	float a = -1 / eta;
+	float a = log2(eta);
+	float F0 = 0.1;
 
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int i = (y * width + x) * 3;
 
-			float T = 0.5*(normal_mod[i] + normal_mod[i + 1]) + 0.5;
-			float C = normal_mod[i+2];
+			float T = 0.5 * (normal_mod[i] + normal_mod[i + 1]) + 0.5;
 			float B = 1 - normal_mod[i + 2];
-			float S_x, S_y, S_z;
-			float T_x, T_y, T_z;
 			float a = log2(eta);
 
-			S_x =  normal_mod[i + 2]*normal_mod[i];
-			S_y =  normal_mod[i + 2] * normal_mod[i + 1];
-			S_z = -1 + normal_mod[i + 2] * normal_mod[i + 2];
-			S_x = S_x / magnitude(S_x, S_y, S_z);
-			S_y = S_y / magnitude(S_x, S_y, S_z);
-			S_z = S_z / magnitude(S_x, S_y, S_z);
+			int refl_indx = abs(((2 * normal_mod[i] * normal_mod[i + 2] * d) / (-1 + 2 * normal_mod[i + 2] * normal_mod[i + 2])) + x);
+			int refl_indy = abs(((2 * normal_mod[i + 1] * normal_mod[i + 2] * d) / (-1 + 2 * normal_mod[i + 2] * normal_mod[i + 2])) + y);
+			refl_indx = refl_indx % 300;
+			refl_indy = refl_indy % 300;
+			int refl_ind = (refl_indy * width + refl_indx) * 3;
 
-			T_x = (a-1)*S_x;
-			T_y = (a - 1)*S_y;
-			T_z = a+(a - 1)*S_z;
-			T_x = T_x / magnitude(T_x, T_y, T_z);
-			T_y = T_y / magnitude(T_x, T_y, T_z);
-			T_z = T_z / magnitude(T_x, T_y, T_z);
 
-			T_x = T_x / T_z;
-			T_y = T_y / T_z;
+			float delx = (-normal_mod[i] * d * a) / (a - 1 - (normal_mod[i + 2] * a));
+			float dely = (-normal_mod[i + 1] * d * a) / (a - 1 - (normal_mod[i + 2] * a));
+			int refr_indx = x + delx;
+			int refr_indy = y + dely;
+			refr_indx = refr_indx % 300;
+			refr_indy = refr_indy % 300;
+			int refr_ind = (refr_indy * width + refr_indx) * 3;
 
-			float b = (C / eta) - pow(((pow(C, 2) - 1) / pow(eta, 2)) + 1,2);
+			float cosi = normal_mod[i + 2];
+			float alpha = 1 - cosi;
+
+			float alpha1 = 0.2;
+			float alpha2 = 0.25;
+			float alpha3 = 0.9;
+
+			float F;
+
+			if (alpha < alpha1)
+			{
+				F = F0 * (1 - (alpha / alpha1));
+			}
+			else
+			{
+				F = (alpha - alpha2) / (alpha3 - alpha2);
+				if (F < 0) F = 0;
+				if (F > 1) F = 1;
+			}
 			
 
-			int indx = x+(T_x*d);
-			int indy = y+(T_y*d);
-			indx = indx % 300;
-			indy = indy % 300;
-			int ind = (indy*width + indx) * 3;
-
-			float kt = 0.8;
-
-			T = crop(0, 1, T);
-
-			result[i] = fore_arr[i] * (1 -kt) + env_arr[ind++] * kt;
+			result[i] = fore_arr[refr_ind++] * (1 - F) + env_arr[refl_ind++] * F;
 			i++;
 
-			result[i] = fore_arr[i] * (1 - kt) + env_arr[ind++] * kt;
+			result[i] = fore_arr[refr_ind++] * (1 - F) + env_arr[refl_ind++] * F;
 			i++;
 
-			result[i] = fore_arr[i] * (1 - kt) + env_arr[ind++] * kt;
+			result[i] = fore_arr[refr_ind++] * (1 - F) + env_arr[refl_ind++] * F;
 		}
 	}
 }
