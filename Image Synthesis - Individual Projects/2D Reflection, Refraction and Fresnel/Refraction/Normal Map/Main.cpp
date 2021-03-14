@@ -131,11 +131,11 @@ void setPixels()
 		}
 	}
 
-	int d =10;
-	float eta2 = 1;
-	float eta1 = 1.66;
+	int d =24;
+	float eta2 = 1.33;
+	float eta1 = 1;
 	float eta = eta2 / eta1;
-	float a = -1 / eta;
+	float a = log2(eta);
 
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -143,10 +143,11 @@ void setPixels()
 
 			float T = 0.5*(normal_mod[i] + normal_mod[i + 1]) + 0.5;
 			float C = normal_mod[i+2];
-			float b = (C / eta) - pow(((pow(C, 2) - 1) / pow(eta, 2)) + 1,2);
 
-			int indx = x+a*d;
-			int indy = y+b*d;
+			float delx = (-normal_mod[i] * d * a) / (a-1-(normal_mod[i+2]*a));
+			float dely = (-normal_mod[i+1] * d * a) / (a - 1 - (normal_mod[i + 2] * a));
+			int indx = x+delx;
+			int indy = y+dely;
 			indx = indx % 300;
 			indy = indy % 300;
 			int ind = (indy*width + indx) * 3;
