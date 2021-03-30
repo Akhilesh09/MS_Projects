@@ -1,8 +1,6 @@
 import os
 
-// user input - absolute path to meshes
 res = hou.ui.readInput("Enter absolute path to directory containing meshes. \n", buttons=("OK", "Cancel"))
-
 if res[0] == 0:
     objects_path=res[1]+"\\"
     folder=os.listdir(objects_path)
@@ -10,13 +8,9 @@ if res[0] == 0:
     transf_nodes=list()
     centroids=list()
     
-	//inside obj node
     obj=hou.node('/obj')
-	
-	//create geometry node
     geo_node=obj.createNode('geo','mesh_group_net')
     
-	// loop through .obj files in input path
     for file in folder:
         if file.endswith(".obj"):
             path=objects_path+file
@@ -116,7 +110,7 @@ if res[0] == 0:
     offset_x.parm("name1").set("xoffset")
     offset_x.parm("type1").set(0)
     offset_x.parm("class1").set(0)
-    offset_x.parm("value1v1").set("0.01")
+    offset_x.parm("value1v1").set("0.3")
     offset_x.setName("x_offset")
     
     offset_y=geo_node.createNode("attribcreate")
@@ -124,7 +118,7 @@ if res[0] == 0:
     offset_y.parm("name1").set("yoffset")
     offset_y.parm("type1").set(0)
     offset_y.parm("class1").set(0)
-    offset_y.parm("value1v1").set("0.01")
+    offset_y.parm("value1v1").set("1")
     offset_y.setName("y_offset")
     
     offset_z=geo_node.createNode("attribcreate")
@@ -132,7 +126,7 @@ if res[0] == 0:
     offset_z.parm("name1").set("zoffset")
     offset_z.parm("type1").set(0)
     offset_z.parm("class1").set(0)
-    offset_z.parm("value1v1").set("0.01")
+    offset_z.parm("value1v1").set("1")
     offset_z.setName("z_offset")
     
     transf_node_branch1=geo_node.createNode("xform")
@@ -141,9 +135,9 @@ if res[0] == 0:
     transf_node_branch1.setParmExpressions({"py":'detail("../NewCentroid","centroid_new",1)'})
     transf_node_branch1.setParmExpressions({"pz":'detail("../NewCentroid","centroid_new",2)'})
     
-    transf_node_branch1.setParmExpressions({"tx":'@unit_v.x*(npoints("../intersectionanalysis1/"))*0.5'})
-    transf_node_branch1.setParmExpressions({"ty":'@unit_v.y*(npoints("../intersectionanalysis1/"))*1'})
-    transf_node_branch1.setParmExpressions({"tz":'@unit_v.z*(npoints("../intersectionanalysis1/"))*1'})
+    transf_node_branch1.setParmExpressions({"tx":'@unit_v.x*(npoints("../intersectionanalysis1/"))*detail(0,"xoffset",0)'})
+    transf_node_branch1.setParmExpressions({"ty":'@unit_v.y*(npoints("../intersectionanalysis1/"))*detail(0,"yoffset",0)'})
+    transf_node_branch1.setParmExpressions({"tz":'@unit_v.z*(npoints("../intersectionanalysis1/"))*detail(0,"zoffset",0)'})
     
     
     merge_node_branch2=geo_node.createNode("merge")
