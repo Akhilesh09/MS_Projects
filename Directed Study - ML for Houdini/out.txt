@@ -1,1 +1,0 @@
-{"staircase width": "10.462522506713867", "staircase height": "3.1776314973831177", "platform width": "8.393412232398987"}
