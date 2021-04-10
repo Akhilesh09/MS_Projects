@@ -11,7 +11,7 @@ import matplotlib
 
 def load_params():
 	dirname = os.path.dirname(__file__)
-	filename = os.path.join(dirname, 'floors.txt')
+	filename = os.path.join(dirname, 'floors_26k.txt')
 	params_file=open(filename,'r')
 	params=[]
 	for line in params_file:
@@ -29,15 +29,16 @@ def load_params():
 			param_values.append(param[i+2])
 		data_values.append(param_values)
 	data_values=np.array(data_values)
+	param_names=np.array(param_names)
 	return data_values,param_names
 
 
 def load_images():
-	images=np.zeros((19682,32,32,3))
+	images=np.zeros((26245,32,32,3))
 	indices=[]
 
 	dirname = os.path.dirname(__file__)
-	filename = os.path.join(dirname, 'imagess')
+	filename = os.path.join(dirname, 'images26k')
 	data=os.listdir(filename)
 	data_size=len(data)
 
@@ -46,25 +47,16 @@ def load_images():
 		img= cv2.imread(path)
 		blurred = cv2.GaussianBlur(img, (5, 5), 0)
 		gray = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY)
-		lab = cv2.cvtColor(blurred, cv2.COLOR_BGR2LAB)
 		thresh = cv2.threshold(gray, 60, 255, cv2.THRESH_BINARY)[1]
-		# find contours in the thresholded image
-		# cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
-		# 	cv2.CHAIN_APPROX_SIMPLE)
 		_ , contours , _ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 		cv2.drawContours(img, contours, -1, (255, 255, 255), 3)
 		img_index=int(data[i].split('.')[0])
 		indices.append(img_index-1)
-		# cv2.imshow('Contours', img)
-		# cv2.waitKey(0)
-		# cv2.destroyAllWindows()
 		images[img_index-1]=img
 
 	indices=np.array(indices)
 
 	indices=np.sort(indices)
 	images=images[indices]
-	
-	# images=images[images!=0]
 	
 	return images,indices

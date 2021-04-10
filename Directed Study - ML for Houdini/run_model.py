@@ -2,6 +2,7 @@
 # python cnn_regression.py --dataset Houses-dataset/Houses\ Dataset/
 
 # import the necessary packages
+from numpy.core.numeric import indices
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.applications import ResNet50
 from tensorflow.keras.models import Sequential
@@ -12,44 +13,45 @@ from tensorflow.keras import Input
 from sklearn.model_selection import train_test_split
 from data import datasets_contours
 import numpy as np
-import argparse
+import cv2
 import os
 import json
 
 
 def run_models(img_name):
 
-	# construct the argument parser and parse the arguments
-	# ap = argparse.ArgumentParser()
-	# ap.add_argument("-i", "--image_name", type=str, required=True,
-	# 	help="input image")
-	# args = vars(ap.parse_args())
+	f=open("data.out",'rb')
+	df_all=np.load(f)
+	f.close()
 
-	# construct the path to the input .txt file that contains information
-	# on each house in the dataset and then load the dataset
-	# print("[INFO] loading attributes...")
+	f=open("attr.out",'rb')
+	attr_names=np.load(f)
+	f.close()
 
-	df_all,attr_names = datasets_contours.load_params()
-	print(attr_names)
+	f=open("indices.out",'rb')
+	indices=np.load(f)
+	f.close()
+	
+	path=os.path.join('data/images26k/',img_name)
+	
+	img= cv2.imread(path)
+	blurred = cv2.GaussianBlur(img, (5, 5), 0)
+	gray = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY)
+	lab = cv2.cvtColor(blurred, cv2.COLOR_BGR2LAB)
+	thresh = cv2.threshold(gray, 60, 255, cv2.THRESH_BINARY)[1]
+	_ , contours , _ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	cv2.drawContours(img, contours, -1, (255, 255, 255), 3)
+	image_data=img
+	
+	mean_val=np.mean(image_data)
+	std_val=np.std(image_data)
+	image_data=(image_data-mean_val)/std_val
 
-	# load the house images and then scale the pixel intensities to the
-	# range [0, 1]
-	dirname = os.path.dirname(__file__)
-	filename = os.path.join(dirname, 'imagess')
-
-	# print("[INFO] loading images...")
-	images,indices = datasets_contours.load_images()
-	# images = images / 255.0
-	mean_val=np.mean(images)
-	std_val=np.std(images)
-	images=(images-mean_val)/std_val
-	df_all=df_all[indices]
-
-	out_file=open("out.txt","w")
 	out_text={}
+	img_index=int(img_name.split('.')[0])-1
+	img_index=int(np.where(indices==img_index)[0])
 
 	for i in range(len(df_all[0])):
-	# i=0
 		df=[]
 		for ele in df_all:
 			df.append(float(ele[i]))
@@ -65,16 +67,9 @@ def run_models(img_name):
 
 		print("[INFO] testing on image "+img_name+"...")
 
-
-		img_index=int(img_name.split('.')[0])-1
-		image_data = images[img_index]
-
 		from tensorflow.keras.models import load_model
 
-		try:
-			loaded_model = load_model(attr_names[i], custom_objects=ak.CUSTOM_OBJECTS)
-		except:
-			loaded_model = load_model(attr_names[i]+".h5")
+		loaded_model = load_model(os.path.join('26k_models/',attr_names[i])+".h5")
 
 		# Predict with the best model.
 		img = np.expand_dims(image_data,0)
@@ -85,6 +80,3 @@ def run_models(img_name):
 
 	json_dump=json.dumps(out_text)
 	return json_dump
-# out_file.write(str(json_dump))
-# out_file.close()
-# run_models("170.png")
