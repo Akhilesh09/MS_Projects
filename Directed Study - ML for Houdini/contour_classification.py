@@ -66,6 +66,11 @@ def main(_):
 		# # the data for training,10% for testing and 10% for validation
 		(trainAttrX, testAttrX,validAttrX, trainimagesX, testimagesX, validimagesX) = df[:trainSize],df[trainSize:int(0.9*len(df))],df[int(0.9*len(df)):],images[:trainSize],images[trainSize:int(0.9*len(df))],images[int(0.9*len(df)):]
 
+		# f=open("test_images.txt",'w')
+		# np.set_printoptions(threshold=np.inf)
+		# f.write(str(np.add(shuffle_index[trainSize:int(0.9*len(df))],1)))
+		# f.close()
+
 		checkpoint=ModelCheckpoint(filepath=attr_names[i]+".h5",monitor="val_loss",mode="min",save_best_only=True)
 
 		input_shape=Input((32,32,3))

@@ -51,6 +51,9 @@ def run_models(img_name):
 	img_index=int(img_name.split('.')[0])-1
 	img_index=int(np.where(indices==img_index)[0])
 
+	mispredictions={}
+	correct_values={}
+
 	for i in range(len(df_all[0])):
 		df=[]
 		for ele in df_all:
@@ -75,8 +78,18 @@ def run_models(img_name):
 		img = np.expand_dims(image_data,0)
 		predicted_y = list(loaded_model.predict(img))
 		
-		print("Predicted Attribute",str(i))
+		print("Predicted Attribute",str(i+1))
 		out_text[str(attr_names[i])]=str(df_unique[np.argmax(predicted_y)])
 
+		if(df_all[img_index][i].astype(float)!=df_unique[np.argmax(predicted_y)]):
+			mispredictions[str(attr_names[i])] = str(df_unique[np.argmax(predicted_y)])
+			correct_values[str(attr_names[i])] = str(df_all[img_index][i])
+
 	json_dump=json.dumps(out_text)
+
+	print('Predicted ',str(10-len(mispredictions)),'/10 attributes correctly')
+
+	for attr in mispredictions:
+		print('Mipredicted ',attr,'value as ',mispredictions[attr],' instead of ',correct_values[attr])
+
 	return json_dump
