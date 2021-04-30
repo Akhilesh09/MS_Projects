@@ -8,10 +8,10 @@
 #include <sstream>
 #include <string>
 #define STB_IMAGE_IMPLEMENTATION
-#include </home/user/Desktop/stb_image.h>
+#include <stb_image.h>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include </home/user/Desktop/stb_image_write.h>
-#include </home/user/Desktop/stb_include.h>
+#include <stb_image_write.h>
+#include <stb_include.h>
 #include <string>
 #include<cmath>
 #include<math.h>
