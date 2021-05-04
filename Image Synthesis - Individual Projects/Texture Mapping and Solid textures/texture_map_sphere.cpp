@@ -208,21 +208,14 @@ void setPixels()
 			{
 				float t_hit=-b-disc;
 				P_hit=Pe+(npe*t_hit);
+				
+				float v=acos(s_n2*(P_hit-Pc)/r)/3.14;
+				float u = acos(s_n1 * (P_hit - Pc) / r/sin(3.14*v))/(2*3.14);
 
-				float x_hit=(P_hit-Pc)/r;
-				float y_hit=(P_hit-Pc)/r;
-				float z_hit=(P_hit-Pc)/r;
+				if (s_n0 * (P_hit - Pc) / 600 < 0)
+					u = 1 - u;
 
-				float phi=acos(z_hit);
-				float v=phi/3.14;
 				float x_prime=v*height;
-
-				float theta=acos(y_hit/sin(phi));
-
-				if(x_hit<0)
-					theta=2*3.14-theta;
-
-				float u=theta/(2*3.14);
 				float y_prime=u*width;
 
 				int j=((int)y_prime*width+(int)x_prime)*3;
